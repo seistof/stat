@@ -1,0 +1,81 @@
+.pagination {
+  width: 1000px;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+
+  &__moveto {
+    display: flex;
+    align-items: center;
+
+    &-input {
+      width: 35px;
+      margin-right: 5px;
+    }
+  }
+
+
+  &__nav {
+    display: flex;
+    align-items: center;
+
+    &-prev {
+      height: 32px;
+      width: 32px;
+    }
+
+    &-display {
+      text-align: center;
+      font-size: 14px;
+      width: 75px;
+      padding: 0 10px;
+    }
+
+    &-next {
+      height: 32px;
+      width: 32px;
+    }
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+
+    &-pages {
+      display: flex;
+      padding-left: 10px;
+    }
+
+    &-pages-title {
+
+    }
+
+    &-pages-value {
+      padding-left: 5px;
+    }
+
+    &-objects {
+      display: flex;
+      padding-left: 10px;
+    }
+
+    &-objects-title {
+
+    }
+
+    &-objects-value {
+      padding-left: 5px;
+    }
+  }
+}

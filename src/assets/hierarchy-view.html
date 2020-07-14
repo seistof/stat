@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet">
+  <title>Учет и анализ объектов строительства</title>
+</head>
+<body>
+<div id="app" class="container">
+  
+  
+  <div class="center">
+    
+    <div class="display">
+      
+      <div class="hierarchy-view">
+        
+        <div class="hierarchy-view__header">
+          <div class="hierarchy-view__header-item hierarchy-view__header-year hierarchy-view-size-year">Год</div>
+          <div class="hierarchy-view__header-item hierarchy-view__header-ready hierarchy-view-size-ready">Готово</div>
+          <div class="hierarchy-view__header-item hierarchy-view__header-code hierarchy-view-size-code">Код</div>
+          <div class="hierarchy-view__header-item hierarchy-view__header-info hierarchy-view-size-info">Территория,
+            министерство, программа
+          </div>
+          <div class="hierarchy-view__header-item hierarchy-view__header-name hierarchy-view-size-name">Название</div>
+        </div>
+        
+        <div class="hierarchy-view__object-container">
+          
+          <div class="hierarchy-view__object">
+            
+            <div class="hierarchy-view__object-title">
+              
+              <div class="hierarchy-view__object-data">
+                <div class="hierarchy-view__object-item hierarchy-view__object-year hierarchy-view-size-year">2011</div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-read hierarchy-view-size-ready">30%
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-code hierarchy-view-size-code">756210
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-info hierarchy-view-size-info"
+                     title="Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим от коронавируса и ветеранам вов с донбаса.">
+                  Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим
+                  от коронавируса и ветеранам вов с донбаса.
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name"
+                     title="Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника хану Батыю">
+                  Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника
+                  хану
+                  Батыю
+                </div>
+              </div>
+              
+              <div class="hierarchy-view__object-control">
+                
+                <div class="hierarchy-view__object-counter">
+                  <span>Записей:</span>
+                  <span>4</span>
+                </div>
+                
+                <button class="hierarchy-view__object-dropdown button">
+                  <span class="material-icons">expand_less</span>
+                </button>
+                
+                <div class="hierarchy-view__object-buttons">
+                  <button class="hierarchy-view__object-details button">Подробнее</button>
+                  <button class="hierarchy-view__object-edit button">Изменить</button>
+                </div>
+              
+              </div>
+            
+            </div>
+            
+            <div style="display: none" class="hierarchy-view__object-body">
+              
+              <div class="hierarchy-view__object-body-item">
+                <div class="hierarchy-view__object-item hierarchy-view__object-year hierarchy-view-size-year">2012</div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-read hierarchy-view-size-ready">40%
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-code hierarchy-view-size-code">756210
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-info hierarchy-view-size-info"
+                     title="Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим от коронавируса и ветеранам вов с донбаса.">
+                  Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим
+                  от коронавируса и ветеранам вов с донбаса.
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name"
+                     title="Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника хану Батыю">
+                  Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника
+                  хану
+                  Батыю
+                </div>
+              </div>
+              
+              <div class="hierarchy-view__object-body-item">
+                <div class="hierarchy-view__object-item hierarchy-view__object-year hierarchy-view-size-year">2013</div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-read hierarchy-view-size-ready">50%
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-code hierarchy-view-size-code">756210
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-info hierarchy-view-size-info"
+                     title="Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим от коронавируса и ветеранам вов с донбаса.">
+                  Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим
+                  от коронавируса и ветеранам вов с донбаса.
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name"
+                     title="Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника хану Батыю">
+                  Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника
+                  хану
+                  Батыю
+                </div>
+              </div>
+              
+              <div class="hierarchy-view__object-body-item">
+                <div class="hierarchy-view__object-item hierarchy-view__object-year hierarchy-view-size-year">2014</div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-read hierarchy-view-size-ready">60%
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-code hierarchy-view-size-code">756210
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-info hierarchy-view-size-info"
+                     title="Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим от коронавируса и ветеранам вов с донбаса.">
+                  Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим
+                  от коронавируса и ветеранам вов с донбаса.
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name"
+                     title="Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника хану Батыю">
+                  Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника
+                  хану
+                  Батыю
+                </div>
+              </div>
+              
+              <div class="hierarchy-view__object-body-item">
+                <div class="hierarchy-view__object-item hierarchy-view__object-year hierarchy-view-size-year">2015</div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-read hierarchy-view-size-ready">70%
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-code hierarchy-view-size-code">756210
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-info hierarchy-view-size-info"
+                     title="Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим от коронавируса и ветеранам вов с донбаса.">
+                  Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим
+                  от коронавируса и ветеранам вов с донбаса.
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name"
+                     title="Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника хану Батыю">
+                  Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника
+                  хану
+                  Батыю
+                </div>
+              </div>
+            
+            
+            </div>
+          
+          </div>
+          
+          <div class="hierarchy-view__object">
+            
+            <div class="hierarchy-view__object-title">
+              
+              <div class="hierarchy-view__object-data">
+                <div class="hierarchy-view__object-item hierarchy-view__object-year hierarchy-view-size-year">2011</div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-read hierarchy-view-size-ready">30%
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-code hierarchy-view-size-code">756210
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-info hierarchy-view-size-info"
+                     title="Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим от коронавируса и ветеранам вов с донбаса.">
+                  Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим
+                  от коронавируса и ветеранам вов с донбаса.
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name"
+                     title="Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника хану Батыю">
+                  Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника
+                  хану
+                  Батыю
+                </div>
+              </div>
+              
+              <div class="hierarchy-view__object-control">
+                
+                <div class="hierarchy-view__object-counter">
+                  <span>Записей:</span>
+                  <span>4</span>
+                </div>
+                
+                <button class="hierarchy-view__object-dropdown button">
+                  <span class="material-icons">expand_less</span>
+                </button>
+                
+                <div class="hierarchy-view__object-buttons">
+                  <button class="hierarchy-view__object-details button">Подробнее</button>
+                  <button class="hierarchy-view__object-edit button">Изменить</button>
+                </div>
+              
+              </div>
+            
+            </div>
+            
+            <div style="display: none" class="hierarchy-view__object-body">
+              
+              <div class="hierarchy-view__object-body-item">
+                <div class="hierarchy-view__object-item hierarchy-view__object-year hierarchy-view-size-year">2012</div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-read hierarchy-view-size-ready">40%
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-code hierarchy-view-size-code">756210
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-info hierarchy-view-size-info"
+                     title="Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим от коронавируса и ветеранам вов с донбаса.">
+                  Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим
+                  от коронавируса и ветеранам вов с донбаса.
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name"
+                     title="Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника хану Батыю">
+                  Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника
+                  хану
+                  Батыю
+                </div>
+              </div>
+              
+              <div class="hierarchy-view__object-body-item">
+                <div class="hierarchy-view__object-item hierarchy-view__object-year hierarchy-view-size-year">2013</div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-read hierarchy-view-size-ready">50%
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-code hierarchy-view-size-code">756210
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-info hierarchy-view-size-info"
+                     title="Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим от коронавируса и ветеранам вов с донбаса.">
+                  Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим
+                  от коронавируса и ветеранам вов с донбаса.
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name"
+                     title="Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника хану Батыю">
+                  Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника
+                  хану
+                  Батыю
+                </div>
+              </div>
+              
+              <div class="hierarchy-view__object-body-item">
+                <div class="hierarchy-view__object-item hierarchy-view__object-year hierarchy-view-size-year">2014</div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-read hierarchy-view-size-ready">60%
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-code hierarchy-view-size-code">756210
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-info hierarchy-view-size-info"
+                     title="Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим от коронавируса и ветеранам вов с донбаса.">
+                  Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим
+                  от коронавируса и ветеранам вов с донбаса.
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name"
+                     title="Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника хану Батыю">
+                  Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника
+                  хану
+                  Батыю
+                </div>
+              </div>
+              
+              <div class="hierarchy-view__object-body-item">
+                <div class="hierarchy-view__object-item hierarchy-view__object-year hierarchy-view-size-year">2015</div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-read hierarchy-view-size-ready">70%
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-code hierarchy-view-size-code">756210
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-info hierarchy-view-size-info"
+                     title="Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим от коронавируса и ветеранам вов с донбаса.">
+                  Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим
+                  от коронавируса и ветеранам вов с донбаса.
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name"
+                     title="Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника хану Батыю">
+                  Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника
+                  хану
+                  Батыю
+                </div>
+              </div>
+            
+            
+            </div>
+          
+          </div>
+          
+          <div class="hierarchy-view__object">
+            
+            <div class="hierarchy-view__object-title">
+              
+              <div class="hierarchy-view__object-data">
+                <div class="hierarchy-view__object-item hierarchy-view__object-year hierarchy-view-size-year">2011</div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-read hierarchy-view-size-ready">30%
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-code hierarchy-view-size-code">756210
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-info hierarchy-view-size-info"
+                     title="Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим от коронавируса и ветеранам вов с донбаса.">
+                  Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим
+                  от коронавируса и ветеранам вов с донбаса.
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name"
+                     title="Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника хану Батыю">
+                  Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника
+                  хану
+                  Батыю
+                </div>
+              </div>
+              
+              <div class="hierarchy-view__object-control">
+                
+                <div class="hierarchy-view__object-counter">
+                  <span>Записей:</span>
+                  <span>4</span>
+                </div>
+                
+                <button class="hierarchy-view__object-dropdown button">
+                  <span class="material-icons">expand_less</span>
+                </button>
+                
+                <div class="hierarchy-view__object-buttons">
+                  <button class="hierarchy-view__object-details button">Подробнее</button>
+                  <button class="hierarchy-view__object-edit button">Изменить</button>
+                </div>
+              
+              </div>
+            
+            </div>
+            
+            <div class="hierarchy-view__object-body">
+              
+              <div class="hierarchy-view__object-body-item">
+                <div class="hierarchy-view__object-item hierarchy-view__object-year hierarchy-view-size-year">2012</div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-read hierarchy-view-size-ready">40%
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-code hierarchy-view-size-code">756210
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-info hierarchy-view-size-info"
+                     title="Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим от коронавируса и ветеранам вов с донбаса.">
+                  Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим
+                  от коронавируса и ветеранам вов с донбаса.
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name"
+                     title="Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника хану Батыю">
+                  Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника
+                  хану
+                  Батыю
+                </div>
+              </div>
+              
+              <div class="hierarchy-view__object-body-item">
+                <div class="hierarchy-view__object-item hierarchy-view__object-year hierarchy-view-size-year">2013</div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-read hierarchy-view-size-ready">50%
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-code hierarchy-view-size-code">756210
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-info hierarchy-view-size-info"
+                     title="Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим от коронавируса и ветеранам вов с донбаса.">
+                  Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим
+                  от коронавируса и ветеранам вов с донбаса.
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name"
+                     title="Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника хану Батыю">
+                  Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника
+                  хану
+                  Батыю
+                </div>
+              </div>
+              
+              <div class="hierarchy-view__object-body-item">
+                <div class="hierarchy-view__object-item hierarchy-view__object-year hierarchy-view-size-year">2014</div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-read hierarchy-view-size-ready">60%
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-code hierarchy-view-size-code">756210
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-info hierarchy-view-size-info"
+                     title="Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим от коронавируса и ветеранам вов с донбаса.">
+                  Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим
+                  от коронавируса и ветеранам вов с донбаса.
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name"
+                     title="Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника хану Батыю">
+                  Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника
+                  хану
+                  Батыю
+                </div>
+              </div>
+              
+              <div class="hierarchy-view__object-body-item">
+                <div class="hierarchy-view__object-item hierarchy-view__object-year hierarchy-view-size-year">2015</div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-read hierarchy-view-size-ready">70%
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-code hierarchy-view-size-code">756210
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-info hierarchy-view-size-info"
+                     title="Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим от коронавируса и ветеранам вов с донбаса.">
+                  Москвоская область. Министерство по очень важным чрезвычайным ситуациям. Программа помощи пострадавшим
+                  от коронавируса и ветеранам вов с донбаса.
+                </div>
+                <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name"
+                     title="Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника хану Батыю">
+                  Строительство железной дороги через Красную площадь, выковыривание брусчатки и установка памятника
+                  хану
+                  Батыю
+                </div>
+              </div>
+            
+            
+            </div>
+          
+          </div>
+        
+        </div>
+        
+        <div class="pagination">
+          
+          <div class="pagination__moveto">
+            <input type="number" class="pagination__moveto-input">
+            <button class="pagination__moveto-button button">Перейти</button>
+          </div>
+          
+          <div class="pagination__nav">
+            <button class="pagination__nav-prev button">
+              <span class="material-icons">chevron_left</span>
+            </button>
+            <div class="pagination__nav-display">1</div>
+            <button class="pagination__nav-next button">
+              <span class="material-icons">chevron_right</span>
+            </button>
+          </div>
+          
+          <div class="pagination__info">
+            <div class="pagination__info-pages">
+              <div class="pagination__info-pages-title">Страниц:</div>
+              <div class="pagination__info-pages-value">1</div>
+            </div>
+            <div class="pagination__info-objects">
+              <div class="pagination__info-objects-title">Объектов:</div>
+              <div class="pagination__info-objects-value">3</div>
+            </div>
+          </div>
+        
+        </div>
+      
+      </div>
+    
+    </div>
+  
+  </div>
+
+</div>
+</body>
+</html>

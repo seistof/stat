@@ -11,3 +11,22 @@ body {
   font-family: 'Roboto', sans-serif;
   font-size: 12px;
 }
+
+.container {
+  height: 100vh;
+  max-height: 100vh;
+  min-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@import "modules/header";
+@import "modules/center";
+@import "modules/menu";
+@import "modules/footer";
+@import "modules/display";
+@import "modules/hierarchy-view";
+@import "modules/pagination";
+@import "modules/linker";
