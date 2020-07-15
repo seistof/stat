@@ -68,12 +68,13 @@
   }
 
   &__header {
-    position: fixed;
+    //position: fixed;
     width: 1000px;
     padding: 10px;
     display: flex;
     justify-content: center;
     background: #ffffff;
+    margin-right: 17px;
 
     &-item {
       font-size: 14px;
@@ -90,9 +91,11 @@
   }
 
   &__object-container {
-    padding-top: 75px;
+    margin-top: 30px;
+    //padding-top: 30px;
     overflow: auto;
-    padding-bottom: 50px;
+    //padding-bottom: 50px;
+    margin-bottom: 30px;
   }
 
   &__object {

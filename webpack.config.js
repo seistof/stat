@@ -17,6 +17,7 @@ const jsLoaders = () => {
         presets: ['@babel/preset-env'],
         plugins: ['@babel/plugin-proposal-class-properties'],
       },
+
     },
   ];
   if (isDev) {
@@ -45,6 +46,8 @@ module.exports = {
   },
   devtool: isDev ? 'source-map' : false,
   devServer: {
+    host: '0.0.0.0',
+    disableHostCheck: true,
     port: 4000,
     hot: isDev,
   },
@@ -97,6 +100,17 @@ module.exports = {
             loader: 'file-loader',
             options: {
               name: '[path][name].[ext]',
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|svg)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'fonts/[name].[ext]',
             },
           },
         ],
