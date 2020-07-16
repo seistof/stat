@@ -23,11 +23,17 @@
     align-items: center;
     justify-content: center;
 
+    //disable
+    //opacity: .3;
+    //pointer-events: none;
+    //
+
     &__item {
       padding: 5px;
       display: flex;
       flex-direction: column;
       width: 100%;
+
       label {
         padding-bottom: 3px;
       }
@@ -43,6 +49,7 @@
 
     .ready-select-box {
       flex-direction: row;
+
       input {
         width: 30px;
         text-align: center;

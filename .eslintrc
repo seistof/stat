@@ -7,7 +7,10 @@
   },
   "rules": {
     "require-jsdoc": "off",
-    "operator-linebreak": "off"
+    "operator-linebreak": "off",
+    "max-len": [
+      0
+    ]
   },
   "extends": [
     "eslint:recommended",

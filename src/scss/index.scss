@@ -17,6 +17,7 @@ body {
   height: 100vh;
   max-height: 100vh;
   min-width: 1200px;
+  min-height: 720px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -31,3 +32,4 @@ body {
 @import "modules/hierarchy-view";
 @import "modules/pagination";
 @import "modules/linker";
+@import "modules/upload";
