@@ -10,7 +10,8 @@
     "operator-linebreak": "off",
     "max-len": [
       0
-    ]
+    ],
+    "new-cap": 0
   },
   "extends": [
     "eslint:recommended",

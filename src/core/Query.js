@@ -1,5 +1,5 @@
 export class Query {
-  constructor() {
+  constructor(year, ministry, territory, program) {
     this.filter = {
       'year': [2011, 2012, 2013],
       'ministry': [
@@ -19,5 +19,12 @@ export class Query {
         'И тогда развития будет достаточно',
         'А может и нет'],
     };
+  }
+
+  async getFilters(url) {
+    const q = await fetch(url);
+    const response = await q.JSON();
+    console.log(response);
+    return response;
   }
 }
