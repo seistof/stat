@@ -58,10 +58,10 @@ export function baseMarkupFn() {
             <div class="ready-select-box">
               <label for="select-ready">Готовность:</label>
               <label>
-                <input class="select-ready-display" type="text" value="Все" max="100" min="0">
+                <input class="select-ready-display" type="text" value="Все">
               </label>
             </div>
-            <input type="range" id="select-ready" class="select-ready" max="100" min="0">
+            <input type="range" id="select-ready" class="select-ready" max="100" min="1">
           </div>
           
           <div class="filter__item ready-select-all-box">
@@ -122,7 +122,6 @@ export function baseMarkupFn() {
       <div class="display">
       
       </div>
-    
     </div>
     <div class="footer">
       <span class="material-icons">copyright</span>

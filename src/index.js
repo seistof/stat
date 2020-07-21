@@ -1,31 +1,66 @@
 import './scss/index.scss';
 import './logo.png';
 import {baseMarkupFn} from './components/markup/base';
-import {Query} from './core/Query';
-import {Display} from './components/display/Display';
-import {fillFilter, comment} from './core/utils';
-import {hierarchyViewMarkupFn} from './components/markup/hierarchy-view';
-import {Menu} from './components/menu/Menu';
-import {linkerMarkupFn} from './components/markup/linker';
-import {uploadMarkupFn} from './components/markup/upload';
+import {initialize, logger, addressBarText} from './core/utils';
+import {FilterView} from './components/filter/FilterView';
+import {Filter} from './components/filter/Filter';
 
-comment('Begin');
+logger('Begin');
 
 const root = document.querySelector('#app');
 const baseMarkup = baseMarkupFn();
-const hierarchyMarkup = hierarchyViewMarkupFn();
-const linkerMarkup = linkerMarkupFn();
-const uploadMarkup = uploadMarkupFn();
 
-const display = new Display();
 root.innerHTML = baseMarkup;
-const menu = new Menu();
 
-const query = new Query();
+const filterTestData = {
+  year: [
+    {code: 2011, name: 2011},
+    {code: 2012, name: 2012},
+  ],
+  ministry: [
+    {code: 2011, name: 2011},
+    {code: 2012, name: 2012},
+  ],
+  territory: [
+    {code: 2011, name: 2011},
+    {code: 2012, name: 2012},
+  ],
+  program: [
+    {code: 2011, name: 2011},
+    {code: 2012, name: 2012},
+  ],
+};
 
-fillFilter(query.filter.year, query.filter.ministry, query.filter.territory,
-    query.filter.program);
+const filter = new Filter();
+filter.URL = '/get_filters_list/';
+filter.year = filterTestData.year;
+filter.ministry = filterTestData.ministry;
+filter.territory = filterTestData.territory;
+filter.program = filterTestData.program;
 
-menu.addListener(menu.main, 'click', () => display.renderHTML(hierarchyMarkup));
-menu.addListener(menu.constructor, 'click', () => display.renderHTML(linkerMarkup));
-menu.addListener(menu.upload, 'click', () => display.renderHTML(uploadMarkup));
+filter.test();
+
+const filterView = new FilterView();
+filterView.box = initialize('.filter');
+filterView.year = initialize('#select-year');
+filterView.ministry = initialize('#select-ministry');
+filterView.territory = initialize('#select-territory');
+filterView.program = initialize('#select-program');
+filterView.readyDisplay = initialize('.select-ready-display');
+filterView.readySelect = initialize('#select-ready');
+filterView.readyAll = initialize('#select-ready-all');
+filterView.applyButton = initialize('.filter__button-search');
+filterView.resetButton = initialize('.filter__button-reset');
+filterView.searchBox = initialize('.header__search-box');
+filterView.searchInput = initialize('.header__search-line');
+filterView.searchButton = initialize('.header__search-button');
+
+(function initMenu() {
+  filterView.watchReadyFilter();
+  filterView.reset();
+  filterView.apply();
+  filterView.fill(filter.year, filter.ministry, filter.territory,
+      filter.program);
+})();
+
+addressBarText(12323123);

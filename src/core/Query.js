@@ -1,30 +1,25 @@
+import {logger} from './utils';
+
 export class Query {
-  constructor(year, ministry, territory, program) {
-    this.filter = {
-      'year': [2011, 2012, 2013],
-      'ministry': [
-        'МВД',
-        'КГБ',
-        'Министерство блаблабла по делам блабалбла нужна ' +
-        'длинная строка для проверки, и еще немного текста балблабла'],
-      'territory': [
-        'Москвоская область',
-        'Ленинградская область',
-        'Территярия какого-то чего-то епонятно чего, блабалбла ' +
-        'нужна длинная строка для проверки, и еще немного текста балблабла'],
-      'program': [
-        'Программа развития развивающихся развитий для развития ' +
-        'развития, чтобы было больше развития, а если развития не ' +
-        'достаточно, то нужно еще больше развития',
-        'И тогда развития будет достаточно',
-        'А может и нет'],
-    };
+  constructor(
+      URL, filter, hierarchy, hierarchyDetail, linker, ministry, territory,
+      program, event) {
+    this.URL = URL;
+    this.filter = filter;
+    this.hierarchy = hierarchy;
+    this.hierarchyDetail = hierarchyDetail;
+    this.linker = linker;
+    this.ministry = ministry;
+    this.territory = territory;
+    this.program = program;
+    this.event = event;
   }
 
-  async getFilters(url) {
-    const q = await fetch(url);
+  async getData(URL, options = '') {
+    logger(`${this.constructor.name} getData();`, this);
+    const q = await fetch(this.URL+URL+options);
     const response = await q.JSON();
-    console.log(response);
+    logger(response);
     return response;
   }
 }
