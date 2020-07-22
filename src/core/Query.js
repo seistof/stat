@@ -1,5 +1,7 @@
 import {logger} from './utils';
 
+const COMMENTS = false;
+
 export class Query {
   constructor(
       URL, filter, hierarchy, hierarchyDetail, linker, ministry, territory,
@@ -15,11 +17,9 @@ export class Query {
     this.event = event;
   }
 
-  async getData(URL, options = '') {
-    logger(`${this.constructor.name} getData();`, this);
-    const q = await fetch(this.URL+URL+options);
-    const response = await q.JSON();
-    logger(response);
-    return response;
+  async getData(server, url, options = '') {
+    logger(`getData();`, this, COMMENTS);
+    const response = await fetch(server + url + options);
+    return await response.JSON();
   }
 }

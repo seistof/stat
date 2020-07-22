@@ -1,10 +1,13 @@
-import {MainView} from '../../core/MainView';
-import {addressBarText, logger} from '../../core/utils';
+import {MainView} from '@core/MainView';
+import {addressBarText, logger} from '@core/utils';
+
+const COMMENTS = false;
 
 export class FilterView extends MainView {
   constructor(box, year, ministry, territory, program, readyDisplay,
       readySelect,
-      readyAll, apply, reset, searchBox, searchInput, search) {
+      readyAll, apply, reset, searchBox, searchUseFilters, searchInput,
+      search) {
     super();
     this.box = box;
     this.year = year;
@@ -17,22 +20,23 @@ export class FilterView extends MainView {
     this.applyButton = apply;
     this.resetButton = reset;
     this.searchBox = searchBox;
+    this.searchUseFilters = searchUseFilters;
     this.searchInput = searchInput;
     this.searchButton = search;
   }
 
   filterEnabled(mode = 'auto') {
-    logger(`filterEnabled();`, this);
+    logger(`filterEnabled();`, this, COMMENTS);
     this.box.style['pointer-events'] = `${mode}`;
   }
 
   searchEnabled(mode = 'auto') {
-    logger(`searchEnabled();`, this);
+    logger(`searchEnabled();`, this, COMMENTS);
     this.searchBox.style['pointer-events'] = `${mode}`;
   }
 
   watchReadyFilter() {
-    logger(`watchReadyFilter();`, this);
+    logger(`watchReadyFilter();`, this, COMMENTS);
     this.addListener(this.readySelect, 'input', () => {
       this.readyAll.checked = false;
       this.readyDisplay.value = this.readySelect.value;
@@ -48,7 +52,7 @@ export class FilterView extends MainView {
 
   reset() {
     this.addListener(this.resetButton, 'click', () => {
-      logger(`reset();`, this);
+      logger(`reset();`, this, COMMENTS);
       this.year.selectedIndex = '0';
       this.ministry.selectedIndex = '0';
       this.territory.selectedIndex = '0';
@@ -62,23 +66,23 @@ export class FilterView extends MainView {
 
   apply() {
     this.addListener(this.applyButton, 'click', () => {
-      logger(`apply();`, this);
+      logger(`apply();`, this, COMMENTS);
     });
   }
 
   fill(year, ministry, territory, program) {
-    logger(`fill();`, this);
+    logger(`fill();`, this, COMMENTS);
 
     year.forEach((el) => {
       const option = document.createElement('option');
-      option.value = el.name;
-      option.textContent = el.name;
+      option.value = el;
+      option.textContent = el;
       this.year.appendChild(option);
     });
     ministry.forEach((el) => {
       const option = document.createElement('option');
       option.value = el.code;
-      option.textContent = el.name;
+      option.textContent = el.name.replace('Министерство', 'М.');
       this.ministry.appendChild(option);
     });
     territory.forEach((el) => {
@@ -90,7 +94,7 @@ export class FilterView extends MainView {
     program.forEach((el) => {
       const option = document.createElement('option');
       option.value = el.code;
-      option.textContent = el.name;
+      option.textContent = el.name.replace('Федеральная целевая программа', '');
       this.program.appendChild(option);
     });
   }

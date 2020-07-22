@@ -17,6 +17,9 @@ export function baseMarkupFn() {
             <input class="header__search-line" placeholder="Введите запрос">
           </label>
           <button class="header__search-button button">Поиск</button>
+          <div class="header__search-checkbox">Применить фильтры: 
+            <input type="checkbox" class="header__search-use-filters">
+          </div>
         </div>
       </div>
     </div>
