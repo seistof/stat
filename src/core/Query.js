@@ -1,14 +1,16 @@
 import {logger} from './utils';
 
-const COMMENTS = false;
+const COMMENTS = true;
 
 export class Query {
   constructor(
-      URL, filter, hierarchy, hierarchyDetail, linker, ministry, territory,
+      URL, filter, hierarchy, hierarchySearch, hierarchyDetail, linker,
+      ministry, territory,
       program, event) {
     this.URL = URL;
     this.filter = filter;
     this.hierarchy = hierarchy;
+    this.hierarchySearch = hierarchySearch;
     this.hierarchyDetail = hierarchyDetail;
     this.linker = linker;
     this.ministry = ministry;
@@ -17,9 +19,14 @@ export class Query {
     this.event = event;
   }
 
-  async getData(server, url, options = '') {
+  async getData(mainURL, url, query = '') {
     logger(`getData();`, this, COMMENTS);
-    const response = await fetch(server + url + options);
-    return await response.JSON();
+    try {
+      const r = await fetch(mainURL + url + query);
+      return await r.json();
+    } catch (e) {
+      logger(`getData(); ${e}`, this, COMMENTS);
+      return [];
+    }
   }
 }

@@ -1,78 +1,56 @@
 import {MainView} from '@core/MainView';
-import {initialize, logger, toggleObjectBody} from '@core/utils';
+import {
+  hierarchyDetail,
+  hierarchyEdit, hierarchyToggle,
+  initialize,
+  logger,
+} from '@core/utils';
 
-const COMMENTS = false;
+const COMMENTS = true;
 
 export class HierarchyView extends MainView {
-  constructor(list, details, editButton, toggleButton, objectContainer) {
+  constructor(
+      list, details, editButton, toggleButton, objectContainer, buttons) {
     super();
     this.list = list;
     this.details = details;
     this.editButton = editButton;
     this.toggleButton = toggleButton;
     this.objectContainer = objectContainer;
-    this.listeners = [];
+    this.buttons = buttons;
+    this.buttonFunctions = [hierarchyToggle, hierarchyDetail, hierarchyEdit];
   }
 
-  initializeToggleButtons() {
-    logger(`initializeToggleButtons();`, false, COMMENTS);
-    return initialize('.hierarchy-view__object-dropdown', false);
+  async initHierarchyButtons() {
+    logger(`initHierarchyButtons();`, this, COMMENTS);
+    const toggleButtons = await initialize('.hierarchy-view__object-dropdown',
+        false);
+    const detailButtons = await initialize('.hierarchy-view__object-details',
+        false);
+    const editButtons = await initialize('.hierarchy-view__object-edit', false);
+    return [toggleButtons, detailButtons, editButtons];
   }
 
-  initializeDetailsButtons() {
-    logger(`initializeDetailsButtons();`, false, COMMENTS);
-    return initialize('.hierarchy-view__object-details', false);
-  }
-
-  initializeEditButtons() {
-    logger(`initializeEditButtons();`, false, COMMENTS);
-    return initialize('.hierarchy-view__object-edit', false);
-  }
-
-  watchToggle(toggleArray) {
-    logger(`watchToggle();`, this, COMMENTS);
-    toggleArray.forEach((entry) => {
-      // this.addListener(entry, 'click', () => {
-      //   logger(`showObjectBody();`);
-      //   if (entry.parentElement.parentElement.parentElement.querySelector(
-      //       '.hierarchy-view__object-body').style.display === 'none') {
-      //     entry.parentElement.parentElement.parentElement.querySelector(
-      //         '.hierarchy-view__object-body').style.display = 'block';
-      //     entry.style.transform = 'rotate(180deg)';
-      //   } else {
-      //     entry.parentElement.parentElement.parentElement.querySelector(
-      //         '.hierarchy-view__object-body').style.display = 'none';
-      //     entry.style.transform = 'rotate(0deg)';
-      //   }
-      // });
-      // this.listeners.push(this.addListener(entry, 'click', () => toggleObjectBody(entry)));
-      this.listeners.push(this.addListener(entry, 'click', toggleObjectBody));
+  addButtonListeners(buttonsArray) {
+    logger(`addButtonListeners();`, this, COMMENTS);
+    let index = 0;
+    buttonsArray.forEach((entry) => {
+      entry.forEach((button) => {
+        this.addListener(button, 'click', this.buttonFunctions[index]);
+      });
+      index++;
     });
   }
 
-  removeToggle(toggleArray) {
-    logger(`removeToggle();`, this, COMMENTS);
-    toggleArray.forEach((entry) => {
-      // this.removeListener(entry, 'click', () => {
-      //   logger(`showObjectBody();`);
-      //   if (entry.parentElement.parentElement.parentElement.querySelector(
-      //       '.hierarchy-view__object-body').style.display === 'none') {
-      //     entry.parentElement.parentElement.parentElement.querySelector(
-      //         '.hierarchy-view__object-body').style.display = 'block';
-      //     entry.style.transform = 'rotate(180deg)';
-      //   } else {
-      //     entry.parentElement.parentElement.parentElement.querySelector(
-      //         '.hierarchy-view__object-body').style.display = 'none';
-      //     entry.style.transform = 'rotate(0deg)';
-      //   }
-      // });
-      // this.removeListener(entry, 'click', () => toggleObjectBody(entry));
-      this.removeListener(entry, 'click', toggleObjectBody);
+  removeButtonListeners(buttonsArray) {
+    logger(`removeButtonListeners();`, this, COMMENTS);
+    let index = 0;
+    buttonsArray.forEach((entry) => {
+      entry.forEach((button) => {
+        this.removeListener(button, 'click', this.buttonFunctions[index]);
+      });
+      index++;
     });
-  }
-
-  showDetails() {
-    logger(`showDetails();`, this, COMMENTS);
   }
 
   fill(data) {
@@ -97,7 +75,8 @@ export class HierarchyView extends MainView {
                        <div class="tooltip">${el.territoryName} <br> ${el.ministryName} <br> ${el.programName}</div>
                        </div>
                   <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name"
-                       >${el.name}<div class="tooltip">${el.name}</div></div>
+                       >${el.name}
+                       <div class="tooltip">${el.name}</div></div>
                 </div>
                 <div class="hierarchy-view__object-control">
                   <div class="hierarchy-view__object-counter">
@@ -108,8 +87,8 @@ export class HierarchyView extends MainView {
                     <span class="material-icons">expand_more</span>
                   </button>
                   <div class="hierarchy-view__object-buttons">
-                    <button class="hierarchy-view__object-details button">Подробнее</button>
-                    <button class="hierarchy-view__object-edit button">Изменить</button>
+                    <button class="hierarchy-view__object-details button" data-id="${el.linkedInfoID}">Подробнее</button>
+                    <button class="hierarchy-view__object-edit button" data-id="${el.linkedInfoID}">Изменить</button>
                   </div>
                 </div>
               </div>
@@ -143,8 +122,8 @@ export class HierarchyView extends MainView {
                     <span class="material-icons">expand_more</span>
                   </button>
                   <div class="hierarchy-view__object-buttons">
-                    <button class="hierarchy-view__object-details button">Подробнее</button>
-                    <button class="hierarchy-view__object-edit button">Изменить</button>
+                    <button class="hierarchy-view__object-details button" data-id="${el.linkedInfoID}">Подробнее</button>
+                    <button class="hierarchy-view__object-edit button" data-id="${el.linkedInfoID}">Изменить</button>
                   </div>
                 </div>
               </div>

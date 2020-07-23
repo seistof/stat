@@ -1,7 +1,7 @@
 import {MainView} from '@core/MainView';
 import {addressBarText, logger} from '@core/utils';
 
-const COMMENTS = false;
+const COMMENTS = true;
 
 export class FilterView extends MainView {
   constructor(box, year, ministry, territory, program, readyDisplay,
@@ -67,51 +67,47 @@ export class FilterView extends MainView {
   apply() {
     this.addListener(this.applyButton, 'click', () => {
       logger(`apply();`, this, COMMENTS);
+      // should return data to fill hierarchy or linker
     });
   }
 
-  fill(year, ministry, territory, program) {
+  search() {
+    this.addListener(this.searchButton, 'click', () => {
+      logger(`search();`, this, COMMENTS);
+      // should return data to fill hierarchy or linker
+    });
+  }
+
+  async fill(data) {
     logger(`fill();`, this, COMMENTS);
-
-    year.forEach((el) => {
-      const option = document.createElement('option');
-      option.value = el;
-      option.textContent = el;
-      this.year.appendChild(option);
-    });
-    ministry.forEach((el) => {
-      const option = document.createElement('option');
-      option.value = el.code;
-      option.textContent = el.name.replace('Министерство', 'М.');
-      this.ministry.appendChild(option);
-    });
-    territory.forEach((el) => {
-      const option = document.createElement('option');
-      option.value = el.code;
-      option.textContent = el.name;
-      this.territory.appendChild(option);
-    });
-    program.forEach((el) => {
-      const option = document.createElement('option');
-      option.value = el.code;
-      option.textContent = el.name.replace('Федеральная целевая программа', '');
-      this.program.appendChild(option);
-    });
-  }
-
-  test() {
-    logger(this.box, this);
-    logger(this.year, this);
-    logger(this.ministry, this);
-    logger(this.territory, this);
-    logger(this.program, this);
-    logger(this.readyDisplay, this);
-    logger(this.readySelect, this);
-    logger(this.readyAll, this);
-    logger(this.applyButton, this);
-    logger(this.resetButton, this);
-    logger(this.searchBox, this);
-    logger(this.searchInput, this);
-    logger(this.searchButton, this);
+    try {
+      data.year.forEach((el) => {
+        const option = document.createElement('option');
+        option.value = el;
+        option.textContent = el;
+        this.year.appendChild(option);
+      });
+      data.ministry.forEach((el) => {
+        const option = document.createElement('option');
+        option.value = el.code;
+        option.textContent = el.name.replace('Министерство', 'М.');
+        this.ministry.appendChild(option);
+      });
+      data.territory.forEach((el) => {
+        const option = document.createElement('option');
+        option.value = el.code;
+        option.textContent = el.name;
+        this.territory.appendChild(option);
+      });
+      data.program.forEach((el) => {
+        const option = document.createElement('option');
+        option.value = el.code;
+        option.textContent = el.name.replace('Федеральная целевая программа',
+            '');
+        this.program.appendChild(option);
+      });
+    } catch (e) {
+      logger(`fill(); ${e}`, this, COMMENTS);
+    }
   }
 }

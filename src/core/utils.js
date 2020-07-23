@@ -1,15 +1,16 @@
 const COMMENTS = true;
 
-export function logger(text, a = false, show = COMMENTS) {
+export function logger(text, context = false, show = COMMENTS) {
   if (show) {
-    if (a) {
-      console.log(a.constructor.name);
+    if (context) {
+      console.log(`[${context.constructor.name}] ${text}`);
+    } else {
+      console.log(text);
     }
-    console.log(text);
   }
 }
 
-export function initialize(selector, single = true) {
+export async function initialize(selector, single = true) {
   if (single) {
     logger(`initialize(); selector: ${selector}`, false, false);
     return document.querySelector(selector);
@@ -1047,9 +1048,8 @@ export function testHierarchyData() {
   };
 }
 
-export const toggleObjectBody = (e) => {
-  logger(`toggleObjectBody();`);
-  logger(`showObjectBody();`);
+export const hierarchyToggle = (e) => {
+  logger(`hierarchyToggle();`);
   if (e.target.parentElement.parentElement.parentElement.parentElement.querySelector(
       '.hierarchy-view__object-body').style.display === 'none') {
     e.target.parentElement.parentElement.parentElement.parentElement.querySelector(
@@ -1060,4 +1060,32 @@ export const toggleObjectBody = (e) => {
         '.hierarchy-view__object-body').style.display = 'none';
     e.target.style.transform = 'rotate(0deg)';
   }
+};
+
+export const hierarchyDetail = (e) => {
+  logger(`hierarchyDetail(); id = ${e.target.dataset.id}`);
+};
+
+export const hierarchyEdit = (e) => {
+  logger(`hierarchyEdit(); id = ${e.target.dataset.id}`);
+};
+
+export const navigationHierarchyButton = (e) => {
+  logger(`hierarchyButton();`);
+};
+
+export const navigationLinkerButton = (e) => {
+  logger(`linkerButton();`);
+};
+
+export const navigationUploadButton = (e) => {
+  logger(`uploadButton();`);
+};
+
+export const navigationExcelButton = (e) => {
+  logger(`excelButton();`);
+};
+
+export const navigationExitButton = (e) => {
+  logger(`exitButton();`);
 };

@@ -1,4 +1,7 @@
-import {Query} from '../../core/Query';
+import {Query} from '@core/Query';
+import {logger} from '@core/utils';
+
+const COMMENTS = true;
 
 export class Hierarchy extends Query {
   constructor(list, details) {
@@ -7,11 +10,4 @@ export class Hierarchy extends Query {
     this.details = details;
   }
 
-  async getHierarchy() {
-    return await this.getData(this.hierarchy);
-  }
-
-  async getDetails() {
-    return await this.getData(this.details);
-  }
 }

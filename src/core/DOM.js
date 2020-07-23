@@ -6,7 +6,7 @@ export class DOM {
   constructor() {
   }
 
-  renderHTML(root, html) {
+  async renderHTML(root, html) {
     logger(`renderHTML();`, this, COMMENTS);
     if (typeof root === 'string') {
       document.querySelector(root).innerHTML = html;

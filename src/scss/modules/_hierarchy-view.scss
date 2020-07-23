@@ -154,11 +154,14 @@
 
       &:hover .tooltip {
         visibility: visible;
+        opacity: 1;
       }
 
       .tooltip {
         display: inline-block;
         visibility: hidden;
+        opacity: 0;
+        transition: visibility 0.3s linear, opacity 0.3s linear;
         background-color: rgb(75, 75, 75);
         color: #fff;
         border-radius: 2px;
@@ -172,6 +175,7 @@
 
         &:hover {
           visibility: hidden;
+          opacity: 0;
         }
       }
     }
@@ -181,11 +185,14 @@
 
       &:hover .tooltip {
         visibility: visible;
+        opacity: 1;
       }
 
       .tooltip {
         display: inline-block;
         visibility: hidden;
+        opacity: 0;
+        transition: visibility 0.3s linear, opacity 0.3s linear;
         background-color: rgb(75, 75, 75);
         color: #fff;
         border-radius: 2px;
@@ -199,6 +206,7 @@
 
         &:hover {
           visibility: hidden;
+          opacity: 0;
         }
       }
     }
