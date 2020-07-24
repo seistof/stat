@@ -22,9 +22,26 @@
     width: 600px;
 
     .button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       width: 30px;
       height: 30px;
       margin: 0 2px;
+      border: 1px solid black;
+      border-radius: 3px;
+      background: #efefef;
+      text-align: center;
+      font-size: 24px;
+      user-select: none;
+
+      &:hover {
+        background: darken(#efefef, 5);
+      }
+
+      &:active {
+        background: lighten(#efefef, 1);
+      }
     }
 
     &-size-code {

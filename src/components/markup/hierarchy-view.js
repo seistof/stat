@@ -29,13 +29,11 @@ export function hierarchyViewMarkupFn() {
           </div>
           
           <div class="pagination__nav">
-            <button class="pagination__nav-prev button">
-              <span class="material-icons">chevron_left</span>
-            </button>
+            <span class="pagination__nav-prev button material-icons">chevron_left
+            </span>
             <div class="pagination__nav-display">1</div>
-            <button class="pagination__nav-next button">
-              <span class="material-icons">chevron_right</span>
-            </button>
+            <span class="pagination__nav-next button material-icons">chevron_right
+            </span>
           </div>
           
           <div class="pagination__info">

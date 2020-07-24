@@ -10,7 +10,8 @@ const COMMENTS = true;
 
 export class HierarchyView extends MainView {
   constructor(
-      list, details, editButton, toggleButton, objectContainer, buttons) {
+      list, details, editButton, toggleButton, objectContainer, buttons,
+      pages) {
     super();
     this.list = list;
     this.details = details;
@@ -19,6 +20,7 @@ export class HierarchyView extends MainView {
     this.objectContainer = objectContainer;
     this.buttons = buttons;
     this.buttonFunctions = [hierarchyToggle, hierarchyDetail, hierarchyEdit];
+    this.pages = pages;
   }
 
   async initHierarchyButtons() {
@@ -83,9 +85,10 @@ export class HierarchyView extends MainView {
                     <span>Записей:</span>
                     <span>${entry.length}</span>
                   </div>
-                  <button class="hierarchy-view__object-dropdown button" style="display: none">
-                    <span class="material-icons">expand_more</span>
-                  </button>
+                  <span class="hierarchy-view__object-dropdown button material-icons" style="display: none">
+                  expand_more
+<!--                    <span class="material-icons">expand_more</span>-->
+                  </span>
                   <div class="hierarchy-view__object-buttons">
                     <button class="hierarchy-view__object-details button" data-id="${el.linkedInfoID}">Подробнее</button>
                     <button class="hierarchy-view__object-edit button" data-id="${el.linkedInfoID}">Изменить</button>
@@ -118,9 +121,9 @@ export class HierarchyView extends MainView {
                     <span>Записей:</span>
                     <span>${entry.length}</span>
                   </div>
-                  <button class="hierarchy-view__object-dropdown button">
-                    <span class="material-icons">expand_more</span>
-                  </button>
+                  <span class="hierarchy-view__object-dropdown button material-icons">expand_more
+<!--                    <span class="material-icons">expand_more</span>-->
+                  </span>
                   <div class="hierarchy-view__object-buttons">
                     <button class="hierarchy-view__object-details button" data-id="${el.linkedInfoID}">Подробнее</button>
                     <button class="hierarchy-view__object-edit button" data-id="${el.linkedInfoID}">Изменить</button>

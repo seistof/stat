@@ -1,17 +1,42 @@
 .overlay {
   position: absolute;
   height: 100%;
-  width: 100%;
-  background: rgba(0, 0, 0, .2);
+  width: 98%;
+  background: rgba(255, 255, 255, .75);
   display: flex;
   justify-content: center;
   align-items: center;
   transition: 1s;
+  border-radius: 4px;
+
 
   &__indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
     height: 100px;
     width: 100px;
     background: #1964af;
-    border-radius: 50%;
+    animation-duration: 20s;
+    animation-name: indicator;
+
+    span {
+      color: #ffffff;
+      font-size: 72px;
+      animation: 1s linear 0s normal none infinite running indicator;
+    }
   }
 }
+
+@keyframes indicator {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+

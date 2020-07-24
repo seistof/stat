@@ -4,12 +4,14 @@ import {addressBarText, logger} from '@core/utils';
 const COMMENTS = true;
 
 export class FilterView extends MainView {
-  constructor(box, year, ministry, territory, program, readyDisplay,
+  constructor(box, menuBox, year, ministry, territory, program, readyDisplay,
       readySelect,
       readyAll, apply, reset, searchBox, searchUseFilters, searchInput,
-      search) {
+      search, hierarchyButton, linkerButton, uploadButton, excelButton,
+      exitButton, overlay) {
     super();
     this.box = box;
+    this.menuBox = menuBox;
     this.year = year;
     this.ministry = ministry;
     this.territory = territory;
@@ -23,16 +25,45 @@ export class FilterView extends MainView {
     this.searchUseFilters = searchUseFilters;
     this.searchInput = searchInput;
     this.searchButton = search;
+    this.hierarchyButton = hierarchyButton;
+    this.linkerButton = linkerButton;
+    this.uploadButton = uploadButton;
+    this.excelButton = excelButton;
+    this.exitButton = exitButton;
+    this.overlay = overlay;
   }
 
-  filterEnabled(mode = 'auto') {
+  menuEnabled(mode = 'auto') {
     logger(`filterEnabled();`, this, COMMENTS);
-    this.box.style['pointer-events'] = `${mode}`;
+    this.menuBox.style['pointer-events'] = `${mode}`;
   }
 
   searchEnabled(mode = 'auto') {
     logger(`searchEnabled();`, this, COMMENTS);
     this.searchBox.style['pointer-events'] = `${mode}`;
+  }
+
+  async enableOverlay(display) {
+    logger(`enableOverlay()`, this, COMMENTS);
+    const overlay = document.createElement('div');
+    const indicator = document.createElement('div');
+    overlay.classList.add('overlay');
+    indicator.classList.add('overlay__indicator');
+    indicator.innerHTML = `<span class="material-icons">autorenew</span>`;
+    overlay.appendChild(indicator);
+    this.menuEnabled('none');
+    this.searchEnabled('none');
+    this.overlay = overlay;
+    display.appendChild(overlay);
+  }
+
+  async disableOverlay(display) {
+    logger(`disableOverlay()`, this, COMMENTS);
+    setTimeout(async () => {
+      display.removeChild(this.overlay);
+      this.menuEnabled();
+      this.searchEnabled();
+    }, 500);
   }
 
   watchReadyFilter() {

@@ -1,28 +1,12 @@
 import {DOM} from './DOM';
-import {initialize, logger} from './utils';
 
-const COMMENTS = false;
+// const COMMENTS = true;
 
 export class MainView extends DOM {
-  constructor(root, display) {
+  constructor(root, display, overlay) {
     super();
     this.root = root;
-    this.display = document.querySelector(display);
-  }
-
-  enableOverlay() {
-    logger(`enableOverlay()`, this, COMMENTS);
-    const overlay = document.createElement('div');
-    const indicator = document.createElement('div');
-    overlay.classList.add('overlay');
-    indicator.classList.add('overlay__indicator');
-    overlay.appendChild(indicator);
-    this.display.appendChild(overlay);
-  }
-
-  disableOverlay() {
-    logger(`disableOverlay()`, this, COMMENTS);
-    const overlay = initialize('.overlay');
-    overlay.parentNode.removeChild(overlay);
+    this.display = display;
+    this.overlay = overlay;
   }
 }

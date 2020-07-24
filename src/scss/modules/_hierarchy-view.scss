@@ -136,10 +136,11 @@
     overflow: auto;
     //padding-bottom: 50px;
     margin-bottom: 10px;
-    border: 1px solid black;
+    //border: 1px solid black;
   }
 
   &__object {
+    position: relative;
     font-size: 14px;
     width: 1000px;
     display: flex;
@@ -258,11 +259,23 @@
     &-dropdown {
       height: 20px;
       width: 40px;
+      border: 1px solid black;
+      border-radius: 3px;
+      background: #efefef;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      user-select: none;
 
-      span {
-        line-height: 16px;
-        font-size: 20px;
+      &:hover {
+        background: darken(#efefef, 5);
       }
+
+      &:active {
+        background: lighten(#efefef, 1);
+      }
+
     }
 
     &-buttons {

@@ -9,7 +9,6 @@ import {Query} from '@core/Query';
 import {Filter} from '@/components/filter/Filter';
 import {FilterView} from '@/components/filter/FilterView';
 import {HierarchyView} from '@/components/hierarchy/HierarchyView';
-import {NavigationView} from '@/components/navigation/NavigationView';
 
 const COMMENTS = true;
 
@@ -20,7 +19,6 @@ const query = new Query();
 const filter = new Filter();
 const filterView = new FilterView();
 const hierarchyView = new HierarchyView();
-const navigationView = new NavigationView();
 
 (async function() {
   await initBase(
@@ -28,6 +26,5 @@ const navigationView = new NavigationView();
       query,
       filter,
       filterView,
-      navigationView,
       hierarchyView);
 })();
