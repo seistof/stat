@@ -1,5 +1,5 @@
-import {Query} from '../../core/Query';
+import {MainView} from '@core/MainView';
 
-export class Dictionary extends Query{
+export class Dictionary extends MainView {
 
 }

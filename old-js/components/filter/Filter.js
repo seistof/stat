@@ -1,5 +1,5 @@
-import {Query} from '@core/Query';
-import {logger} from '@core/utils';
+import {Query} from '@/old/core/Query';
+import {logger} from '@/old/core/utils';
 
 const COMMENTS = false;
 

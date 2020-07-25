@@ -1,5 +1,5 @@
 import {MainView} from '@core/MainView';
 
-export class Linker extends MainView{
+export class Upload extends MainView {
 
 }

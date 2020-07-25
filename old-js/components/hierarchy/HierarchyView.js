@@ -1,10 +1,10 @@
-import {MainView} from '@core/MainView';
+import {MainView} from '@/old/core/MainView';
 import {
   hierarchyDetail,
   hierarchyEdit, hierarchyToggle,
   initialize,
   logger,
-} from '@core/utils';
+} from '@/old/core/utils';
 
 const COMMENTS = true;
 

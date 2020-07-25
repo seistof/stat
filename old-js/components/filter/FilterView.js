@@ -1,5 +1,5 @@
-import {MainView} from '@core/MainView';
-import {addressBarText, logger} from '@core/utils';
+import {MainView} from '@/old/core/MainView';
+import {addressBarText, logger} from '@/old/core/utils';
 
 const COMMENTS = true;
 

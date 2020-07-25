@@ -16,6 +16,7 @@
   &__logo-box {
     display: flex;
     align-items: center;
+    user-select: none;
   }
 
   &__logo-img {
@@ -46,6 +47,7 @@
   }
 
   &__search-box {
+    position: relative;
     margin: 20px;
     //disable
     //opacity: .3;
