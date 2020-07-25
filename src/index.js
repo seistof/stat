@@ -2,29 +2,34 @@ import './scss/index.scss';
 import './logo.png';
 import {
   logger,
-} from '@core/utils';
-import {initBase} from '@core/initComponents';
+} from '@/core/utils';
 import {MainView} from '@core/MainView';
+import {initMainView} from '@core/initComponents';
 import {Query} from '@core/Query';
-import {Filter} from '@/components/filter/Filter';
-import {FilterView} from '@/components/filter/FilterView';
-import {HierarchyView} from '@/components/hierarchy/HierarchyView';
+import {Hierarchy} from '@/components/hierarchy/Hierarchy';
 
 const COMMENTS = true;
 
 logger('Begin', false, COMMENTS);
 
-const mainView = new MainView();
-const query = new Query();
-const filter = new Filter();
-const filterView = new FilterView();
-const hierarchyView = new HierarchyView();
+const m = new MainView();
+const q = new Query();
+const h = new Hierarchy();
 
-(async function() {
-  await initBase(
-      mainView,
-      query,
-      filter,
-      filterView,
-      hierarchyView);
+(async () => {
+  // init base DOM
+  await initMainView(m, q, h);
+  // initial load - filters + hierarchy;
+  // main.disableUI(true);
+  // main.enableOverlay(true);
+  // main.dataFilters = await q.sendQuery(q.filterURL);
+  // main.filterFill(main.dataFilters);
+  // main.filterWatchReady();
+  // main.filterReset();
+  // main.disableUI(false);
+  // main.enableOverlay(false);
+  // console.log('init end');
+  // await initHierarchy(main, q, hierarchy);
 })();
+
+
