@@ -150,7 +150,7 @@
     border: 1px solid black;
     transition: 1s;
 
-    &-info {
+    &-info, &-name {
       display: inline-block;
 
       &:hover .tooltip {
@@ -165,43 +165,12 @@
         transition: visibility 0.3s linear, opacity 0.3s linear;
         background-color: rgb(75, 75, 75);
         color: #fff;
-        border-radius: 2px;
+        border-radius: 4px;
         padding: 5px;
         position: absolute;
         width: 80%;
         margin-top: 20px;
         left: 10%;
-        white-space: normal;
-        z-index: 1;
-
-        &:hover {
-          visibility: hidden;
-          opacity: 0;
-        }
-      }
-    }
-
-    &-name {
-      display: inline-block;
-
-      &:hover .tooltip {
-        visibility: visible;
-        opacity: 1;
-      }
-
-      .tooltip {
-        display: inline-block;
-        visibility: hidden;
-        opacity: 0;
-        transition: visibility 0.3s linear, opacity 0.3s linear;
-        background-color: rgb(75, 75, 75);
-        color: #fff;
-        border-radius: 2px;
-        padding: 5px;
-        position: absolute;
-        width: 90%;
-        margin-top: 20px;
-        left: 5%;
         white-space: normal;
         z-index: 1;
 

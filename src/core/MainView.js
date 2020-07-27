@@ -1,42 +1,54 @@
 import {Query} from '@core/Query';
 import {addressBarText, logger} from '@/core/utils';
+import {
+  baseMarkup, headerOverlayMarkup, hierarchyDetailMarkup,
+  hierarchyViewMarkup, linkerMarkup,
+  mainOverlayMarkup, uploadMarkup,
+} from '@/components/markup/markup';
+import {navButtonsInit} from '@core/initComponents';
 
 const COMMENTS = true;
 
 export class MainView extends Query {
-  constructor(filterBox, menuBox, filterYear, filterMinistry, filterTerritory,
-      filterProgram, filterReadyDisplay,
-      filterReadySelect,
-      filterReadyAll, filterApplyButton, filterResetButton, headerSearchBox,
-      headerSearchUseFilters, headerSearchInput,
-      headerSearchButton, hierarchyButton, linkerButton, uploadButton,
-      excelButton,
-      exitButton, overlay, searchOverlay, display, dataFilters) {
+  constructor() {
     super();
-    this.filterBox = filterBox;
-    this.menuBox = menuBox;
-    this.filterYear = filterYear;
-    this.filterMinistry = filterMinistry;
-    this.filterTerritory = filterTerritory;
-    this.filterProgram = filterProgram;
-    this.filterReadyDisplay = filterReadyDisplay;
-    this.filterReadySelect = filterReadySelect;
-    this.filterReadyAll = filterReadyAll;
-    this.filterApplyButton = filterApplyButton;
-    this.filterResetButton = filterResetButton;
-    this.headerSearchBox = headerSearchBox;
-    this.headerSearchUseFilters = headerSearchUseFilters;
-    this.headerSearchInput = headerSearchInput;
-    this.headerSearchButton = headerSearchButton;
-    this.hierarchyButton = hierarchyButton;
-    this.linkerButton = linkerButton;
-    this.uploadButton = uploadButton;
-    this.excelButton = excelButton;
-    this.exitButton = exitButton;
-    this.overlay = overlay;
-    this.headerSearchOverlay = searchOverlay;
-    this.display = display;
-    this.dataFilters = dataFilters;
+    // DOM Elements
+    this.root = this.initialize('#app');
+    this.body = this.initialize('body');
+    this.filterBox = this.initialize('.filter');
+    this.menuBox = this.initialize('.menu');
+    this.filterYear = this.initialize('#select-year');
+    this.filterMinistry = this.initialize('#select-ministry');
+    this.filterTerritory = this.initialize('#select-territory');
+    this.filterProgram = this.initialize('#select-program');
+    this.filterReadyDisplay = this.initialize('.select-ready-display');
+    this.filterReadySelect = this.initialize('#select-ready');
+    this.filterReadyAll = this.initialize('#select-ready-all');
+    this.filterApplyButton = this.initialize('.filter__button-search');
+    this.filterResetButton = this.initialize('.filter__button-reset');
+    this.headerSearchBox = this.initialize('.header__search-box');
+    this.headerSearchUseFilters = this.initialize(
+        '.header__search-use-filters');
+    this.headerSearchInput = this.initialize('.header__search-line');
+    this.headerSearchButton = this.initialize('.header__search-button');
+    this.hierarchyButton = this.initialize('.navigation__button-main');
+    this.linkerButton = this.initialize('.navigation__button-constructor');
+    this.uploadButton = this.initialize('.navigation__button-upload');
+    this.excelButton = this.initialize('.navigation__button-export');
+    this.exitButton = this.initialize('.navigation__button-exit');
+    this.dMinistryButton = this.initialize('.dictionaries__button-ministry');
+    this.dTerritoryButton = this.initialize('.dictionaries__button-territory');
+    this.dProgramButton = this.initialize('.dictionaries__button-program');
+    this.display = this.initialize('.display');
+    this.centerContainer = this.initialize('.center');
+    // HTML templates
+    this.mainOverlay = mainOverlayMarkup();
+    this.headerSearchOverlay = headerOverlayMarkup();
+    this.hHTML = hierarchyViewMarkup();
+    this.hDetailHTML = hierarchyDetailMarkup;
+    this.lHTML = linkerMarkup;
+    this.uHTML = uploadMarkup;
+    this.bHTML = baseMarkup;
   }
 
   disableUI(token, ...target) {
@@ -44,48 +56,26 @@ export class MainView extends Query {
     if (token) {
       target.forEach((entry) => {
         entry.style['pointer-events'] = 'none';
+        entry.style.opacity = '.5';
       });
     } else {
       target.forEach((entry) => {
         entry.style['pointer-events'] = 'auto';
+        entry.style.opacity = '1';
       });
     }
   }
 
-  // disableUI(token = true) {
-  //   logger(`disableUI(${token});`, this, COMMENTS);
-  //   if (token) {
-  //     this.menuBox.style['pointer-events'] = 'none';
-  //     this.headerSearchBox.style['pointer-events'] = 'none';
-  //   } else {
-  //     this.menuBox.style['pointer-events'] = 'auto';
-  //     this.headerSearchBox.style['pointer-events'] = 'auto';
-  //   }
-  // }
-
-  enableOverlay(token, ...target) {
+  enableOverlay(token) {
     logger(`enableOverlay(${token});`, this, COMMENTS);
     if (token) {
-      target.forEach((entry) => {
-        entry.style.display = 'flex';
-      });
+      this.centerContainer.appendChild(this.mainOverlay);
+      // this.headerSearchBox.appendChild(this.headerSearchOverlay);
     } else {
-      target.forEach((entry) => {
-        entry.style.display = 'none';
-      });
+      this.centerContainer.removeChild(this.initialize('.overlay'));
+      // this.headerSearchBox.removeChild(this.initialize('.header__overlay'));
     }
   }
-
-  // enableOverlay(token = true) {
-  //   logger(`enableOverlay(${token});`, this, COMMENTS);
-  //   if (token) {
-  //     this.overlay.style.display = 'flex';
-  //     this.headerSearchOverlay.style.display = 'flex';
-  //   } else {
-  //     this.overlay.style.display = 'none';
-  //     this.headerSearchOverlay.style.display = 'none';
-  //   }
-  // }
 
   filterWatchReady() {
     logger(`filterWatchReady();`, this, COMMENTS);
@@ -103,7 +93,6 @@ export class MainView extends Query {
   }
 
   filterFill(data) {
-    logger(`filterFill();`, this, COMMENTS);
     try {
       data.year.forEach((el) => {
         const option = document.createElement('option');
@@ -134,14 +123,14 @@ export class MainView extends Query {
             '');
         this.filterProgram.appendChild(option);
       });
+      logger(`filterFill();`, this, COMMENTS);
     } catch (e) {
-      logger(`fill(); ${e}`, this, COMMENTS);
+      logger(`filterFill(); ${e}`, this, COMMENTS);
     }
   }
 
   filterReset() {
     this.addListener(this.filterResetButton, 'click', () => {
-      logger(`filterReset();`, this, COMMENTS);
       this.filterYear.selectedIndex = '0';
       this.filterMinistry.selectedIndex = '0';
       this.filterTerritory.selectedIndex = '0';
@@ -150,20 +139,84 @@ export class MainView extends Query {
       this.filterReadySelect.value = 50;
       this.filterReadyAll.checked = true;
       addressBarText();
+      logger(`filterReset();`, this, COMMENTS);
     });
   }
 
   filterApply() {
-    this.addListener(this.applyButton, 'click', () => {
-      logger(`apply();`, this, COMMENTS);
-      // should return data to fill hierarchy or linker
+    this.addListener(this.filterApplyButton, 'click', () => {
+      logger(`filterApply();`, this, COMMENTS);
+      this.getFilterValue();
     });
   }
 
   filterSearch() {
-    this.addListener(this.searchButton, 'click', () => {
-      logger(`search();`, this, COMMENTS);
+    this.addListener(this.headerSearchButton, 'click', () => {
+      logger(`filterSearch();`, this, COMMENTS);
       // should return data to fill hierarchy or linker
     });
+  }
+
+  async mainInit(m, h, l) {
+    logger(`mainInit();`, this, COMMENTS);
+    this.enableOverlay(true);
+    this.disableUI(true, this.menuBox, this.headerSearchBox);
+    this.filterWatchReady();
+    this.filterReset();
+    this.filterApply();
+    this.filterSearch();
+    this.filterFill(await this.sendQuery(this.filterURL));
+    await navButtonsInit(m, h, l);
+    this.enableOverlay(false);
+    this.disableUI(false, this.menuBox, this.headerSearchBox);
+    logger('', false, COMMENTS);
+  }
+
+  getFilterValue() {
+    let options =
+        this.filterReadyAll.checked
+            ? '?technical_readiness=-1'
+            : `?technical_readiness=${this.filterReadyDisplay.value}`;
+    options +=
+        this.filterYear.options[this.filterYear.selectedIndex].value !== '0'
+            ? `&year=${this.filterYear.options[this.filterYear.selectedIndex].value}`
+            : '';
+    options +=
+        this.filterMinistry.options[this.filterMinistry.selectedIndex].value !==
+        '0'
+            ? `&ministryID=${this.filterMinistry.options[this.filterMinistry.selectedIndex].value}`
+            : '';
+    options +=
+        this.filterTerritory.options[this.filterTerritory.selectedIndex].value !==
+        '0'
+            ? `&territoryID=${this.filterTerritory.options[this.filterTerritory.selectedIndex].value}`
+            : '';
+    options +=
+        this.filterProgram.options[this.filterProgram.selectedIndex].value !==
+        '0'
+            ? `&programID=${this.filterProgram.options[this.filterProgram.selectedIndex].value}`
+            : '';
+    logger(`getFilterValue(); ` + options, this, COMMENTS);
+    return options;
+  }
+
+  errorMessage(element, text, delay = .75) {
+    const box = document.createElement('div');
+    box.classList.add('error-message-box');
+    box.textContent = text;
+    element.appendChild(box);
+    this.disableUI(true, element);
+    element.style.opacity = '1';
+    this.addListener(box, 'click', () => {
+      element.removeChild(box);
+      this.disableUI(false, element);
+    }, true);
+    setTimeout(() => {
+      try {
+        box.dispatchEvent(new Event('click'));
+      } catch (e) {
+        logger(`Error message already removed. ` + e, this, COMMENTS);
+      }
+    }, delay * 1000);
   }
 }

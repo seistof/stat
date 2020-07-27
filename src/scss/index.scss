@@ -24,6 +24,23 @@ body {
   align-items: center;
 }
 
+.error-message-box {
+  position: absolute;
+  padding: 10px;
+  background: #af2323;
+  color: #ffffff;
+  word-wrap: break-word;
+  word-break: break-word;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  z-index: 10;
+}
+
+.button {
+  user-select: none;
+}
+
 @import "modules/header";
 @import "modules/center";
 @import "modules/menu";

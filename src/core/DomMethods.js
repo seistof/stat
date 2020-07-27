@@ -1,6 +1,6 @@
 import {logger} from '@/core/utils';
 
-const COMMENTS = true;
+const COMMENTS = false;
 
 export class DomMethods {
   constructor() {
@@ -11,30 +11,54 @@ export class DomMethods {
       logger(`initialize(); selector: ${selector}`, false, false);
       return document.querySelector(selector);
     } else {
+      logger(`initialize(); selector: ${selector}`, false, false);
       return document.querySelectorAll(selector);
     }
   }
 
+  // renderHTML(root, html) {
+  //   try {
+  //     if (typeof root === 'string') {
+  //       document.querySelector(root).innerHTML = html;
+  //     } else {
+  //       root.innerHTML = html;
+  //     }
+  //     logger(`renderHTML();`, this, COMMENTS);
+  //   } catch (e) {
+  //     logger(`renderHTML(); ` + e, this, COMMENTS);
+  //   }
+  // }
+
   renderHTML(root, html) {
-    logger(`renderHTML();`, this, COMMENTS);
-    if (typeof root === 'string') {
-      document.querySelector(root).innerHTML = html;
-    } else {
-      root.innerHTML = html;
+    try {
+      root.appendChild(html);
+      logger(`renderHTML();`, this, COMMENTS);
+    } catch (e) {
+      logger(`renderHTML(); ` + e, this, COMMENTS);
     }
   }
 
-  addListener(selector, event, func) {
-    logger(
-        `addListener(); selector: ${selector.className} event: ${event}`,
-        this, COMMENTS);
-    selector.addEventListener(event, func);
+  addListener(selector, event, func, once = false) {
+    try {
+      selector.addEventListener(event, func, {once: once});
+      logger(
+          `addListener(); selector: ${selector.className} event: ${event}`,
+          this, COMMENTS);
+    } catch (e) {
+      logger(
+          `addListener();` + e, this, COMMENTS);
+    }
   }
 
   removeListener(selector, event, func) {
-    logger(
-        `removeListener(); selector: ${selector.className} event: ${event}`,
-        this, COMMENTS);
-    selector.removeEventListener(event, func);
+    try {
+      selector.removeEventListener(event, func);
+      logger(
+          `removeListener(); selector: ${selector.className} event: ${event}`,
+          this, COMMENTS);
+    } catch (e) {
+      logger(
+          `addListener();` + e, this, COMMENTS);
+    }
   }
 }

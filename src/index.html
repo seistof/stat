@@ -29,7 +29,6 @@
         <div class="header__search-checkbox">Применить фильтры:
           <input type="checkbox" class="header__search-use-filters">
         </div>
-        <div class="header__overlay" style="display: none"></div>
       </div>
     </div>
   </div>
@@ -42,28 +41,28 @@
         <div class="filter__item">
           <label for="select-year">Год: </label>
           <select name="select-year" id="select-year">
-            <option value="all">Все</option>
+            <option value="0">Все</option>
           </select>
         </div>
         
         <div class="filter__item">
           <label for="select-ministry">Министерство: </label>
           <select name="select-ministry" id="select-ministry">
-            <option value="all">Все</option>
+            <option value="0">Все</option>
           </select>
         </div>
         
         <div class="filter__item">
           <label for="select-territory">Территория: </label>
           <select name="select-territory" id="select-territory">
-            <option value="all">Все</option>
+            <option value="0">Все</option>
           </select>
         </div>
         
         <div class="filter__item">
           <label for="select-program">Программа: </label>
           <select name="select-program" id="select-program">
-            <option value="all">Все</option>
+            <option value="0">Все</option>
           </select>
         </div>
         
@@ -74,7 +73,7 @@
               <input class="select-ready-display" type="text" value="Все">
             </label>
           </div>
-          <input type="range" id="select-ready" class="select-ready" max="100" min="1">
+          <input type="range" id="select-ready" class="select-ready" max="100" min="0">
         </div>
         
         <div class="filter__item ready-select-all-box">
@@ -135,61 +134,12 @@
     <div class="display">
     
     </div>
-    <div class="overlay" style="display: none">
-      <div class="overlay__indicator">
-        <span class="material-icons">autorenew</span>
-      </div>
-    </div>
+  
   </div>
   <div class="footer">
     <span class="material-icons">copyright</span>
     <span>НИИ Статистики</span>
   </div>
-</div>
-<div class="detail-window" style="display: none">
-  <div class="detail-window_inner-container">
-    <div class="detail-window__header">
-      <div>Код стройки</div>
-      <div>Стоимость стр-ва - всего</div>
-      <div>commissioningProjectPower</div>
-      <div>durationCommissioning</div>
-      <div>factExecutedBeginningPagesBeforeJanuary1ReportYear</div>
-      <div>factExecutedBeginningYearsReportingMonthInclusive</div>
-      <div>factFinancedBeginningYearFederalBudget</div>
-      <div>factFinancedBeginningYearsBudgetEntitiesRFBudget</div>
-      <div>factFinancedBeginningYearsOtherSources</div>
-      <div>factYearMonth</div>
-      <div>form_ownerCode</div>
-      <div>introducedBeginningConstructionUntilJanuary1ReportYear</div>
-      <div>introducedBeginningYearReportingMonthInclusively</div>
-      <div>investmentLimitYearEntitiesRFBudget</div>
-      <div>investmentLimitYearOtherSources</div>
-      <div>investmentObjectType</div>
-      <div>investment_limitYearFederalBudget</div>
-      <div>ministryEconomyDataLimit</div>
-      <div>ministryEconomyTerm</div>
-      <div>ministryListCode</div>
-      <div>ministryListName</div>
-      <div>name</div>
-      <div>normalizedID</div>
-      <div>percentageTechnicalReadiness</div>
-      <div>powerAccordingMinistryEconomy</div>
-      <div>powerData</div>
-      <div>processingSign</div>
-      <div>programLisName</div>
-      <div>programListCode</div>
-      <div>scheduledCommissioningYear</div>
-      <div>targetCostItems</div>
-      <div>taskCode</div>
-      <div>territoryListCode</div>
-      <div>territoryListName</div>
-      <div>uniqueCode</div>
-      <div>yearData</div>
-      <div>year_usageCode</div>
-    </div>
-  <div class="detail-view__rows"></div>
-  </div>
-  <button class="details-window__close-button button">Закрыть</button>
 </div>
 </body>
 </html>
