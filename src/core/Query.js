@@ -4,38 +4,29 @@ import {logger} from '@core/utils';
 const COMMENTS = true;
 
 export class Query extends DomMethods {
-  constructor(server) {
+  constructor() {
     super();
-    this.serverURL = 'http://666ppnh';
+    this.serverURL = 'http://666ppnh.io';
     this.filterURL = '/get_filters_list/';
-    this.hierarchyURL = '/?ministryID=0&territoryID=0&programID=0&year=0&technical_readiness=-1&limit=2&offset=0';
-    this.hierarchyDetailURL = '/linked_details/';
-    this.hierarchySearchURL = 'hierarchySearch';
-    this.linkerURL = 'linker';
-    this.linkerUpdateURL = 'linkerUpdate';
-    this.linkerPredictionURL = 'linkerPrediction';
-    this.LinkerExistingURL = 'LinkerExisting';
-    this.uploadURL = 'upload';
-    this.dictionaryURL = 'dictionary';
-    this.mainMenuBox = document.querySelector('.menu');
-    this.menuFilterBox = document.querySelector('.filter');
-    this.mainHeaderSearchBox = document.querySelector('.header__search-box');
-    this.mainOverlay = document.querySelector('.overlay');
-    this.mainHeaderSearchOverlay = document.querySelector('.header__overlay');
-    this.mainDisplay = document.querySelector('.display');
-    this.mainDetailWindow = document.querySelector('.detail-window');
-    this.mainDetailContainer = document.querySelector('.detail-view__rows');
-    this.mainDetailClose = document.querySelector('.details-window__close-button');
+    this.hURL = '/?ministryID=0&territoryID=0&programID=0&year=0&technical_readiness=-1&limit=2&offset=0';
+    this.hDetailURL = '/linked_details/';
+    this.hSearchURL = 'hierarchySearch';
+    this.lURL = 'linker';
+    this.lUpdateURL = 'linkerUpdate';
+    this.lPredictionURL = 'linkerPrediction';
+    this.lExistingURL = 'LinkerExisting';
+    this.uURL = 'upload';
+    this.dURL = 'dictionary';
   }
 
   async sendQuery(url, options = '') {
-    logger(`sendQuery(${this.serverURL + url + options});`, this, COMMENTS);
     try {
       const response = await fetch(this.serverURL + url + options);
+      logger(`sendQuery(${this.serverURL + url + options});`, this, COMMENTS);
       return await response.json();
     } catch (e) {
-      logger(`sendQuery(); ` + e, this, COMMENTS);
-      console.log(this.serverURL);
+      logger(`sendQuery(${this.serverURL + url + options}); ` + e, this,
+          COMMENTS);
     }
   }
 }

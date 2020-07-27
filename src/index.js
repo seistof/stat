@@ -3,33 +3,25 @@ import './logo.png';
 import {
   logger,
 } from '@/core/utils';
-import {MainView} from '@core/MainView';
-import {initMainView} from '@core/initComponents';
 import {Query} from '@core/Query';
+import {MainView} from '@core/MainView';
 import {Hierarchy} from '@/components/hierarchy/Hierarchy';
+import {Linker} from '@/components/linker/Linker';
 
 const COMMENTS = true;
 
 logger('Begin', false, COMMENTS);
 
-const m = new MainView();
 const q = new Query();
+const m = new MainView();
 const h = new Hierarchy();
+const l = new Linker();
 
 (async () => {
-  // init base DOM
-  await initMainView(m, q, h);
-  // initial load - filters + hierarchy;
-  // main.disableUI(true);
-  // main.enableOverlay(true);
-  // main.dataFilters = await q.sendQuery(q.filterURL);
-  // main.filterFill(main.dataFilters);
-  // main.filterWatchReady();
-  // main.filterReset();
-  // main.disableUI(false);
-  // main.enableOverlay(false);
-  // console.log('init end');
-  // await initHierarchy(main, q, hierarchy);
+  console.log(`Query ${q}`);
+  console.log(`Main ${m}`);
+  console.log(`Hierarchy ${h}`);
+  logger('', false, COMMENTS);
+  await m.mainInit(m, h, l);
+  await h.hInit();
 })();
-
-
