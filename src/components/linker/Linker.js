@@ -21,6 +21,13 @@ export class Linker extends MainView {
     this.lTotalObjects = lTotalObjects;
     this.lPaginationNavBox = lPaginationNavBox;
     this.lPaginationGoToBox = lPaginationGoToBox;
+    this.lMainOjectBox = this.initialize('.linker__object-main-box');
+    this.lMainSelectButton = this.initialize('.linker__object-main-select');
+    this.lMainAddButton = this.initialize('.linker__object-main-add');
+    this.lMainCode = this.initialize('.linker__object-main-code');
+    this.lMainYear = this.initialize('.linker__object-main-year');
+    this.lMainName = this.initialize('.linker__object-main-name');
+    this.lMainNameTooltip = this.initialize('.linker__object-main-name .tooltip');
   }
 
   lInit() {
@@ -70,7 +77,7 @@ export class Linker extends MainView {
     const options = this.getFilterValue() +
         `&page=${parseInt(this.lPageDisplay.textContent) + 1}`;
     this.lPageDisplay.textContent = parseInt(this.lPageDisplay.textContent) + 1;
-    await this.hFill(this.sendQuery(this.filterURL, options));
+    // await this.hFill(this.sendQuery(this.filterURL, options));
     this.hWatchPagination();
     logger(options);
   }
@@ -80,7 +87,7 @@ export class Linker extends MainView {
     const options = this.getFilterValue() +
         `&page=${parseInt(this.lPageDisplay.textContent) - 1}`;
     this.lPageDisplay.textContent = parseInt(this.lPageDisplay.textContent) - 1;
-    await this.hFill(this.sendQuery(this.filterURL, options));
+    // await this.hFill(this.sendQuery(this.filterURL, options));
     this.hWatchPagination();
     logger(options);
   }
@@ -90,7 +97,7 @@ export class Linker extends MainView {
         || parseInt(this.lGoToInput.value) < 0
         || this.lGoToInput.value === ''
         || parseInt(this.lGoToInput.value) ===
-        parseInt(this.hPageDisplay.textContent)
+        parseInt(this.lPageDisplay.textContent)
     ) {
       logger(`hGoTo(); ERROR: Out of range.`, this, COMMENTS);
       this.errorMessage(this.lPaginationGoToBox, 'Такой страницы нет.');
@@ -98,11 +105,30 @@ export class Linker extends MainView {
       this.lPageDisplay.textContent = this.lGoToInput.value;
       const options = this.getFilterValue() +
           `&page=${this.lGoToInput.value}`;
-      await this.hFill(this.sendQuery(this.filterURL, options));
-      this.hWatchPagination();
+      // await this.hFill(this.sendQuery(this.filterURL, options));
+      this.lWatchPagination();
       this.lGoToInput.value = '';
       logger(options);
       logger(`hGoTo();`, this, COMMENTS);
     }
   }
 }
+//
+// `<div class="linker__object-additional">
+//                   <div class="linker__object-additional-box">
+//                     <div class="linker__object-additional-code linker__object-size-code">756810</div>
+//                     <div class="linker__object-additional-year linker__object-size-year">2011</div>
+//                     <div class="linker__object-additional-name linker__object-size-name"
+//                          title="Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по 2024 годы
+// ">
+//                       Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по
+//                       2024 годы
+//                     </div>
+//                   </div>
+//                   <button class="linker__object-additional-select button">
+//                     <span class="material-icons">playlist_add_check</span>
+//                   </button>
+//                   <button class="linker__object-additional-remove button">
+//                     <span class="material-icons">remove</span>
+//                   </button>
+//                 </div>`;

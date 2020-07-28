@@ -23,5 +23,5 @@ const l = new Linker();
   console.log(`Hierarchy ${h}`);
   logger('', false, COMMENTS);
   await m.mainInit(m, h, l);
-  await h.hInit();
+  await h.hInit('', m, h);
 })();

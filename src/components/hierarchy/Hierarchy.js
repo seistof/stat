@@ -2,26 +2,24 @@ import {MainView} from '@core/MainView';
 import {
   logger,
 } from '@core/utils';
-import {
-  testHierarchyData,
-} from '@/components/markup/markup';
 
 const COMMENTS = true;
 
 export class Hierarchy extends MainView {
   constructor(
-      buttons, data, goToButton, goToInput, prevButton,
+      buttons, goToButton, goToInput, prevButton,
       nextButton, pageDisplay, totalPages, totalObjects, detailWindow,
-      detailCloseButton, objectContainer, paginationBox, filterValue,
+      detailCloseButton, detailExportButton, objectContainer, paginationBox, filterValue,
       paginationNavBox,
-      paginationGoToBox) {
+      paginationGoToBox,
+      currentObjectUniqueCode) {
     super();
     this.hButtons = buttons;
     this.hFuncs = [
       this.hToggle.bind(this),
       this.hDetail.bind(this),
       this.hEdit.bind(this)];
-    this.hData = data;
+    this.hData = [];
     this.hGoToInput = goToInput;
     this.hGoToButton = goToButton;
     this.hPrevButton = prevButton;
@@ -32,6 +30,7 @@ export class Hierarchy extends MainView {
     this.hTotalObjects = totalObjects;
     this.hDetailWindow = detailWindow;
     this.hDetailCloseButton = detailCloseButton;
+    this.hDetailExportButton = detailExportButton;
     this.hObjectContainer = objectContainer;
     this.hFilterValue = filterValue;
     this.hPaginationNavBox = paginationNavBox;
@@ -39,9 +38,12 @@ export class Hierarchy extends MainView {
     this.hNextFn = this.hNext.bind(this);
     this.hPrevFn = this.hPrev.bind(this);
     this.hGoToFn = this.hGoTo.bind(this);
+    this.hFilterApplyFn = this.hFilterApply.bind(this);
+    this.hFilterSearchFn = this.hFilterSearch.bind(this);
+    this.hCurrentObjectUniqueCode = currentObjectUniqueCode;
   }
 
-  async hInit(queryOptions = '') {
+  async hInit(queryOptions = '', m, h) {
     this.display.innerHTML = '';
     this.enableOverlay(true);
     this.disableUI(true, this.filterBox, this.headerSearchBox);
@@ -58,11 +60,9 @@ export class Hierarchy extends MainView {
     this.hTotalObjects = this.initialize('.pagination__info-objects-value');
     this.hPaginationNavBox = this.initialize('.pagination__nav');
     this.hPaginationGoToBox = this.initialize('.pagination__moveto');
-    // this.hFill(await this.sendQuery(this.hURL));
-    this.hFill(testHierarchyData());
-    this.hInitButtons();
-    this.hRemoveButtonListeners();
-    this.hAddButtonListeners();
+    this.hPageDisplay.textContent = '1';
+    this.hFill(await this.sendQuery(this.hURL));
+    // this.hFill(testHierarchyData());
     this.enableOverlay(false);
     this.disableUI(false, this.filterBox, this.headerSearchBox);
     logger(`hInit(); `, this, COMMENTS);
@@ -108,11 +108,13 @@ export class Hierarchy extends MainView {
   }
 
   hFill(source) {
+    this.hData = [];
+    this.hObjectContainer.innerHTML = '';
     try {
-      this.enableOverlay(true);
-      this.disableUI(true, this.filterBox, this.headerSearchBox);
       let html = ``;
+      let index = 0;
       source.data.forEach((entry) => {
+        this.hData.push(entry);
         html += ` <div class="hierarchy-view__object">`;
         entry.forEach((el) => {
           if (el === entry[0]) {
@@ -131,8 +133,10 @@ export class Hierarchy extends MainView {
                        <div class="tooltip">${el.territoryName} <br> ${el.ministryName} <br> ${el.programName}</div>
                        </div>
                   <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name"
-                       >${el.name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>')}
-                       <div class="tooltip">${el.name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>')}</div></div>
+                       >${el.name}
+                       <div class="tooltip">${el.name.replace('***', '<br>').
+      replace('***', '<br>').
+      replace('***', '<br>')}</div></div>
                 </div>
                 <div class="hierarchy-view__object-control">
                   <div class="hierarchy-view__object-counter">
@@ -144,7 +148,7 @@ export class Hierarchy extends MainView {
                   </span>
                   <div class="hierarchy-view__object-buttons">
                     <button class="hierarchy-view__object-details button" data-id="${el.uniqueCode}">Подробнее</button>
-                    <button class="hierarchy-view__object-edit button" data-id="${el.uniqueCode}">Изменить</button>
+                    <button class="hierarchy-view__object-edit button" data-index="${index}">Изменить</button>
                   </div>
                 </div>
               </div>
@@ -165,8 +169,10 @@ export class Hierarchy extends MainView {
                   <div class="tooltip">${el.territoryName} <br> ${el.ministryName} <br> ${el.programName}</div>
                   </div>
                   <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name">
-                       ${el.name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>')}
-                       <div class="tooltip">${el.name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>')}</div>
+                       ${el.name}
+                       <div class="tooltip">${el.name.replace('***', '<br>').
+      replace('***', '<br>').
+      replace('***', '<br>')}</div>
                        </div>
                 </div>
                 <div class="hierarchy-view__object-control">
@@ -178,7 +184,7 @@ export class Hierarchy extends MainView {
                   </span>
                   <div class="hierarchy-view__object-buttons">
                     <button class="hierarchy-view__object-details button" data-id="${el.uniqueCode}">Подробнее</button>
-                    <button class="hierarchy-view__object-edit button" data-id="${el.uniqueCode}">Изменить</button>
+                    <button class="hierarchy-view__object-edit button" data-index="${index}">Изменить</button>
                   </div>
                 </div>
               </div>
@@ -198,26 +204,27 @@ export class Hierarchy extends MainView {
                        ${el.territoryName} - ${el.ministryName} - ${el.programName}
                        <div class="tooltip">${el.territoryName} <br> ${el.ministryName} <br> ${el.programName}</div></div>
                   <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name">
-                  ${el.name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>')}
-                   <div class="tooltip">${el.name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>')}</div>
+                  ${el.name}
+                   <div class="tooltip">${el.name.replace('***', '<br>').
+      replace('***', '<br>').
+      replace('***', '<br>')}</div>
                   </div>
                 </div>
           `;
           }
         });
         html += `</div></div>`;
+        index++;
       });
       this.hObjectContainer.innerHTML = html;
-      // this.hTotalPages.textContent = Math.ceil(source.totalLen / 20) || 1;
-      this.hTotalPages.textContent = 1;
+      this.hTotalPages.textContent = Math.ceil(source.totalLen / 12) || 1;
       this.hTotalObjects.textContent = source.totalLen || '';
       this.hWatchPagination();
-      this.enableOverlay(true);
-      this.disableUI(true, this.filterBox, this.headerSearchBox);
+      this.hInitButtons();
+      this.hRemoveButtonListeners();
+      this.hAddButtonListeners();
       logger(`hFill();`, this, COMMENTS);
     } catch (e) {
-      this.enableOverlay(false);
-      this.disableUI(false, this.filterBox, this.headerSearchBox);
       this.errorMessage(this.display, 'Нет соединения с сервером.');
       this.hPageDisplay.textContent = '1';
       logger(`hFill(); ` + e, this, COMMENTS);
@@ -266,57 +273,97 @@ export class Hierarchy extends MainView {
       super.enableOverlay(true);
       const data = await super.sendQuery(this.hDetailURL,
           `?unique_code=${e.target.dataset.id}`);
-      let html = ``;
-      data.forEach((entry) => {
-        html += `
-      <div class="detail-window__block">
-       <div>${entry.buildCode}</div>
-       <div>${entry.buildCostTotal}</div>
-       <div>${entry.commissioningProjectPower}</div>
-       <div>${entry.durationCommissioning}</div>
-       <div>${entry.factExecutedBeginningPagesBeforeJanuary1ReportYear}</div>
-       <div>${entry.factExecutedBeginningYearsReportingMonthInclusive}</div>
-       <div>${entry.factFinancedBeginningYearFederalBudget}</div>
-       <div>${entry.factFinancedBeginningYearsBudgetEntitiesRFBudget}</div>
-       <div>${entry.factFinancedBeginningYearsOtherSources}</div>
-       <div>${entry.factYearMonth}</div>
-       <div>${entry.form_ownerCode}</div>
-       <div>${entry.introducedBeginningConstructionUntilJanuary1ReportYear}</div>
-       <div>${entry.introducedBeginningYearReportingMonthInclusively}</div>
-       <div>${entry.investmentLimitYearEntitiesRFBudget}</div>
-       <div>${entry.investmentLimitYearOtherSources}</div>
-       <div>${entry.investmentObjectType}</div>
-       <div>${entry.investment_limitYearFederalBudget}</div>
-       <div>${entry.ministryEconomyDataLimit}</div>
-       <div>${entry.ministryEconomyTerm}</div>
-       <div>${entry.ministryListCode}</div>
-       <div>${entry.ministryListName}</div>
-       <div>${entry.name}</div>
-       <div>${entry.normalizedID}</div>
-       <div>${entry.percentageTechnicalReadiness}</div>
-       <div>${entry.powerAccordingMinistryEconomy}</div>
-       <div>${entry.powerData}</div>
-       <div>${entry.processingSign}</div>
-       <div>${entry.programLisName}</div>
-       <div>${entry.programListCode}</div>
-       <div>${entry.scheduledCommissioningYear}</div>
-       <div>${entry.targetCostItems}</div>
-       <div>${entry.taskCode}</div>
-       <div>${entry.territoryListCode}</div>
-       <div>${entry.territoryListName}</div>
-       <div>${entry.uniqueCode}</div>
-       <div>${entry.yearData}</div>
-       <div>${entry.year_usageCode}</div>
-      </div>
-       `;
+      this.hCurrentObjectUniqueCode = e.target.dataset.id;
+      // const data = testDetailData;
+      const headers = [
+        'Год',
+        'Уникальный код объекта',
+        'Код стройки и объекта',
+        'Вид инвестиционного проекта',
+        'Код территории',
+        'Наименование территории',
+        'Код министерства',
+        'Наименование министерства',
+        'Код программы',
+        'Наименование программы',
+        'Код года ввода в действие',
+        'Код задания',
+        'Код формы собствен-ника',
+        'Целевые статьи расходов',
+        'Признак обработки',
+        'Наименование',
+        'Мощность',
+        'Срок Минэкономики',
+        'Лимит по данным Минэкономики',
+        'Мощность по данным Минэкономики',
+        'Срок ввода в действие стройки',
+        'Ввод в действие мощности по проекту',
+        'Введено с начала стр-ва до 1 января отч. года',
+        'Намечено к вводу на год',
+        'Введено с начала года по отчетный месяц включительно',
+        'Месяц фактического года',
+        'Стоимость стр-ва - всего',
+        'Лимит капвложений на год (федеральный бюджет)',
+        'Лимит капвложений на год (бюджет субъектов РФ)',
+        'Лимит капвложений на год (прочие источники)',
+        'Фактически исп-но с нач. стр-ва до 1 января отч. года',
+        'Фактически исп-но с нач. года по отчетный месяц включительно',
+        'Фактически профинан-но с нач. года (федеральный бюджет)',
+        'Фактически профинан-но с нач. года (бюджет субъектов РФ)',
+        'Фактически профинан-но с нач. года (прочие источники)',
+        'Процент технической готовности',
+      ];
+      const detailWindow = document.createElement('div');
+      detailWindow.classList.add('detail-window');
+      const innerContainer = document.createElement('div');
+      innerContainer.classList.add('detail-window_inner-container');
+      const header = document.createElement('div');
+      header.classList.add('detail-window__header');
+      headers.forEach((name) => {
+        const h = document.createElement('div');
+        h.textContent = name;
+        header.appendChild(h);
       });
-      this.body.insertAdjacentHTML('beforeend', this.hDetailHTML);
+      const rows = document.createElement('div');
+      rows.classList.add('detail-view__rows');
+      const closeButton = document.createElement('button');
+      closeButton.classList.add('detail-window__close-button', 'button');
+      closeButton.textContent = 'Закрыть';
+      const exportButton = document.createElement('button');
+      exportButton.classList.add('detail-window__export-button', 'button');
+      exportButton.textContent = 'Экспорт';
+      detailWindow.appendChild(innerContainer);
+      detailWindow.appendChild(closeButton);
+      detailWindow.appendChild(exportButton);
+      innerContainer.appendChild(header);
+      innerContainer.appendChild(rows);
+      data.forEach((entry) => {
+        const row = document.createElement('div');
+        row.classList.add('detail-window__block');
+        Object.keys(entry).forEach((k) => {
+          const outer = document.createElement('div');
+          outer.classList.add('detail-window__outer-row');
+          const el = document.createElement('div');
+          el.textContent = entry[k];
+          outer.appendChild(el);
+          // if (entry[k].length > 20) {
+          //   const tooltip = document.createElement('div');
+          //   tooltip.classList.add('tooltip');
+          //   tooltip.textContent = entry[k];
+          //   outer.appendChild(tooltip);
+          // }
+          row.appendChild(outer);
+        });
+        rows.appendChild(row);
+      });
+      this.renderHTML(this.body, detailWindow);
       this.hDetailWindow = this.initialize('.detail-window');
       this.hDetailCloseButton = this.initialize(
-          '.details-window__close-button');
-      const container = this.initialize('.detail-view__rows');
-      container.innerHTML = html;
+          '.detail-window__close-button');
+      this.hDetailExportButton = this.initialize(
+          '.detail-window__export-button');
       this.hDetailClose();
+      await this.hDetailDownload();
       logger(`hDetail(); id = ${e.target.dataset.id}`, this, COMMENTS);
     } catch (error) {
       logger(`hDetail(); id = ${e.target.dataset.id} ` + error, this,
@@ -328,13 +375,30 @@ export class Hierarchy extends MainView {
   }
 
   async hEdit(e) {
-    logger(`hEdit(); id = ${e.target.dataset.id}`, this, COMMENTS);
+    logger(`hEdit(); id = ${e.target.dataset.index}`, this, COMMENTS);
+    logger(this.hData[e.target.dataset.index]);
   }
 
   hDetailClose() {
     this.hDetailCloseButton.addEventListener('click', () => {
-      logger(`hEdit();`, this, COMMENTS);
-      this.body.removeChild(this.detailWindow);
+      logger(`hDetailClose();`, this, COMMENTS);
+      this.body.removeChild(this.hDetailWindow);
+      super.disableUI(false, this.menuBox, this.headerSearchBox);
+      super.enableOverlay(false);
+    }, {once: true});
+  }
+
+  async hDetailDownload() {
+    this.hDetailExportButton.addEventListener('click', async () => {
+      const options = `?unique_code=${this.hCurrentObjectUniqueCode}`;
+      this.hCurrentObjectUniqueCode = '';
+      const a = document.createElement('a');
+      a.href = this.serverURL + this.hDetailExportURL + options;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      logger(`hDetailExportButton();`, this, COMMENTS);
+      this.body.removeChild(this.hDetailWindow);
       super.disableUI(false, this.menuBox, this.headerSearchBox);
       super.enableOverlay(false);
     }, {once: true});
@@ -345,7 +409,11 @@ export class Hierarchy extends MainView {
     const options = this.getFilterValue() +
         `&page=${parseInt(this.hPageDisplay.textContent) + 1}`;
     this.hPageDisplay.textContent = parseInt(this.hPageDisplay.textContent) + 1;
-    await this.hFill(this.sendQuery(this.filterURL, options));
+    this.enableOverlay(true);
+    this.disableUI(true, this.filterBox, this.headerSearchBox);
+    this.hFill(await this.sendQuery(this.hURL, options));
+    this.enableOverlay(false);
+    this.disableUI(false, this.filterBox, this.headerSearchBox);
     this.hWatchPagination();
     logger(options);
   }
@@ -355,7 +423,11 @@ export class Hierarchy extends MainView {
     const options = this.getFilterValue() +
         `&page=${parseInt(this.hPageDisplay.textContent) - 1}`;
     this.hPageDisplay.textContent = parseInt(this.hPageDisplay.textContent) - 1;
-    await this.hFill(this.sendQuery(this.filterURL, options));
+    this.enableOverlay(true);
+    this.disableUI(true, this.filterBox, this.headerSearchBox);
+    this.hFill(await this.sendQuery(this.hURL, options));
+    this.enableOverlay(false);
+    this.disableUI(false, this.filterBox, this.headerSearchBox);
     this.hWatchPagination();
     logger(options);
   }
@@ -368,16 +440,38 @@ export class Hierarchy extends MainView {
         parseInt(this.hPageDisplay.textContent)
     ) {
       logger(`hGoTo(); ERROR: Out of range.`, this, COMMENTS);
+      this.hGoToInput.value = '';
       this.errorMessage(this.hPaginationGoToBox, 'Такой страницы нет.');
     } else {
       this.hPageDisplay.textContent = this.hGoToInput.value;
       const options = this.getFilterValue() +
           `&page=${this.hGoToInput.value}`;
-      await this.hFill(this.sendQuery(this.filterURL, options));
+      this.enableOverlay(true);
+      this.disableUI(true, this.filterBox, this.headerSearchBox);
+      this.hFill(await this.sendQuery(this.hURL, options));
+      this.enableOverlay(false);
+      this.disableUI(false, this.filterBox, this.headerSearchBox);
       this.hWatchPagination();
       this.hGoToInput.value = '';
       logger(options);
       logger(`hGoTo();`, this, COMMENTS);
     }
+  }
+
+  async hFilterApply() {
+    logger(`filterApply();`, this, COMMENTS);
+    const options = this.getFilterValue();
+    this.enableOverlay(true);
+    this.disableUI(true, this.filterBox, this.headerSearchBox);
+    this.hFill(await this.sendQuery(this.hURL, options));
+    this.hPageDisplay.textContent = '1';
+    this.hWatchPagination();
+    this.enableOverlay(false);
+    this.disableUI(false, this.filterBox, this.headerSearchBox);
+  }
+
+  async hFilterSearch() {
+    logger(`filterSearch();`, this, COMMENTS);
+    // should return data to fill hierarchy or linker
   }
 }

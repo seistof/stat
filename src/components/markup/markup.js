@@ -197,6 +197,72 @@ export const hierarchyDetailMarkup = `
 </div>
 `;
 
+export function f() {
+  const headers = [
+    'Год',
+    'Уникальный код объекта',
+    'Код стройки и объекта',
+    'Вид инвестиционного проекта',
+    'Код территории',
+    'Наименование территории',
+    'Код министерства',
+    'Наименование министерства',
+    'Код программы',
+    'Наименование программы',
+    'Код года ввода в действие',
+    'Код задания',
+    'Код формы собствен-ника',
+    'Целевые статьи расходов',
+    'Признак обработки',
+    'Наименование',
+    'Мощность',
+    'Срок Минэкономики',
+    'Лимит по данным Минэкономики',
+    'Мощность по данным Минэкономики',
+    'Срок ввода в действие стройки',
+    'Ввод в действие мощности по проекту',
+    'Введено с начала стр-ва до 1 января отч. года',
+    'Намечено к вводу на год',
+    'Введено с начала года по отчетный месяц включительно',
+    'Месяц фактического года',
+    'Стоимость стр-ва - всего',
+    'Лимит капвложений на год (федеральный бюджет)',
+    'Лимит капвложений на год (бюджет субъектов РФ)',
+    'Лимит капвложений на год (прочие источники)',
+    'Фактически исп-но с нач. стр-ва до 1 января отч. года',
+    'Фактически исп-но с нач. года по отчетный месяц включительно',
+    'Фактически профинан-но с нач. года (федеральный бюджет)',
+    'Фактически профинан-но с нач. года (бюджет субъектов РФ)',
+    'Фактически профинан-но с нач. года (прочие источники)',
+    'Процент технической готовности',
+  ];
+  const detailWindow = document.createElement('div');
+  detailWindow.classList.add('detail-window');
+  const innerContainer = document.createElement('div');
+  innerContainer.classList.add('detail-window_inner-container');
+  const header = document.createElement('div');
+  header.classList.add('detail-window__header');
+  headers.forEach((name) => {
+    const h = document.createElement('div');
+    h.textContent = name;
+    header.appendChild(h);
+  });
+  const rows = document.createElement('div');
+  rows.classList.add('detail-view__rows');
+  const closeButton = document.createElement('button');
+  closeButton.classList.add('details-window__close-button', 'button');
+  closeButton.textContent = 'Закрыть';
+  const exportButton = document.createElement('button');
+  exportButton.classList.add('details-window__export-button', 'button');
+  exportButton.textContent = 'Экспорт';
+  detailWindow.appendChild(innerContainer);
+  detailWindow.appendChild(closeButton);
+  detailWindow.appendChild(exportButton);
+  innerContainer.appendChild(header);
+  innerContainer.appendChild(rows);
+  console.log(detailWindow);
+}
+
 // export const hierarchyViewMarkup = `
 //     <div class="hierarchy-view">
 //         <div class="hierarchy-view-wrapper">
@@ -347,8 +413,8 @@ export const linkerMarkup = `
                 <div class="linker__object-main-box">
                   <div class="linker__object-main-code linker__object-size-code"></div>
                   <div class="linker__object-main-year linker__object-size-year"></div>
-                  <div class="linker__object-main-name linker__object-size-name"
-                       title="">
+                  <div class="linker__object-main-name linker__object-size-name">
+                  <div class="tooltip"></div>
                   </div>
                 </div>
                 <span class="linker__object-main-select button material-icons">playlist_add_check
@@ -1149,3 +1215,162 @@ export function testHierarchyData() {
     ],
   };
 }
+
+export const testDetailData = [
+  {
+    'buildCode': 4900,
+    'buildCostTotal': 0,
+    'commissioningProjectPower': 4.6,
+    'durationCommissioning': 0,
+    'factExecutedBeginningPagesBeforeJanuary1ReportYear': 0,
+    'factExecutedBeginningYearsReportingMonthInclusive': 0,
+    'factFinancedBeginningYearFederalBudget': 0,
+    'factFinancedBeginningYearsBudgetEntitiesRFBudget': 0,
+    'factFinancedBeginningYearsOtherSources': 0,
+    'factYearMonth': 0,
+    'form_ownerCode': null,
+    'introducedBeginningConstructionUntilJanuary1ReportYear': 0,
+    'introducedBeginningYearReportingMonthInclusively': 0,
+    'investmentLimitYearEntitiesRFBudget': 0,
+    'investmentLimitYearOtherSources': 0,
+    'investmentObjectType': null,
+    'investment_limitYearFederalBudget': 0,
+    'ministryEconomyDataLimit': 0,
+    'ministryEconomyTerm': 2012,
+    'ministryListCode': 13220,
+    'ministryListName': 'Министерство здравоохранения и социального развития РФ',
+    'name': 'ГОУ высшего профобразования Алтайский государственный медицинский университет, г.Барнаул, Алтайский край - 0049/*/Реконструкция морфологического корпуса - 004910',
+    'normalizedID': 1,
+    'percentageTechnicalReadiness': 0,
+    'powerAccordingMinistryEconomy': 4.6,
+    'powerData': 363,
+    'processingSign': 0,
+    'programLisName': 'Объекты, мероприятия (укрупненные инвестиционные проекты), не включенные в долгосрочные (федеральные) целевые программы',
+    'programListCode': '9900',
+    'scheduledCommissioningYear': 0,
+    'targetCostItems': 5,
+    'taskCode': 4,
+    'territoryListCode': '01000000000',
+    'territoryListName': 'Алтайский край',
+    'uniqueCode': '43.43.43.56.76',
+    'yearData': 2011,
+    'year_usageCode': 2,
+  },
+  {
+    'buildCode': 4900,
+    'buildCostTotal': 0,
+    'commissioningProjectPower': 4.6,
+    'durationCommissioning': 0,
+    'factExecutedBeginningPagesBeforeJanuary1ReportYear': 0,
+    'factExecutedBeginningYearsReportingMonthInclusive': 0,
+    'factFinancedBeginningYearFederalBudget': 0,
+    'factFinancedBeginningYearsBudgetEntitiesRFBudget': 0,
+    'factFinancedBeginningYearsOtherSources': 0,
+    'factYearMonth': 0,
+    'form_ownerCode': null,
+    'introducedBeginningConstructionUntilJanuary1ReportYear': 0,
+    'introducedBeginningYearReportingMonthInclusively': 0,
+    'investmentLimitYearEntitiesRFBudget': 0,
+    'investmentLimitYearOtherSources': 0,
+    'investmentObjectType': null,
+    'investment_limitYearFederalBudget': 0,
+    'ministryEconomyDataLimit': 0,
+    'ministryEconomyTerm': 2012,
+    'ministryListCode': 13220,
+    'ministryListName': 'Министерство здравоохранения и социального развития РФ',
+    'name': 'ГОУ высшего профобразования Алтайский государственный медицинский университет, г.Барнаул, Алтайский край - 0049/*/Реконструкция морфологического корпуса - 004910',
+    'normalizedID': 1,
+    'percentageTechnicalReadiness': 0,
+    'powerAccordingMinistryEconomy': 4.6,
+    'powerData': 363,
+    'processingSign': 0,
+    'programLisName': 'Объекты, мероприятия (укрупненные инвестиционные проекты), не включенные в долгосрочные (федеральные) целевые программы',
+    'programListCode': '9900',
+    'scheduledCommissioningYear': 0,
+    'targetCostItems': 5,
+    'taskCode': 4,
+    'territoryListCode': '01000000000',
+    'territoryListName': 'Алтайский край',
+    'uniqueCode': '43.43.43.56.76',
+    'yearData': 2011,
+    'year_usageCode': 2,
+  },
+  {
+    'buildCode': 4900,
+    'buildCostTotal': 0,
+    'commissioningProjectPower': 4.6,
+    'durationCommissioning': 0,
+    'factExecutedBeginningPagesBeforeJanuary1ReportYear': 0,
+    'factExecutedBeginningYearsReportingMonthInclusive': 0,
+    'factFinancedBeginningYearFederalBudget': 0,
+    'factFinancedBeginningYearsBudgetEntitiesRFBudget': 0,
+    'factFinancedBeginningYearsOtherSources': 0,
+    'factYearMonth': 0,
+    'form_ownerCode': null,
+    'introducedBeginningConstructionUntilJanuary1ReportYear': 0,
+    'introducedBeginningYearReportingMonthInclusively': 0,
+    'investmentLimitYearEntitiesRFBudget': 0,
+    'investmentLimitYearOtherSources': 0,
+    'investmentObjectType': null,
+    'investment_limitYearFederalBudget': 0,
+    'ministryEconomyDataLimit': 0,
+    'ministryEconomyTerm': 2012,
+    'ministryListCode': 13220,
+    'ministryListName': 'Министерство здравоохранения и социального развития РФ',
+    'name': 'ГОУ высшего профобразования Алтайский государственный медицинский университет, г.Барнаул, Алтайский край - 0049/*/Реконструкция морфологического корпуса - 004910',
+    'normalizedID': 1,
+    'percentageTechnicalReadiness': 0,
+    'powerAccordingMinistryEconomy': 4.6,
+    'powerData': 363,
+    'processingSign': 0,
+    'programLisName': 'Объекты, мероприятия (укрупненные инвестиционные проекты), не включенные в долгосрочные (федеральные) целевые программы',
+    'programListCode': '9900',
+    'scheduledCommissioningYear': 0,
+    'targetCostItems': 5,
+    'taskCode': 4,
+    'territoryListCode': '01000000000',
+    'territoryListName': 'Алтайский край',
+    'uniqueCode': '43.43.43.56.76',
+    'yearData': 2011,
+    'year_usageCode': 2,
+  },
+];
+
+export const hDetailFieldNames = [
+  'yearData',
+  'uniqueCode',
+  'buildCode',
+  'investmentObjectType',
+  'territoryListCode',
+  'territoryListName',
+  'ministryListCode',
+  'ministryListName',
+  'programListCode',
+  'programLisName',
+  'year_usageCode',
+  'form_ownerCode',
+  'taskCode',
+  'targetCostItems',
+  'processingSign',
+  'name',
+  'powerData',
+  'ministryEconomyTerm',
+  'ministryEconomyDataLimit',
+  'powerAccordingMinistryEconomy',
+  'durationCommissioning',
+  'commissioningProjectPower',
+  'introducedBeginningConstructionUntilJanuary1ReportYear',
+  'scheduledCommissioningYear',
+  'introducedBeginningYearReportingMonthInclusively',
+  'factYearMonth',
+  'buildCostTotal',
+  'investment_limitYearFederalBudget',
+  'investmentLimitYearEntitiesRFBudget',
+  'investmentLimitYearOtherSources',
+  'factExecutedBeginningPagesBeforeJanuary1ReportYear',
+  'factExecutedBeginningYearsReportingMonthInclusive',
+  'factFinancedBeginningYearFederalBudget',
+  'factFinancedBeginningYearsBudgetEntitiesRFBudget',
+  'factFinancedBeginningYearsOtherSources',
+  'percentageTechnicalReadiness',
+];

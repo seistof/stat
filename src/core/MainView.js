@@ -5,7 +5,11 @@ import {
   hierarchyViewMarkup, linkerMarkup,
   mainOverlayMarkup, uploadMarkup,
 } from '@/components/markup/markup';
-import {navButtonsInit} from '@core/initComponents';
+import {
+  hAddFilterListeners,
+  hRemoveFilterListeners,
+  navButtonsInit,
+} from '@core/initComponents';
 
 const COMMENTS = true;
 
@@ -69,10 +73,18 @@ export class MainView extends Query {
   enableOverlay(token) {
     logger(`enableOverlay(${token});`, this, COMMENTS);
     if (token) {
-      this.centerContainer.appendChild(this.mainOverlay);
+      try {
+        this.centerContainer.appendChild(this.mainOverlay);
+      } catch (e) {
+        logger(`enableOverlay(); ` + e, this, COMMENTS);
+      }
       // this.headerSearchBox.appendChild(this.headerSearchOverlay);
     } else {
-      this.centerContainer.removeChild(this.initialize('.overlay'));
+      try {
+        this.centerContainer.removeChild(this.initialize('.overlay'));
+      } catch (e) {
+        logger(`enableOverlay(); ` + e, this, COMMENTS);
+      }
       // this.headerSearchBox.removeChild(this.initialize('.header__overlay'));
     }
   }
@@ -102,7 +114,7 @@ export class MainView extends Query {
       });
       data.ministry.forEach((el) => {
         const option = document.createElement('option');
-        option.value = el.code;
+        option.value = el.ID;
         option.textContent = el.name.replace('Министерство', 'Мин.').
             replace('Федеральная служба', 'ФС').
             replace('Федеральное агенство', 'ФА');
@@ -110,7 +122,7 @@ export class MainView extends Query {
       });
       data.territory.forEach((el) => {
         const option = document.createElement('option');
-        option.value = el.code;
+        option.value = el.ID;
         option.textContent = el.name.replace('область', 'обл.').
             replace('Республика', 'Р.').
             replace('Город', 'г.');
@@ -118,7 +130,7 @@ export class MainView extends Query {
       });
       data.program.forEach((el) => {
         const option = document.createElement('option');
-        option.value = el.code;
+        option.value = el.ID;
         option.textContent = el.name.replace('Федеральная целевая программа',
             '');
         this.filterProgram.appendChild(option);
@@ -143,28 +155,16 @@ export class MainView extends Query {
     });
   }
 
-  filterApply() {
-    this.addListener(this.filterApplyButton, 'click', () => {
-      logger(`filterApply();`, this, COMMENTS);
-      this.getFilterValue();
-    });
-  }
-
-  filterSearch() {
-    this.addListener(this.headerSearchButton, 'click', () => {
-      logger(`filterSearch();`, this, COMMENTS);
-      // should return data to fill hierarchy or linker
-    });
-  }
-
   async mainInit(m, h, l) {
     logger(`mainInit();`, this, COMMENTS);
     this.enableOverlay(true);
     this.disableUI(true, this.menuBox, this.headerSearchBox);
     this.filterWatchReady();
     this.filterReset();
-    this.filterApply();
-    this.filterSearch();
+    // this.filterApply();
+    // this.filterSearch();
+    hRemoveFilterListeners(m, h);
+    hAddFilterListeners(m, h);
     this.filterFill(await this.sendQuery(this.filterURL));
     await navButtonsInit(m, h, l);
     this.enableOverlay(false);
@@ -175,7 +175,7 @@ export class MainView extends Query {
   getFilterValue() {
     let options =
         this.filterReadyAll.checked
-            ? '?technical_readiness=-1'
+            ? ''
             : `?technical_readiness=${this.filterReadyDisplay.value}`;
     options +=
         this.filterYear.options[this.filterYear.selectedIndex].value !== '0'
@@ -197,7 +197,12 @@ export class MainView extends Query {
             ? `&programID=${this.filterProgram.options[this.filterProgram.selectedIndex].value}`
             : '';
     logger(`getFilterValue(); ` + options, this, COMMENTS);
-    return options;
+
+    if (options[0] === '&') {
+      return options.replace('&', '?');
+    } else {
+      return options;
+    }
   }
 
   errorMessage(element, text, delay = .75) {
@@ -218,5 +223,9 @@ export class MainView extends Query {
         logger(`Error message already removed. ` + e, this, COMMENTS);
       }
     }, delay * 1000);
+  }
+
+  async lInitFromEdit(l, data) {
+    l.lInit();
   }
 }

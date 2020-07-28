@@ -30,3 +30,11 @@ export async function navButtonsInit(m, h, l) {
 export function removeErrorBox(element, box) {
   element.removeChild(box);
 }
+
+export function hAddFilterListeners(m, h) {
+  m.addListener(m.filterApplyButton, 'click', h.hFilterApplyFn);
+}
+
+export function hRemoveFilterListeners(m, h) {
+  m.addListener(m.filterApplyButton, 'click', h.hFilterSearchFn);
+}

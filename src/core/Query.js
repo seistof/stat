@@ -6,10 +6,12 @@ const COMMENTS = true;
 export class Query extends DomMethods {
   constructor() {
     super();
-    this.serverURL = 'http://666ppnh.io';
+    this.serverURL = 'http://5c08230c35e1.ngrok.io';
     this.filterURL = '/get_filters_list/';
-    this.hURL = '/?ministryID=0&territoryID=0&programID=0&year=0&technical_readiness=-1&limit=2&offset=0';
+    // this.hURL = '/?ministryID=0&territoryID=0&programID=0&year=0&technical_readiness=-1&limit=2&offset=0';
+    this.hURL = '/';
     this.hDetailURL = '/linked_details/';
+    this.hDetailExportURL = '/linked_details_to_excel/';
     this.hSearchURL = 'hierarchySearch';
     this.lURL = 'linker';
     this.lUpdateURL = 'linkerUpdate';
