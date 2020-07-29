@@ -1,0 +1,1129 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="shortcut icon" href="favicon.ico">
+  <title>Учет и анализ объектов строительства</title>
+</head>
+<body>
+<div id="app" class="container">
+  
+  <div class="header">
+    <div class="header__left">
+      <div class="header__logo-box">
+        <div class="header__logo-img">
+          <img src="./logo.png" alt="Logo">
+        </div>
+        <div class="header__logo-title">Федеральная служба государственной статистики</div>
+      </div>
+      <div class="header__title">Учет и анализ объектов строительства</div>
+    </div>
+    <div class="header__right">
+      <div class="header__search-box">
+        <label>
+          <input class="header__search-line" placeholder="Введите запрос">
+        </label>
+        <button class="header__search-button button">Поиск</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="center">
+    
+    <div class="menu">
+      
+      <div class="filter">
+        
+        <div class="filter__item">
+          <label for="select-year">Год: </label>
+          <select name="select-year" id="select-year">
+            <option value="all">Все</option>
+          </select>
+        </div>
+        
+        <div class="filter__item">
+          <label for="select-ministry">Министерство: </label>
+          <select name="select-ministry" id="select-ministry">
+            <option value="all">Все</option>
+          </select>
+        </div>
+        
+        <div class="filter__item">
+          <label for="select-territory">Территория: </label>
+          <select name="select-territory" id="select-territory">
+            <option value="all">Все</option>
+          </select>
+        </div>
+        
+        <div class="filter__item">
+          <label for="select-program">Программа: </label>
+          <select name="select-program" id="select-program">
+            <option value="all">Все</option>
+          </select>
+        </div>
+        
+        <div class="filter__item ">
+          <div class="ready-select-box">
+            <label for="select-ready">Готовность:</label>
+            <label>
+              <input class="select-ready-display" type="text" value="Все" max="100" min="0">
+            </label>
+          </div>
+          <input type="range" id="select-ready" class="select-ready" max="100" min="0">
+        </div>
+        
+        <div class="filter__item ready-select-all-box">
+          <label for="select-ready-all">Показать все: </label>
+          <input type="checkbox" id="select-ready-all" class="select-ready-all" checked>
+        </div>
+        
+        <div class="filter__buttons">
+          <button class="filter__button-search button">Поиск</button>
+          <button class="filter__button-reset button">Сбросить</button>
+        </div>
+      </div>
+      
+      
+      <div class="navigation">
+        
+        <div class="navigation__item">
+          <button class="navigation__button-constructor button">Конструктор</button>
+        </div>
+        
+        <div class="navigation__item">
+          <button class="navigation__button-upload button">Загрузка</button>
+        </div>
+        
+        <div class="navigation__item">
+          <button class="navigation__button-export button">Экспорт</button>
+        </div>
+        
+        <div class="navigation__item">
+          <button class="navigation__button-exit button">Выход</button>
+        </div>
+      
+      </div>
+      
+      <div class="dictionaries">
+        
+        <div class="dictionaries__title">Справочники</div>
+        
+        <div class="dictionaries__item">
+          <button class="dictionaries__button-ministry button">Министерства</button>
+        </div>
+        
+        <div class="dictionaries__item">
+          <button class="dictionaries__button-territory button">Территории</button>
+        </div>
+        
+        <div class="dictionaries__item">
+          <button class="dictionaries__button-program button">Программы</button>
+        </div>
+      
+      </div>
+    
+    </div>
+    
+    <div class="display">
+      
+      <div class="linker">
+        
+        <div class="linker__top-container">
+          
+          <div class="linker__object">
+            
+            <div class="linker__object-title">
+              <div class="linker__object-title-code linker__object-size-code">Код</div>
+              <div class="linker__object-title-year linker__object-size-year">Год</div>
+              <div class="linker__object-title-name linker__object-size-name">Название</div>
+            </div>
+            
+            <div class="linker__object-box">
+              
+              <div class="linker__object-main">
+                <div class="linker__object-main-box">
+                  <div class="linker__object-main-code linker__object-size-code">756810</div>
+                  <div class="linker__object-main-year linker__object-size-year">2011</div>
+                  <div class="linker__object-main-name linker__object-size-name"
+                       title="Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по 2024 годы
+">
+                    Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по
+                    2024 годы
+                  </div>
+                </div>
+                <button class="linker__object-main-select button">
+                  <span class="material-icons">playlist_add_check</span>
+                </button>
+                <button class="linker__object-main-add button">
+                  <span class="material-icons">add</span>
+                </button>
+              </div>
+              
+              <div class="linker__object-additional-container">
+                
+                <div class="linker__object-additional">
+                  <div class="linker__object-additional-box">
+                    <div class="linker__object-additional-code linker__object-size-code">756810</div>
+                    <div class="linker__object-additional-year linker__object-size-year">2011</div>
+                    <div class="linker__object-additional-name linker__object-size-name"
+                         title="Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по 2024 годы
+">
+                      Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по
+                      2024 годы
+                    </div>
+                  </div>
+                  <button class="linker__object-additional-select button">
+                    <span class="material-icons">playlist_add_check</span>
+                  </button>
+                  <button class="linker__object-additional-remove button">
+                    <span class="material-icons">remove</span>
+                  </button>
+                </div>
+                <div class="linker__object-additional">
+                  <div class="linker__object-additional-box">
+                    <div class="linker__object-additional-code linker__object-size-code">756810</div>
+                    <div class="linker__object-additional-year linker__object-size-year">2011</div>
+                    <div class="linker__object-additional-name linker__object-size-name"
+                         title="Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по 2024 годы
+">
+                      Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по
+                      2024 годы
+                    </div>
+                  </div>
+                  <button class="linker__object-additional-select button">
+                    <span class="material-icons">playlist_add_check</span>
+                  </button>
+                  <button class="linker__object-additional-remove button">
+                    <span class="material-icons">remove</span>
+                  </button>
+                </div>
+                <div class="linker__object-additional">
+                  <div class="linker__object-additional-box">
+                    <div class="linker__object-additional-code linker__object-size-code">756810</div>
+                    <div class="linker__object-additional-year linker__object-size-year">2011</div>
+                    <div class="linker__object-additional-name linker__object-size-name"
+                         title="Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по 2024 годы
+">
+                      Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по
+                      2024 годы
+                    </div>
+                  </div>
+                  <button class="linker__object-additional-select button">
+                    <span class="material-icons">playlist_add_check</span>
+                  </button>
+                  <button class="linker__object-additional-remove button">
+                    <span class="material-icons">remove</span>
+                  </button>
+                </div>
+                <div class="linker__object-additional">
+                  <div class="linker__object-additional-box">
+                    <div class="linker__object-additional-code linker__object-size-code">756810</div>
+                    <div class="linker__object-additional-year linker__object-size-year">2011</div>
+                    <div class="linker__object-additional-name linker__object-size-name"
+                         title="Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по 2024 годы
+">
+                      Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по
+                      2024 годы
+                    </div>
+                  </div>
+                  <button class="linker__object-additional-select button">
+                    <span class="material-icons">playlist_add_check</span>
+                  </button>
+                  <button class="linker__object-additional-remove button">
+                    <span class="material-icons">remove</span>
+                  </button>
+                </div>
+                <div class="linker__object-additional">
+                  <div class="linker__object-additional-box">
+                    <div class="linker__object-additional-code linker__object-size-code">756810</div>
+                    <div class="linker__object-additional-year linker__object-size-year">2011</div>
+                    <div class="linker__object-additional-name linker__object-size-name"
+                         title="Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по 2024 годы
+">
+                      Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по
+                      2024 годы
+                    </div>
+                  </div>
+                  <button class="linker__object-additional-select button">
+                    <span class="material-icons">playlist_add_check</span>
+                  </button>
+                  <button class="linker__object-additional-remove button">
+                    <span class="material-icons">remove</span>
+                  </button>
+                </div>
+                <div class="linker__object-additional">
+                  <div class="linker__object-additional-box">
+                    <div class="linker__object-additional-code linker__object-size-code">756810</div>
+                    <div class="linker__object-additional-year linker__object-size-year">2011</div>
+                    <div class="linker__object-additional-name linker__object-size-name"
+                         title="Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по 2024 годы
+">
+                      Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по
+                      2024 годы
+                    </div>
+                  </div>
+                  <button class="linker__object-additional-select button">
+                    <span class="material-icons">playlist_add_check</span>
+                  </button>
+                  <button class="linker__object-additional-remove button">
+                    <span class="material-icons">remove</span>
+                  </button>
+                </div>
+                <div class="linker__object-additional">
+                  <div class="linker__object-additional-box">
+                    <div class="linker__object-additional-code linker__object-size-code">756810</div>
+                    <div class="linker__object-additional-year linker__object-size-year">2011</div>
+                    <div class="linker__object-additional-name linker__object-size-name"
+                         title="Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по 2024 годы
+">
+                      Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по
+                      2024 годы
+                    </div>
+                  </div>
+                  <button class="linker__object-additional-select button">
+                    <span class="material-icons">playlist_add_check</span>
+                  </button>
+                  <button class="linker__object-additional-remove button">
+                    <span class="material-icons">remove</span>
+                  </button>
+                </div>
+                <div class="linker__object-additional">
+                  <div class="linker__object-additional-box">
+                    <div class="linker__object-additional-code linker__object-size-code">756810</div>
+                    <div class="linker__object-additional-year linker__object-size-year">2011</div>
+                    <div class="linker__object-additional-name linker__object-size-name"
+                         title="Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по 2024 годы
+">
+                      Обеление имени хана Батыя в историческом сознании граждан российской федерации в период с 2020 по
+                      2024 годы
+                    </div>
+                  </div>
+                  <button class="linker__object-additional-select button">
+                    <span class="material-icons">playlist_add_check</span>
+                  </button>
+                  <button class="linker__object-additional-remove button">
+                    <span class="material-icons">remove</span>
+                  </button>
+                </div>
+              
+              
+              </div>
+            
+            </div>
+          
+          </div>
+          
+          <div class="linker__control">
+            
+            <div class="linker__control-similarity">
+              <div class="linker__control-similarity-box">
+                <label for="select-similarity">Совпадение:</label>
+                <label>
+                  <input class="select-similarity-display" type="text" value="75" max="100" min="0">
+                </label>
+              </div>
+              <input type="range" id="select-similarity" class="select-similarity" max="100" min="0">
+            </div>
+            
+            <div class="linker__control-buttons">
+              <button class="linker__control-save button">Сохранить</button>
+              <button class="linker__control-check-objects button">Проверить существующие объекты</button>
+              <button class="linker__control-show-similar button">Отобразить похожие записи</button>
+              <button class="linker__control-delete button">Удалить</button>
+              <button class="linker__control-reset button">Сбросить</button>
+              <button class="linker__control-main-page button">На главную</button>
+            </div>
+          
+          </div>
+        
+        </div>
+        
+        <div class="linker__bottom-container">
+          
+          <div class="linker__list-header">
+            <div class="linker__list-header-code linker__list-size-code">Код</div>
+            <div class="linker__list-header-year linker__list-size-year">Год</div>
+            <div class="linker__list-header-ready linker__list-size-ready">Готово</div>
+            <div class="linker__list-header-ministry linker__list-size-ministry">Министерство</div>
+            <div class="linker__list-header-territory linker__list-size-territory">Территория</div>
+            <div class="linker__list-header-program linker__list-size-program">Программа</div>
+            <div class="linker__list-header-name linker__list-size-name">Название</div>
+            <div class="linker__list-header-details linker__list-size-details">Подробнее</div>
+          </div>
+          
+          <div class="linker__list">
+            
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory">Московская
+                область <div class="tooltip">Московская
+                  область</div>
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" >Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья<div class="tooltip">рограмма помощи не особо нуждающимся в
+                  помощи гражданам стран дальнего и ближнего заруюежья</div>
+              </div>
+              <div class="linker__list-item-name linker__list-size-name">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы <div class="tooltip">Обеление имени хана Батыя в
+                  историческом
+                  сознании граждан российской федерации в период с 2020 по 2024 годы</div>
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+            <div class="linker__list-item">
+              <div class="linker__list-item-code linker__list-size-code">764910</div>
+              <div class="linker__list-item-year linker__list-size-year">2011</div>
+              <div class="linker__list-item-ready linker__list-size-ready">73</div>
+              <div class="linker__list-item-ministry linker__list-size-ministry" title="Не твоих собачьих дел">Не твоих
+                собачьих дел
+              </div>
+              <div class="linker__list-item-territory linker__list-size-territory" title="Московская область">Московская
+                область
+              </div>
+              <div class="linker__list-item-program linker__list-size-program" title="Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья">Программа помощи не особо нуждающимся в
+                помощи гражданам стран дальнего и ближнего заруюежья
+              </div>
+              <div class="linker__list-item-name linker__list-size-name" title="Обеление имени хана Батыя в историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы">Обеление имени хана Батыя в
+                историческом
+                сознании граждан российской федерации в период с 2020 по 2024 годы
+              </div>
+              <div class="linker__list-item-details linker__list-size-details">
+                <button class="linker__list-item-details-button button">Подробнее</button>
+                <button class="linker__list-item-pick-button button">Выбрать</button>
+              </div>
+            </div>
+          
+          </div>
+        
+        </div>
+        
+        <div class="pagination">
+          
+          <div class="pagination__moveto">
+            <input type="number" class="pagination__moveto-input">
+            <button class="pagination__moveto-button button">Перейти</button>
+          </div>
+          
+          <div class="pagination__nav">
+            <button class="pagination__nav-prev button">
+              <span class="material-icons">chevron_left</span>
+            </button>
+            <div class="pagination__nav-display">1</div>
+            <button class="pagination__nav-next button">
+              <span class="material-icons">chevron_right</span>
+            </button>
+          </div>
+          
+          <div class="pagination__info">
+            <div class="pagination__info-pages">
+              <div class="pagination__info-pages-title">Страниц:</div>
+              <div class="pagination__info-pages-value">1</div>
+            </div>
+            <div class="pagination__info-objects">
+              <div class="pagination__info-objects-title">Объектов:</div>
+              <div class="pagination__info-objects-value">3</div>
+            </div>
+          </div>
+        
+        </div>
+      
+      </div>
+    
+    </div>
+  
+  </div>
+  
+  <div class="footer">
+    <span class="material-icons">copyright</span>
+    <span>НИИ Статистики</span>
+  </div>
+
+</div>
+</body>
+</html>
