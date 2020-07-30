@@ -7,21 +7,34 @@ import {Query} from '@core/Query';
 import {MainView} from '@core/MainView';
 import {Hierarchy} from '@/components/hierarchy/Hierarchy';
 import {Linker} from '@/components/linker/Linker';
+import {Upload} from '@/components/upload/Upload';
+import {Dictionary} from '@/components/dictionary/Dictionary';
+import {Pagination} from '@/components/pagination/Pagination';
 
-const COMMENTS = true;
+export const COMMENTS = true;
 
 logger('Begin', false, COMMENTS);
 
 const q = new Query();
 const m = new MainView();
 const h = new Hierarchy();
+const p = new Pagination();
 const l = new Linker();
+const u = new Upload();
+const d = new Dictionary();
 
 (async () => {
-  console.log(`Query ${q}`);
-  console.log(`Main ${m}`);
-  console.log(`Hierarchy ${h}`);
   logger('', false, COMMENTS);
-  await m.mainInit(m, h, l);
-  await h.hInit('', m, h);
+  console.log(`[${q.constructor.name}]`);
+  console.log(`[${m.constructor.name}]`);
+  console.log(`[${h.constructor.name}]`);
+  console.log(`[${p.constructor.name}]`);
+  console.log(`[${l.constructor.name}]`);
+  console.log(`[${u.constructor.name}]`);
+  console.log(`[${d.constructor.name}]`);
+  logger('', false, COMMENTS);
+  await q.authQuery();
+  await m.mainInit(m, h, l, u, d);
+  // await m.testFetch();
+  // await m.testQuery();
 })();

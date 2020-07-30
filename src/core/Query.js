@@ -6,29 +6,50 @@ const COMMENTS = true;
 export class Query extends DomMethods {
   constructor() {
     super();
-    this.serverURL = 'http://5c08230c35e1.ngrok.io';
+    this.serverURL = 'http://5.23.55.163';
     this.filterURL = '/get_filters_list/';
-    // this.hURL = '/?ministryID=0&territoryID=0&programID=0&year=0&technical_readiness=-1&limit=2&offset=0';
-    this.hURL = '/';
-    this.hDetailURL = '/linked_details/';
-    this.hDetailExportURL = '/linked_details_to_excel/';
-    this.hSearchURL = 'hierarchySearch';
-    this.lURL = 'linker';
-    this.lUpdateURL = 'linkerUpdate';
-    this.lPredictionURL = 'linkerPrediction';
-    this.lExistingURL = 'LinkerExisting';
-    this.uURL = 'upload';
-    this.dURL = 'dictionary';
+    this.hierarchyURL = '/';
+    this.hierarchyDetailURL = '/linked_details/';
+    this.hierarchyDetailExportURL = '/linked_details_to_excel/';
+    this.hierarchySearchURL = 'hierarchySearch';
+    this.linkerURL = 'linker';
+    this.linkerUpdateURL = 'linkerUpdate';
+    this.linkerPredictionURL = 'linkerPrediction';
+    this.linkerExistingURL = 'LinkerExisting';
+    this.uploadURL = 'upload';
+    this.dictionaryURL = 'dictionary';
   }
 
-  async sendQuery(url, options = '') {
+  async sendQuery(url, options = '', method = 'GET') {
     try {
-      const response = await fetch(this.serverURL + url + options);
+      const response = await fetch(this.serverURL + url + options, {
+        method: method,
+        headers: {
+          'Authorization': localStorage.getItem('auth'),
+        },
+      });
       logger(`sendQuery(${this.serverURL + url + options});`, this, COMMENTS);
       return await response.json();
     } catch (e) {
-      logger(`sendQuery(${this.serverURL + url + options}); ` + e, this,
-          COMMENTS);
+      logger(`sendQuery(${this.serverURL + url + options}); ` + e, this, COMMENTS);
+    }
+  }
+
+  async authQuery(username, password) {
+    try {
+      const auth = `{
+      "username": "Ih%6qblMQkRo",
+      "password": "p@3XROXEwPGq8X3mqy"
+      }`;
+      const response = await fetch(this.serverURL + '/auth/', {
+        method: 'POST',
+        body: auth,
+      });
+      const key = await response.json();
+      localStorage.setItem('auth', await key.token);
+      logger(`authQuery();`, this, COMMENTS);
+    } catch (e) {
+      logger(`authQuery(); ` + e, this, COMMENTS);
     }
   }
 }

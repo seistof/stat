@@ -1,40 +1,41 @@
 import {logger} from '@/core/utils';
-
-const COMMENTS = false;
+import {COMMENTS} from '@/index';
 
 export class DomMethods {
   constructor() {
+    this.CENTER = this.initialize('.center');
+    this.DISPLAY = this.initialize('.display');
+    this.MENU = this.initialize('.menu');
+    this.FILTERS = this.initialize('.filter');
+    this.SEARCH = this.initialize('.header__search-box');
+    this.BODY = this.initialize('body');
   }
 
   initialize(selector, single = true) {
     if (single) {
-      logger(`initialize(); selector: ${selector}`, false, false);
+      logger(`initialize(${selector});`, false, false);
       return document.querySelector(selector);
     } else {
-      logger(`initialize(); selector: ${selector}`, false, false);
+      logger(`initialize(${selector});`, false, false);
       return document.querySelectorAll(selector);
     }
   }
 
-  // renderHTML(root, html) {
-  //   try {
-  //     if (typeof root === 'string') {
-  //       document.querySelector(root).innerHTML = html;
-  //     } else {
-  //       root.innerHTML = html;
-  //     }
-  //     logger(`renderHTML();`, this, COMMENTS);
-  //   } catch (e) {
-  //     logger(`renderHTML(); ` + e, this, COMMENTS);
-  //   }
-  // }
-
-  renderHTML(root, html) {
+  renderHTML(root, html, position = 'beforeend') {
     try {
-      root.appendChild(html);
+      root.insertAdjacentHTML(position, html);
       logger(`renderHTML();`, this, COMMENTS);
     } catch (e) {
       logger(`renderHTML(); ` + e, this, COMMENTS);
+    }
+  }
+
+  insertElement(root, element, position = 'beforeend') {
+    try {
+      root.insertAdjacentElement(position, element);
+      logger(`insertElement();`, this, false);
+    } catch (e) {
+      logger(`insertElement(); ` + e, this, false);
     }
   }
 
@@ -42,11 +43,11 @@ export class DomMethods {
     try {
       selector.addEventListener(event, func, {once: once});
       logger(
-          `addListener(); selector: ${selector.className} event: ${event}`,
-          this, COMMENTS);
+          `addListener(${selector.classList[0]}) on ${event}`,
+          this, false);
     } catch (e) {
       logger(
-          `addListener();` + e, this, COMMENTS);
+          `addListener();` + e, this, false);
     }
   }
 
@@ -55,10 +56,10 @@ export class DomMethods {
       selector.removeEventListener(event, func);
       logger(
           `removeListener(); selector: ${selector.className} event: ${event}`,
-          this, COMMENTS);
+          this, false);
     } catch (e) {
       logger(
-          `addListener();` + e, this, COMMENTS);
+          `addListener();` + e, this, false);
     }
   }
 }
