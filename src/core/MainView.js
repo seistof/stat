@@ -1,110 +1,181 @@
 import {Query} from '@core/Query';
-import {addressBarText, logger} from '@/core/utils';
-import {
-  baseMarkup, headerOverlayMarkup, hierarchyDetailMarkup,
-  hierarchyViewMarkup, linkerMarkup,
-  mainOverlayMarkup, uploadMarkup,
-} from '@/components/markup/markup';
-import {
-  hAddFilterListeners,
-  hRemoveFilterListeners,
-  navButtonsInit,
-} from '@core/initComponents';
+import {logger} from '@core/utils';
+import {COMMENTS} from '@/index';
 
-const COMMENTS = true;
+// import filtersTEST from '../../filters.json';
 
 export class MainView extends Query {
-  constructor() {
+  constructor(overlay) {
     super();
-    // DOM Elements
-    this.root = this.initialize('#app');
-    this.body = this.initialize('body');
-    this.filterBox = this.initialize('.filter');
-    this.menuBox = this.initialize('.menu');
-    this.filterYear = this.initialize('#select-year');
-    this.filterMinistry = this.initialize('#select-ministry');
-    this.filterTerritory = this.initialize('#select-territory');
-    this.filterProgram = this.initialize('#select-program');
-    this.filterReadyDisplay = this.initialize('.select-ready-display');
-    this.filterReadySelect = this.initialize('#select-ready');
-    this.filterReadyAll = this.initialize('#select-ready-all');
-    this.filterApplyButton = this.initialize('.filter__button-search');
-    this.filterResetButton = this.initialize('.filter__button-reset');
-    this.headerSearchBox = this.initialize('.header__search-box');
-    this.headerSearchUseFilters = this.initialize(
-        '.header__search-use-filters');
-    this.headerSearchInput = this.initialize('.header__search-line');
-    this.headerSearchButton = this.initialize('.header__search-button');
-    this.hierarchyButton = this.initialize('.navigation__button-main');
-    this.linkerButton = this.initialize('.navigation__button-constructor');
-    this.uploadButton = this.initialize('.navigation__button-upload');
-    this.excelButton = this.initialize('.navigation__button-export');
-    this.exitButton = this.initialize('.navigation__button-exit');
-    this.dMinistryButton = this.initialize('.dictionaries__button-ministry');
-    this.dTerritoryButton = this.initialize('.dictionaries__button-territory');
-    this.dProgramButton = this.initialize('.dictionaries__button-program');
-    this.display = this.initialize('.display');
-    this.centerContainer = this.initialize('.center');
-    // HTML templates
-    this.mainOverlay = mainOverlayMarkup();
-    this.headerSearchOverlay = headerOverlayMarkup();
-    this.hHTML = hierarchyViewMarkup();
-    this.hDetailHTML = hierarchyDetailMarkup;
-    this.lHTML = linkerMarkup;
-    this.uHTML = uploadMarkup;
-    this.bHTML = baseMarkup;
+    // Filter
+    this.filterYear = super.initialize('#select-year');
+    this.filterMinistry = super.initialize('#select-ministry');
+    this.filterTerritory = super.initialize('#select-territory');
+    this.filterProgram = super.initialize('#select-program');
+    this.filterReadyDisplay = super.initialize('.select-ready-display');
+    this.filterReadyInput = super.initialize('#select-ready');
+    this.filterReadyAll = super.initialize('#select-ready-all');
+    this.filterReset = super.initialize('.filter__button-reset');
+    // Navigation
+    this.navMain = super.initialize('.navigation__button-main');
+    this.navLinker = super.initialize('.navigation__button-constructor');
+    this.navUpload = super.initialize('.navigation__button-upload');
+    this.navExport = super.initialize('.navigation__button-export');
+    this.navExit = super.initialize('.navigation__button-exit');
+    // Dictionaries
+    this.dicMinistry = super.initialize('.dictionaries__button-ministry');
+    this.dicTerritory = super.initialize('.dictionaries__button-territory');
+    this.dicProgram = super.initialize('.dictionaries__button-program');
+    // Utils
+    this.OVERLAY = overlay;
+    // Search
+  }
+
+  async mainInit(main, hierarchy, linker, search, upload, dictionary) {
+    logger(``, false, COMMENTS);
+    logger(`mainInit();`, this, COMMENTS);
+    this.enableOverlay(true);
+    this.disableUI(true, this.MENU, this.SEARCH);
+    this.mainListenersInit(main, hierarchy, linker, search, upload, dictionary);
+    // TEST
+    // this.fillFilters(filtersTEST);
+    // console.log(filtersTEST);
+    // TEST
+    this.fillFilters(await super.sendQuery(this.filterURL));
+    // this.fillFilters(await fetch(this.serverURL+this.filterURL));
+    await this.enableOverlay(false);
+    await this.disableUI(false, this.MENU, this.SEARCH);
+    // Hierarchy init
+    hierarchy.init(main, hierarchy, search);
+    // Hierarchy init
+    // Pagination(Hierarchy) init
+    // Pagination(Hierarchy) init
   }
 
   disableUI(token, ...target) {
-    logger(`disableUI(${token});`, this, COMMENTS);
-    if (token) {
-      target.forEach((entry) => {
-        entry.style['pointer-events'] = 'none';
-        entry.style.opacity = '.5';
-      });
-    } else {
-      target.forEach((entry) => {
-        entry.style['pointer-events'] = 'auto';
-        entry.style.opacity = '1';
-      });
-    }
+    return new Promise((r) => {
+      if (token) {
+        target.forEach((el) => {
+          el.style['pointer-events'] = 'none';
+          el.style.opacity = '.33';
+        });
+        r();
+      } else {
+        target.forEach((el) => {
+          el.style['pointer-events'] = 'auto';
+          el.style.opacity = '1';
+        });
+        r();
+      }
+    });
   }
 
   enableOverlay(token) {
-    logger(`enableOverlay(${token});`, this, COMMENTS);
-    if (token) {
+    return new Promise((r) => {
       try {
-        this.centerContainer.appendChild(this.mainOverlay);
+        logger(`>>> Check overlay`, this, COMMENTS);
+        this.OVERLAY.remove();
+        logger(`>>> Overlay disabled`, this, COMMENTS);
       } catch (e) {
-        logger(`enableOverlay(); ` + e, this, COMMENTS);
+        logger(`>>> No overlay detected`, this, COMMENTS);
       }
-      // this.headerSearchBox.appendChild(this.headerSearchOverlay);
+      if (token) {
+        const overlay = document.createElement('div');
+        const overlayIndicator = document.createElement('div');
+        const span = document.createElement('span');
+        overlay.classList.add('overlay');
+        overlayIndicator.classList.add('overlay__indicator');
+        span.classList.add('material-icons');
+        span.textContent = 'autorenew';
+        overlay.appendChild(overlayIndicator);
+        overlayIndicator.appendChild(span);
+        this.OVERLAY = overlay;
+        super.insertElement(this.CENTER, this.OVERLAY);
+        logger(`enableOverlay(${token});`, this, COMMENTS);
+      }
+      r();
+    });
+  }
+
+  getFilterValue() {
+    let options = '';
+    options += parseInt(this.filterYear.options[this.filterYear.selectedIndex].value) === 0
+      ? ''
+      : `&year=${this.filterYear.options[this.filterYear.selectedIndex].value}`;
+    options += parseInt(this.filterMinistry.options[this.filterMinistry.selectedIndex].value) === 0
+      ? ''
+      : `&ministry_id=${this.filterMinistry.options[this.filterMinistry.selectedIndex].value}`;
+    options += parseInt(this.filterTerritory.options[this.filterTerritory.selectedIndex].value) === 0
+      ? ''
+      : `&territory_id=${this.filterTerritory.options[this.filterTerritory.selectedIndex].value}`;
+    options += parseInt(this.filterProgram.options[this.filterProgram.selectedIndex].value) === 0
+      ? ''
+      : `&program_id=${this.filterProgram.options[this.filterProgram.selectedIndex].value}`;
+    options += this.filterReadyAll.checked
+      ? ''
+      : `&technical_readiness=${this.filterReadyInput.value}`;
+    if (options.length > 0) {
+      return options.replace('&', '?');
     } else {
-      try {
-        this.centerContainer.removeChild(this.initialize('.overlay'));
-      } catch (e) {
-        logger(`enableOverlay(); ` + e, this, COMMENTS);
-      }
-      // this.headerSearchBox.removeChild(this.initialize('.header__overlay'));
+      return '';
     }
   }
 
-  filterWatchReady() {
-    logger(`filterWatchReady();`, this, COMMENTS);
-    this.addListener(this.filterReadySelect, 'input', () => {
+  mainListenersInit(main, hierarchy, linker, search, upload, dictionary) {
+    super.addListener(this.filterReadyInput, 'input', () => {
       this.filterReadyAll.checked = false;
-      this.filterReadyDisplay.value = this.filterReadySelect.value;
+      this.filterReadyDisplay.value = this.filterReadyInput.value;
     });
-    this.addListener(this.filterReadyAll, 'click', () => {
+    super.addListener(this.filterReadyAll, 'click', () => {
       if (this.filterReadyAll.checked) {
         this.filterReadyDisplay.value = `Все`;
       } else {
-        this.filterReadyDisplay.value = this.filterReadySelect.value;
+        this.filterReadyDisplay.value = this.filterReadyInput.value;
       }
+    });
+    super.addListener(this.filterReset, 'click', () => {
+      this.filterYear.selectedIndex = 0;
+      this.filterMinistry.selectedIndex = 0;
+      this.filterTerritory.selectedIndex = 0;
+      this.filterProgram.selectedIndex = 0;
+      this.filterReadyInput.value = 50;
+      this.filterReadyDisplay.value = 'Все';
+      this.filterReadyAll.checked = true;
+      logger(`Reset filters.`, this, COMMENTS);
+    });
+    super.addListener(this.navMain, 'click', () => {
+      hierarchy.init(main, hierarchy, search);
+      logger(`Hierarchy`, this, COMMENTS);
+    });
+    super.addListener(this.navLinker, 'click', () => {
+      linker.init();
+      logger(`Linker`, this, COMMENTS);
+    });
+    super.addListener(this.navUpload, 'click', () => {
+      upload.init();
+      logger(`Upload`, this, COMMENTS);
+    });
+    super.addListener(this.navExport, 'click', () => {
+      logger(`Export`, this, COMMENTS);
+    });
+    super.addListener(this.navExit, 'click', () => {
+      logger(`Exit`, this, COMMENTS);
+    });
+    super.addListener(this.dicMinistry, 'click', () => {
+      dictionary.init('ministry');
+      logger(`Ministry`, this, COMMENTS);
+    });
+    super.addListener(this.dicTerritory, 'click', () => {
+      dictionary.init('territory');
+      logger(`Territory`, this, COMMENTS);
+    });
+    super.addListener(this.dicProgram, 'click', () => {
+      dictionary.init('program');
+      logger(`Program`, this, COMMENTS);
     });
   }
 
-  filterFill(data) {
+  fillFilters(data) {
     try {
       data.year.forEach((el) => {
         const option = document.createElement('option');
@@ -135,73 +206,9 @@ export class MainView extends Query {
             '');
         this.filterProgram.appendChild(option);
       });
-      logger(`filterFill();`, this, COMMENTS);
+      logger(`fillFilters();`, this, COMMENTS);
     } catch (e) {
-      logger(`filterFill(); ${e}`, this, COMMENTS);
-    }
-  }
-
-  filterReset() {
-    this.addListener(this.filterResetButton, 'click', () => {
-      this.filterYear.selectedIndex = '0';
-      this.filterMinistry.selectedIndex = '0';
-      this.filterTerritory.selectedIndex = '0';
-      this.filterProgram.selectedIndex = '0';
-      this.filterReadyDisplay.value = 'Все';
-      this.filterReadySelect.value = 50;
-      this.filterReadyAll.checked = true;
-      addressBarText();
-      logger(`filterReset();`, this, COMMENTS);
-    });
-  }
-
-  async mainInit(m, h, l) {
-    logger(`mainInit();`, this, COMMENTS);
-    this.enableOverlay(true);
-    this.disableUI(true, this.menuBox, this.headerSearchBox);
-    this.filterWatchReady();
-    this.filterReset();
-    // this.filterApply();
-    // this.filterSearch();
-    hRemoveFilterListeners(m, h);
-    hAddFilterListeners(m, h);
-    this.filterFill(await this.sendQuery(this.filterURL));
-    await navButtonsInit(m, h, l);
-    this.enableOverlay(false);
-    this.disableUI(false, this.menuBox, this.headerSearchBox);
-    logger('', false, COMMENTS);
-  }
-
-  getFilterValue() {
-    let options =
-        this.filterReadyAll.checked
-            ? ''
-            : `?technical_readiness=${this.filterReadyDisplay.value}`;
-    options +=
-        this.filterYear.options[this.filterYear.selectedIndex].value !== '0'
-            ? `&year=${this.filterYear.options[this.filterYear.selectedIndex].value}`
-            : '';
-    options +=
-        this.filterMinistry.options[this.filterMinistry.selectedIndex].value !==
-        '0'
-            ? `&ministryID=${this.filterMinistry.options[this.filterMinistry.selectedIndex].value}`
-            : '';
-    options +=
-        this.filterTerritory.options[this.filterTerritory.selectedIndex].value !==
-        '0'
-            ? `&territoryID=${this.filterTerritory.options[this.filterTerritory.selectedIndex].value}`
-            : '';
-    options +=
-        this.filterProgram.options[this.filterProgram.selectedIndex].value !==
-        '0'
-            ? `&programID=${this.filterProgram.options[this.filterProgram.selectedIndex].value}`
-            : '';
-    logger(`getFilterValue(); ` + options, this, COMMENTS);
-
-    if (options[0] === '&') {
-      return options.replace('&', '?');
-    } else {
-      return options;
+      logger(`fillFilters(); ${e}`, this, COMMENTS);
     }
   }
 
@@ -213,7 +220,7 @@ export class MainView extends Query {
     this.disableUI(true, element);
     element.style.opacity = '1';
     this.addListener(box, 'click', () => {
-      element.removeChild(box);
+      box.remove();
       this.disableUI(false, element);
     }, true);
     setTimeout(() => {
@@ -225,7 +232,8 @@ export class MainView extends Query {
     }, delay * 1000);
   }
 
-  async lInitFromEdit(l, data) {
-    l.lInit();
+  clearDisplay() {
+    logger(`clearDisplay();`, this, COMMENTS);
+    this.DISPLAY.innerHTML = '';
   }
 }

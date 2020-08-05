@@ -1,280 +1,428 @@
 import {MainView} from '@core/MainView';
-import {
-  logger,
-} from '@core/utils';
+import {logger} from '@core/utils';
+import {COMMENTS} from '@/index';
+// import hierarchyTEST from '../../../hierarchy.json';
 
-const COMMENTS = true;
+export let HIERARCHY;
 
 export class Hierarchy extends MainView {
   constructor(
-      buttons, goToButton, goToInput, prevButton,
-      nextButton, pageDisplay, totalPages, totalObjects, detailWindow,
-      detailCloseButton, detailExportButton, objectContainer, paginationBox, filterValue,
-      paginationNavBox,
-      paginationGoToBox,
-      currentObjectUniqueCode) {
+      hierarchyContainer,
+      currentUniqueCode,
+      hierarchyDetailWindow,
+      hierarchyDetailCloseButton,
+      hierarchyDetailExportButton,
+      currentPage,
+      totalPages,
+      totalObjects,
+  ) {
     super();
-    this.hButtons = buttons;
-    this.hFuncs = [
-      this.hToggle.bind(this),
-      this.hDetail.bind(this),
-      this.hEdit.bind(this)];
-    this.hData = [];
-    this.hGoToInput = goToInput;
-    this.hGoToButton = goToButton;
-    this.hPrevButton = prevButton;
-    this.hNextButton = nextButton;
-    this.hPaginationBox = paginationBox;
-    this.hPageDisplay = pageDisplay;
-    this.hTotalPages = totalPages;
-    this.hTotalObjects = totalObjects;
-    this.hDetailWindow = detailWindow;
-    this.hDetailCloseButton = detailCloseButton;
-    this.hDetailExportButton = detailExportButton;
-    this.hObjectContainer = objectContainer;
-    this.hFilterValue = filterValue;
-    this.hPaginationNavBox = paginationNavBox;
-    this.hPaginationGoToBox = paginationGoToBox;
-    this.hNextFn = this.hNext.bind(this);
-    this.hPrevFn = this.hPrev.bind(this);
-    this.hGoToFn = this.hGoTo.bind(this);
-    this.hFilterApplyFn = this.hFilterApply.bind(this);
-    this.hFilterSearchFn = this.hFilterSearch.bind(this);
-    this.hCurrentObjectUniqueCode = currentObjectUniqueCode;
+    this.hierarchyContainer = hierarchyContainer;
+    this.hierarchyButtons = [];
+    this.hierarchyButtonFunctions = [
+      this.objectDropdown.bind(this),
+      this.objectDetails.bind(this),
+      this.objectEdit.bind(this),
+    ];
+    this.currentData = [];
+    this.currentUniqueCode = currentUniqueCode;
+    this.hierarchyDetailWindow = hierarchyDetailWindow;
+    this.hierarchyDetailCloseButton = hierarchyDetailCloseButton;
+    this.hierarchyDetailExportButton = hierarchyDetailExportButton;
+    this.currentPage = currentPage;
+    this.totalPages = totalPages;
+    this.totalObjects = totalObjects;
   }
 
-  async hInit(queryOptions = '', m, h) {
-    this.display.innerHTML = '';
-    this.enableOverlay(true);
-    this.disableUI(true, this.filterBox, this.headerSearchBox);
-    this.renderHTML(this.display, this.hHTML);
-    this.hObjectContainer = this.initialize(
-        '.hierarchy-view__object-container');
-    this.hPaginationBox = this.initialize('.pagination');
-    this.hGoToInput = this.initialize('.pagination__moveto-input');
-    this.hGoToButton = this.initialize('.pagination__moveto-button');
-    this.hPrevButton = this.initialize('.pagination__nav-prev');
-    this.hNextButton = this.initialize('.pagination__nav-next');
-    this.hPageDisplay = this.initialize('.pagination__nav-display');
-    this.hTotalPages = this.initialize('.pagination__info-pages-value');
-    this.hTotalObjects = this.initialize('.pagination__info-objects-value');
-    this.hPaginationNavBox = this.initialize('.pagination__nav');
-    this.hPaginationGoToBox = this.initialize('.pagination__moveto');
-    this.hPageDisplay.textContent = '1';
-    this.hFill(await this.sendQuery(this.hURL));
-    // this.hFill(testHierarchyData());
-    this.enableOverlay(false);
-    this.disableUI(false, this.filterBox, this.headerSearchBox);
-    logger(`hInit(); `, this, COMMENTS);
-    logger('', false, COMMENTS);
+  async init(main, hierarchy, search) {
+    logger(``, false, COMMENTS);
+    logger(`init();`, this, COMMENTS);
+    HIERARCHY = this;
+    await this.enableOverlay(true);
+    await this.disableUI(true, this.MENU, this.SEARCH);
+    this.clearDisplay();
+    super.insertElement(this.DISPLAY, this.hierarchyNode());
+    this.totalObjects = super.initialize('.pagination__info-objects-value');
+    this.currentPage = super.initialize('.pagination__nav-display');
+    this.totalPages = super.initialize('.pagination__info-pages-value');
+    search.init(main, hierarchy);
+    // TEST
+    // await this.fill(hierarchyTEST);
+    // console.log(hierarchyTEST);
+    // TEST
+    this.fill(await super.sendQuery(this.hierarchyURL));
+    this.initListButtons();
+    this.removeListeners();
+    this.addListeners();
+    await this.enableOverlay(false);
+    await this.disableUI(false, this.MENU, this.SEARCH);
   }
 
-  hInitButtons() {
-    logger(`hInitButtons();`, this, COMMENTS);
-    const toggleButtons = this.initialize('.hierarchy-view__object-dropdown',
-        false);
-    const detailButtons = this.initialize('.hierarchy-view__object-details',
-        false);
-    const editButtons = this.initialize('.hierarchy-view__object-edit', false);
-    this.hButtons = [toggleButtons, detailButtons, editButtons];
-  }
-
-  hAddButtonListeners() {
-    logger(`hAddButtonListeners();`, this, COMMENTS);
-    let index = 0;
-    this.hButtons.forEach((entry) => {
-      entry.forEach((button) => {
-        this.addListener(button, 'click', this.hFuncs[index]);
-      });
-      index++;
-    });
-    this.addListener(this.hNextButton, 'click', this.hNextFn);
-    this.addListener(this.hPrevButton, 'click', this.hPrevFn);
-    this.addListener(this.hGoToButton, 'click', this.hGoToFn);
-  }
-
-  hRemoveButtonListeners() {
-    logger(`hRemoveButtonListeners();`, this, COMMENTS);
-    let index = 0;
-    this.hButtons.forEach((entry) => {
-      entry.forEach((button) => {
-        this.removeListener(button, 'click', this.hFuncs[index]);
-      });
-      index++;
-    });
-    this.removeListener(this.hNextButton, 'click', this.hNextFn);
-    this.removeListener(this.hPrevButton, 'click', this.hPrevFn);
-    this.removeListener(this.hGoToButton, 'click', this.hGoToFn);
-  }
-
-  hFill(source) {
-    this.hData = [];
-    this.hObjectContainer.innerHTML = '';
+  async fill(data) {
     try {
-      let html = ``;
+      console.log(data);
+      logger(`fill();`, this, COMMENTS);
+      await this.enableOverlay(true);
+      await this.disableUI(true, this.MENU, this.SEARCH);
+      this.hierarchyContainer = super.initialize('.hierarchy-view__object-container');
+      this.hierarchyContainer.innerHTML = '';
+      this.currentData = data;
       let index = 0;
-      source.data.forEach((entry) => {
-        this.hData.push(entry);
-        html += ` <div class="hierarchy-view__object">`;
-        entry.forEach((el) => {
-          if (el === entry[0]) {
-            if (entry.length === 1) {
-              html += `
-             <div class="hierarchy-view__object-title">
-                <div class="hierarchy-view__object-data">
-                  <div class="hierarchy-view__object-item hierarchy-view__object-year hierarchy-view-size-year">${el.yearData}
-                  </div>
-                  <div class="hierarchy-view__object-item hierarchy-view__object-read hierarchy-view-size-ready">${el.maxReadiness}
-                  </div>
-                  <div class="hierarchy-view__object-item hierarchy-view__object-code hierarchy-view-size-code">${el.buildCode}
-                  </div>
-                  <div class="hierarchy-view__object-item hierarchy-view__object-info hierarchy-view-size-info">
-                       ${el.territoryName} - ${el.ministryName} - ${el.programName}
-                       <div class="tooltip">${el.territoryName} <br> ${el.ministryName} <br> ${el.programName}</div>
-                       </div>
-                  <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name"
-                       >${el.name}
-                       <div class="tooltip">${el.name.replace('***', '<br>').
-      replace('***', '<br>').
-      replace('***', '<br>')}</div></div>
-                </div>
-                <div class="hierarchy-view__object-control">
-                  <div class="hierarchy-view__object-counter">
-                    <span>Записей:</span>
-                    <span>${entry.length}</span>
-                  </div>
-                  <span class="hierarchy-view__object-dropdown button material-icons" style="display: none">
-                  expand_more
-                  </span>
-                  <div class="hierarchy-view__object-buttons">
-                    <button class="hierarchy-view__object-details button" data-id="${el.uniqueCode}">Подробнее</button>
-                    <button class="hierarchy-view__object-edit button" data-index="${index}">Изменить</button>
-                  </div>
-                </div>
-              </div>
-             <div style="display: none" class="hierarchy-view__object-body">
-            `;
-            } else {
-              html += `
-             <div class="hierarchy-view__object-title">
-                <div class="hierarchy-view__object-data">
-                  <div class="hierarchy-view__object-item hierarchy-view__object-year hierarchy-view-size-year">${el.yearData}
-                  </div>
-                  <div class="hierarchy-view__object-item hierarchy-view__object-read hierarchy-view-size-ready">${el.maxReadiness}
-                  </div>
-                  <div class="hierarchy-view__object-item hierarchy-view__object-code hierarchy-view-size-code">${el.buildCode}
-                  </div>
-                  <div class="hierarchy-view__object-item hierarchy-view__object-info hierarchy-view-size-info">
-                  ${el.territoryName} - ${el.ministryName} - ${el.programName}
-                  <div class="tooltip">${el.territoryName} <br> ${el.ministryName} <br> ${el.programName}</div>
-                  </div>
-                  <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name">
-                       ${el.name}
-                       <div class="tooltip">${el.name.replace('***', '<br>').
-      replace('***', '<br>').
-      replace('***', '<br>')}</div>
-                       </div>
-                </div>
-                <div class="hierarchy-view__object-control">
-                  <div class="hierarchy-view__object-counter">
-                    <span>Записей:</span>
-                    <span>${entry.length}</span>
-                  </div>
-                  <span class="hierarchy-view__object-dropdown button material-icons">expand_more
-                  </span>
-                  <div class="hierarchy-view__object-buttons">
-                    <button class="hierarchy-view__object-details button" data-id="${el.uniqueCode}">Подробнее</button>
-                    <button class="hierarchy-view__object-edit button" data-index="${index}">Изменить</button>
-                  </div>
-                </div>
-              </div>
-             <div style="display: none" class="hierarchy-view__object-body">
-            `;
-            }
-          } else {
-            html += `
-          <div class="hierarchy-view__object-body-item">
-                  <div class="hierarchy-view__object-item hierarchy-view__object-year hierarchy-view-size-year">${el.yearData}
-                  </div>
-                  <div class="hierarchy-view__object-item hierarchy-view__object-read hierarchy-view-size-ready">${el.maxReadiness}
-                  </div>
-                  <div class="hierarchy-view__object-item hierarchy-view__object-code hierarchy-view-size-code">${el.buildCode}
-                  </div>
-                  <div class="hierarchy-view__object-item hierarchy-view__object-info hierarchy-view-size-info">
-                       ${el.territoryName} - ${el.ministryName} - ${el.programName}
-                       <div class="tooltip">${el.territoryName} <br> ${el.ministryName} <br> ${el.programName}</div></div>
-                  <div class="hierarchy-view__object-item hierarchy-view__object-name hierarchy-view-size-name">
-                  ${el.name}
-                   <div class="tooltip">${el.name.replace('***', '<br>').
-      replace('***', '<br>').
-      replace('***', '<br>')}</div>
-                  </div>
-                </div>
-          `;
-          }
-        });
-        html += `</div></div>`;
+      this.totalObjects.textContent = data.totalLen;
+      this.totalPages.textContent = Math.ceil(data.totalLen / 12);
+      data.data.forEach((entry) => {
+        const object = document.createElement('div');
+        const objectTitle = document.createElement('div');
+        const objectData = document.createElement('div');
+        const objectControl = document.createElement('div');
+        const mainYear = document.createElement('div');
+        const mainReady = document.createElement('div');
+        const mainCode = document.createElement('div');
+        const mainInfo = document.createElement('div');
+        const infoTooltip = document.createElement('div');
+        const mainName = document.createElement('div');
+        const nameTooltip = document.createElement('div');
+        const objectCounter = document.createElement('div');
+        const objectCounterTitle = document.createElement('span');
+        const objectCounterValue = document.createElement('span');
+        const objectDropdown = document.createElement('span');
+        const objectButtons = document.createElement('div');
+        const objectDetailsButton = document.createElement('button');
+        const objectEditButton = document.createElement('button');
+        object.classList.add('hierarchy-view__object');
+        objectTitle.classList.add('hierarchy-view__object-title');
+        objectData.classList.add('hierarchy-view__object-data');
+        objectControl.classList.add('hierarchy-view__object-control');
+        mainYear.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-year', 'hierarchy-view-size-year');
+        mainReady.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-ready', 'hierarchy-view-size-ready');
+        mainCode.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-code', 'hierarchy-view-size-code');
+        mainInfo.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-info', 'hierarchy-view-size-info');
+        infoTooltip.classList.add('tooltip');
+        mainName.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-name', 'hierarchy-view-size-name');
+        nameTooltip.classList.add('tooltip');
+        objectCounter.classList.add('hierarchy-view__object-counter');
+        objectDropdown.classList.add('hierarchy-view__object-dropdown', 'button', 'material-icons');
+        objectButtons.classList.add('hierarchy-view__object-buttons');
+        objectDetailsButton.classList.add('hierarchy-view__object-details', 'button');
+        objectEditButton.classList.add('hierarchy-view__object-edit', 'button');
+        objectCounterTitle.textContent = 'Записей:';
+        objectDropdown.textContent = 'expand_more';
+        objectDetailsButton.textContent = 'Подробнее';
+        objectEditButton.textContent = 'Изменить';
+        mainYear.textContent = entry[0].yearData;
+        mainReady.textContent = entry[0].maxReadiness;
+        mainCode.textContent = entry[0].buildCode;
+        mainInfo.innerHTML = entry[0].ministryName + ' ' + entry[0].territoryName + ' ' + entry[0].programName;
+        infoTooltip.innerHTML = entry[0].ministryName + `<br>` + entry[0].territoryName + `<br>` + entry[0].programName;
+        mainName.textContent = entry[0].name.replace('***', ' ');
+        nameTooltip.innerHTML = entry[0].name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>');
+        objectCounterValue.textContent = entry.length;
+        objectDetailsButton.dataset.id = entry[0].uniqueCode;
+        objectEditButton.dataset.index = index.toString();
         index++;
+        super.insertElement(object, objectTitle);
+        super.insertElement(objectTitle, objectData);
+        super.insertElement(objectTitle, objectControl);
+        super.insertElement(mainInfo, infoTooltip);
+        super.insertElement(mainName, nameTooltip);
+        super.insertElement(objectData, mainYear);
+        super.insertElement(objectData, mainReady);
+        super.insertElement(objectData, mainCode);
+        super.insertElement(objectData, mainInfo);
+        super.insertElement(objectData, mainName);
+        super.insertElement(objectCounter, objectCounterTitle);
+        super.insertElement(objectCounter, objectCounterValue);
+        super.insertElement(objectButtons, objectDetailsButton);
+        super.insertElement(objectButtons, objectEditButton);
+        super.insertElement(objectControl, objectCounter);
+        super.insertElement(objectControl, objectDropdown);
+        super.insertElement(objectControl, objectButtons);
+        if (entry.length > 1) {
+          const objectBody = document.createElement('div');
+          objectBody.classList.add('hierarchy-view__object-body');
+          objectBody.style.display = 'none';
+          super.insertElement(object, objectBody);
+          entry.forEach((el) => {
+            if (el !== entry[0]) {
+              const objectBodyItem = document.createElement('div');
+              const objectItemYear = document.createElement('div');
+              const objectItemReady = document.createElement('div');
+              const objectItemCode = document.createElement('div');
+              const objectItemInfo = document.createElement('div');
+              const objectItemName = document.createElement('div');
+              const itemInfoTooltip = document.createElement('div');
+              const itemNameTooltip = document.createElement('div');
+              objectBodyItem.classList.add('hierarchy-view__object-body-item');
+              objectItemYear.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-year', 'hierarchy-view-size-year');
+              objectItemReady.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-ready', 'hierarchy-view-size-ready');
+              objectItemCode.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-code', 'hierarchy-view-size-code');
+              objectItemInfo.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-info', 'hierarchy-view-size-info');
+              objectItemName.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-name', 'hierarchy-view-size-name');
+              itemInfoTooltip.classList.add('tooltip');
+              itemNameTooltip.classList.add('tooltip');
+              objectItemYear.textContent = el.yearData;
+              objectItemReady.textContent = el.maxReadiness;
+              objectItemCode.textContent = el.buildCode;
+              objectItemInfo.textContent = el.ministryName + el.territoryName + el.programName;
+              itemInfoTooltip.innerHTML = el.ministryName + '<br>' + el.territoryName + '<br>' + el.programName;
+              objectItemName.textContent = el.name.replace('***', ' ');
+              itemNameTooltip.innerHTML = el.name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>');
+              super.insertElement(objectBodyItem, objectItemYear);
+              super.insertElement(objectBodyItem, objectItemReady);
+              super.insertElement(objectBodyItem, objectItemCode);
+              super.insertElement(objectBodyItem, objectItemInfo);
+              super.insertElement(objectBodyItem, objectItemName);
+              super.insertElement(objectItemInfo, itemInfoTooltip);
+              super.insertElement(objectItemName, itemNameTooltip);
+              super.insertElement(objectBody, objectBodyItem);
+            }
+          });
+        } else {
+          objectDropdown.style.display = 'none';
+        }
+        super.insertElement(this.hierarchyContainer, object);
       });
-      this.hObjectContainer.innerHTML = html;
-      this.hTotalPages.textContent = Math.ceil(source.totalLen / 12) || 1;
-      this.hTotalObjects.textContent = source.totalLen || '';
-      this.hWatchPagination();
-      this.hInitButtons();
-      this.hRemoveButtonListeners();
-      this.hAddButtonListeners();
-      logger(`hFill();`, this, COMMENTS);
+      this.initListButtons();
+      this.removeListeners();
+      this.addListeners();
+      await this.enableOverlay(false);
+      await this.disableUI(false, this.MENU, this.SEARCH);
     } catch (e) {
-      this.errorMessage(this.display, 'Нет соединения с сервером.');
-      this.hPageDisplay.textContent = '1';
-      logger(`hFill(); ` + e, this, COMMENTS);
+      logger(`fill(); ` + e, this, COMMENTS);
+      await this.enableOverlay(false);
+      await this.disableUI(false, this.MENU, this.SEARCH);
+      super.errorMessage(this.hierarchyContainer, 'Нет данных.', 2);
+      this.totalObjects.textContent = 0;
+      this.totalPages.textContent = 0;
     }
   }
 
-  hWatchPagination() {
-    this.disableUI(false, this.hPrevButton, this.hNextButton);
-    logger(`pagination enabled`, this, COMMENTS);
-    if (parseInt(this.hTotalPages.textContent) === 1) {
-      this.disableUI(true, this.hPrevButton, this.hNextButton);
-      logger(`pagination disabled`, this, COMMENTS);
-    } else {
-      if (parseInt(this.hPageDisplay.textContent) === 1 &&
-          parseInt(this.hTotalPages.textContent) > 1) {
-        this.disableUI(true, this.hPrevButton);
-        logger(`pagination prev disabled`, this, COMMENTS);
-      }
-      if (parseInt(this.hPageDisplay.textContent) ===
-          parseInt(this.hTotalPages.textContent)) {
-        this.disableUI(true, this.hNextButton);
-        logger(`pagination next disabled`, this, COMMENTS);
-      }
-    }
+  hierarchyNode() {
+    const hierarchy = document.createElement('div');
+    hierarchy.classList.add('hierarchy-view');
+    const hierarchyViewWrapper = document.createElement('div');
+    hierarchyViewWrapper.classList.add('hierarchy-view-wrapper');
+    const pagination = document.createElement('div');
+    pagination.classList.add('pagination');
+    hierarchy.appendChild(hierarchyViewWrapper);
+    hierarchy.appendChild(pagination);
+    const header = document.createElement('div');
+    header.classList.add('hierarchy-view__header');
+    const container = document.createElement('div');
+    container.classList.add('hierarchy-view__object-container');
+    hierarchyViewWrapper.appendChild(header);
+    hierarchyViewWrapper.appendChild(container);
+    const year = document.createElement('div');
+    year.classList.add('hierarchy-view__header-item', 'hierarchy-view__header-year', 'hierarchy-view-size-year');
+    const ready = document.createElement('div');
+    ready.classList.add('hierarchy-view__header-item', 'hierarchy-view__header-ready', 'hierarchy-view-size-ready');
+    const code = document.createElement('div');
+    code.classList.add('hierarchy-view__header-item', 'hierarchy-view__header-code', 'hierarchy-view-size-code');
+    const info = document.createElement('div');
+    info.classList.add('hierarchy-view__header-item', 'hierarchy-view__header-info', 'hierarchy-view-size-info');
+    const name = document.createElement('div');
+    name.classList.add('hierarchy-view__header-item', 'hierarchy-view__header-name', 'hierarchy-view-size-name');
+    year.textContent = 'Год';
+    ready.textContent = 'Готово';
+    code.textContent = 'Код';
+    info.textContent = 'Министерство, территория, программа';
+    name.textContent = 'Название';
+    header.appendChild(year);
+    header.appendChild(ready);
+    header.appendChild(code);
+    header.appendChild(info);
+    header.appendChild(name);
+    const moveTo = document.createElement('div');
+    moveTo.classList.add('pagination__moveto');
+    const nav = document.createElement('div');
+    nav.classList.add('pagination__nav');
+    const infoP = document.createElement('div');
+    infoP.classList.add('pagination__info');
+    pagination.appendChild(moveTo);
+    pagination.appendChild(nav);
+    pagination.appendChild(infoP);
+    const moveToInput = document.createElement('input');
+    moveToInput.classList.add('pagination__moveto-input');
+    moveToInput.type = 'number';
+    const moveToButton = document.createElement('button');
+    moveToButton.classList.add('pagination__moveto-button', 'button');
+    moveToButton.textContent = 'Перейти';
+    moveTo.appendChild(moveToInput);
+    moveTo.appendChild(moveToButton);
+    const prev = document.createElement('span');
+    prev.classList.add('pagination__nav-prev', 'button', 'material-icons');
+    prev.textContent = 'chevron_left';
+    const currentPage = document.createElement('div');
+    currentPage.classList.add('pagination__nav-display');
+    currentPage.textContent = '1';
+    const next = document.createElement('span');
+    next.classList.add('pagination__nav-next', 'button', 'material-icons');
+    next.textContent = 'chevron_right';
+    nav.appendChild(prev);
+    nav.appendChild(currentPage);
+    nav.appendChild(next);
+    const totalPages = document.createElement('div');
+    totalPages.classList.add('pagination__info-pages');
+    const totalPagesTitle = document.createElement('div');
+    totalPagesTitle.classList.add('pagination__info-pages-title');
+    totalPagesTitle.textContent = 'Страниц:';
+    const totalPagesValue = document.createElement('div');
+    totalPagesValue.classList.add('pagination__info-pages-value');
+    const totalObjects = document.createElement('div');
+    totalObjects.classList.add('pagination__info-objects');
+    const totalObjectsTitle = document.createElement('div');
+    totalObjectsTitle.classList.add('pagination__info-objects-title');
+    totalObjectsTitle.textContent = 'Объектов:';
+    const totalObjectsValue = document.createElement('div');
+    totalObjectsValue.classList.add('pagination__info-objects-value');
+    totalPages.appendChild(totalPagesTitle);
+    totalPages.appendChild(totalPagesValue);
+    totalObjects.appendChild(totalObjectsTitle);
+    totalObjects.appendChild(totalObjectsValue);
+    infoP.appendChild(totalPages);
+    infoP.appendChild(totalObjects);
+    return hierarchy;
   }
 
-  hToggle(e) {
-    logger(`hToggle();`, this, COMMENTS);
-    if (e.target.parentElement.parentElement.parentElement.querySelector(
-        '.hierarchy-view__object-body').style.display === 'none') {
-      console.log(`rotate 180`);
-      e.target.parentElement.parentElement.parentElement.querySelector(
-          '.hierarchy-view__object-body').style.display = 'block';
+  objectDropdown(e) {
+    logger(`toggleDropdown();`, this, COMMENTS);
+    if (e.target.parentElement.parentElement.parentElement.querySelector('.hierarchy-view__object-body').style.display === 'none') {
+      e.target.parentElement.parentElement.parentElement.querySelector('.hierarchy-view__object-body').style.display = 'block';
       e.target.style.transform = 'rotate(180deg)';
     } else {
-      console.log(`rotate 0`);
-      e.target.parentElement.parentElement.parentElement.querySelector(
-          '.hierarchy-view__object-body').style.display = 'none';
+      e.target.parentElement.parentElement.parentElement.querySelector('.hierarchy-view__object-body').style.display = 'none';
       e.target.style.transform = 'rotate(0deg)';
     }
   }
 
-  async hDetail(e) {
+  async objectDetails(e) {
     try {
-      super.disableUI(true, this.menuBox, this.headerSearchBox);
+      super.disableUI(true, this.MENU, this.SEARCH);
       super.enableOverlay(true);
-      const data = await super.sendQuery(this.hDetailURL,
-          `?unique_code=${e.target.dataset.id}`);
-      this.hCurrentObjectUniqueCode = e.target.dataset.id;
-      // const data = testDetailData;
+      // const data = await super.sendQuery(this.hierarchyDetailURL, `?unique_code=${e.target.dataset.id}`);
+      this.currentUniqueCode = e.target.dataset.id;
+      // TEST
+      // const data = [
+      //   {
+      //     'buildCode': 4900,
+      //     'buildCostTotal': 0,
+      //     'commissioningProjectPower': 4.6,
+      //     'durationCommissioning': 0,
+      //     'factExecutedBeginningPagesBeforeJanuary1ReportYear': 0,
+      //     'factExecutedBeginningYearsReportingMonthInclusive': 0,
+      //     'factFinancedBeginningYearFederalBudget': 0,
+      //     'factFinancedBeginningYearsBudgetEntitiesRFBudget': 0,
+      //     'factFinancedBeginningYearsOtherSources': 0,
+      //     'factYearMonth': 0,
+      //     'form_ownerCode': null,
+      //     'introducedBeginningConstructionUntilJanuary1ReportYear': 0,
+      //     'introducedBeginningYearReportingMonthInclusively': 0,
+      //     'investmentLimitYearEntitiesRFBudget': 0,
+      //     'investmentLimitYearOtherSources': 0,
+      //     'investmentObjectType': null,
+      //     'investment_limitYearFederalBudget': 0,
+      //     'ministryEconomyDataLimit': 0,
+      //     'ministryEconomyTerm': 2012,
+      //     'ministryListCode': 13220,
+      //     'ministryListName': 'Министерство здравоохранения и социального развития РФ',
+      //     'name': 'ГОУ высшего профобразования Алтайский государственный медицинский университет, г.Барнаул, Алтайский край - 0049/*/Реконструкция морфологического корпуса - 004910',
+      //     'normalizedID': 1,
+      //     'percentageTechnicalReadiness': 0,
+      //     'powerAccordingMinistryEconomy': 4.6,
+      //     'powerData': 363,
+      //     'processingSign': 0,
+      //     'programLisName': 'Объекты, мероприятия (укрупненные инвестиционные проекты), не включенные в долгосрочные (федеральные) целевые программы',
+      //     'programListCode': '9900',
+      //     'scheduledCommissioningYear': 0,
+      //     'targetCostItems': 5,
+      //     'taskCode': 4,
+      //     'territoryListCode': '01000000000',
+      //     'territoryListName': 'Алтайский край',
+      //     'uniqueCode': '43.43.43.56.76',
+      //     'yearData': 2011,
+      //     'year_usageCode': 2,
+      //   },
+      //   {
+      //     'buildCode': 4900,
+      //     'buildCostTotal': 0,
+      //     'commissioningProjectPower': 4.6,
+      //     'durationCommissioning': 0,
+      //     'factExecutedBeginningPagesBeforeJanuary1ReportYear': 0,
+      //     'factExecutedBeginningYearsReportingMonthInclusive': 0,
+      //     'factFinancedBeginningYearFederalBudget': 0,
+      //     'factFinancedBeginningYearsBudgetEntitiesRFBudget': 0,
+      //     'factFinancedBeginningYearsOtherSources': 0,
+      //     'factYearMonth': 0,
+      //     'form_ownerCode': null,
+      //     'introducedBeginningConstructionUntilJanuary1ReportYear': 0,
+      //     'introducedBeginningYearReportingMonthInclusively': 0,
+      //     'investmentLimitYearEntitiesRFBudget': 0,
+      //     'investmentLimitYearOtherSources': 0,
+      //     'investmentObjectType': null,
+      //     'investment_limitYearFederalBudget': 0,
+      //     'ministryEconomyDataLimit': 0,
+      //     'ministryEconomyTerm': 2012,
+      //     'ministryListCode': 13220,
+      //     'ministryListName': 'Министерство здравоохранения и социального развития РФ',
+      //     'name': 'ГОУ высшего профобразования Алтайский государственный медицинский университет, г.Барнаул, Алтайский край - 0049/*/Реконструкция морфологического корпуса - 004910',
+      //     'normalizedID': 1,
+      //     'percentageTechnicalReadiness': 0,
+      //     'powerAccordingMinistryEconomy': 4.6,
+      //     'powerData': 363,
+      //     'processingSign': 0,
+      //     'programLisName': 'Объекты, мероприятия (укрупненные инвестиционные проекты), не включенные в долгосрочные (федеральные) целевые программы',
+      //     'programListCode': '9900',
+      //     'scheduledCommissioningYear': 0,
+      //     'targetCostItems': 5,
+      //     'taskCode': 4,
+      //     'territoryListCode': '01000000000',
+      //     'territoryListName': 'Алтайский край',
+      //     'uniqueCode': '43.43.43.56.76',
+      //     'yearData': 2011,
+      //     'year_usageCode': 2,
+      //   },
+      //   {
+      //     'buildCode': 4900,
+      //     'buildCostTotal': 0,
+      //     'commissioningProjectPower': 4.6,
+      //     'durationCommissioning': 0,
+      //     'factExecutedBeginningPagesBeforeJanuary1ReportYear': 0,
+      //     'factExecutedBeginningYearsReportingMonthInclusive': 0,
+      //     'factFinancedBeginningYearFederalBudget': 0,
+      //     'factFinancedBeginningYearsBudgetEntitiesRFBudget': 0,
+      //     'factFinancedBeginningYearsOtherSources': 0,
+      //     'factYearMonth': 0,
+      //     'form_ownerCode': null,
+      //     'introducedBeginningConstructionUntilJanuary1ReportYear': 0,
+      //     'introducedBeginningYearReportingMonthInclusively': 0,
+      //     'investmentLimitYearEntitiesRFBudget': 0,
+      //     'investmentLimitYearOtherSources': 0,
+      //     'investmentObjectType': null,
+      //     'investment_limitYearFederalBudget': 0,
+      //     'ministryEconomyDataLimit': 0,
+      //     'ministryEconomyTerm': 2012,
+      //     'ministryListCode': 13220,
+      //     'ministryListName': 'Министерство здравоохранения и социального развития РФ',
+      //     'name': 'ГОУ высшего профобразования Алтайский государственный медицинский университет, г.Барнаул, Алтайский край - 0049/*/Реконструкция морфологического корпуса - 004910',
+      //     'normalizedID': 1,
+      //     'percentageTechnicalReadiness': 0,
+      //     'powerAccordingMinistryEconomy': 4.6,
+      //     'powerData': 363,
+      //     'processingSign': 0,
+      //     'programLisName': 'Объекты, мероприятия (укрупненные инвестиционные проекты), не включенные в долгосрочные (федеральные) целевые программы',
+      //     'programListCode': '9900',
+      //     'scheduledCommissioningYear': 0,
+      //     'targetCostItems': 5,
+      //     'taskCode': 4,
+      //     'territoryListCode': '01000000000',
+      //     'territoryListName': 'Алтайский край',
+      //     'uniqueCode': '43.43.43.56.76',
+      //     'yearData': 2011,
+      //     'year_usageCode': 2,
+      //   },
+      // ];
+      // TEST
+      const data = await super.sendQuery(this.hierarchyDetailURL, `?unique_code=${e.target.dataset.id}`);
       const headers = [
         'Год',
         'Уникальный код объекта',
@@ -332,11 +480,6 @@ export class Hierarchy extends MainView {
       const exportButton = document.createElement('button');
       exportButton.classList.add('detail-window__export-button', 'button');
       exportButton.textContent = 'Экспорт';
-      detailWindow.appendChild(innerContainer);
-      detailWindow.appendChild(closeButton);
-      detailWindow.appendChild(exportButton);
-      innerContainer.appendChild(header);
-      innerContainer.appendChild(rows);
       data.forEach((entry) => {
         const row = document.createElement('div');
         row.classList.add('detail-window__block');
@@ -345,133 +488,111 @@ export class Hierarchy extends MainView {
           outer.classList.add('detail-window__outer-row');
           const el = document.createElement('div');
           el.textContent = entry[k];
-          outer.appendChild(el);
-          // if (entry[k].length > 20) {
-          //   const tooltip = document.createElement('div');
-          //   tooltip.classList.add('tooltip');
-          //   tooltip.textContent = entry[k];
-          //   outer.appendChild(tooltip);
-          // }
-          row.appendChild(outer);
+          super.insertElement(outer, el);
+          super.insertElement(row, outer);
         });
         rows.appendChild(row);
       });
-      this.renderHTML(this.body, detailWindow);
-      this.hDetailWindow = this.initialize('.detail-window');
-      this.hDetailCloseButton = this.initialize(
+      super.insertElement(detailWindow, innerContainer);
+      super.insertElement(detailWindow, closeButton);
+      super.insertElement(detailWindow, exportButton);
+      super.insertElement(innerContainer, header);
+      super.insertElement(innerContainer, rows);
+      this.insertElement(this.BODY, detailWindow);
+      this.hierarchyDetailWindow = this.initialize('.detail-window');
+      this.hierarchyDetailCloseButton = this.initialize(
           '.detail-window__close-button');
-      this.hDetailExportButton = this.initialize(
+      this.hierarchyDetailExportButton = this.initialize(
           '.detail-window__export-button');
-      this.hDetailClose();
-      await this.hDetailDownload();
-      logger(`hDetail(); id = ${e.target.dataset.id}`, this, COMMENTS);
+      this.detailClose();
+      this.detailDownload();
+      logger(`detailsShow(); id: ${e.target.dataset.id}`, this, COMMENTS);
     } catch (error) {
-      logger(`hDetail(); id = ${e.target.dataset.id} ` + error, this,
-          COMMENTS);
-      super.disableUI(false, this.menuBox, this.headerSearchBox);
+      super.disableUI(false, this.MENU, this.SEARCH);
       super.enableOverlay(false);
-      this.errorMessage(e.target, 'Нет соединения с сервером.');
+      logger(`detailsShow(); ` + e, this, COMMENTS);
+      this.errorMessage(e.target, 'Не удалось получить данные с сервера.', 3);
     }
   }
 
-  async hEdit(e) {
-    logger(`hEdit(); id = ${e.target.dataset.index}`, this, COMMENTS);
-    logger(this.hData[e.target.dataset.index]);
-  }
-
-  hDetailClose() {
-    this.hDetailCloseButton.addEventListener('click', () => {
-      logger(`hDetailClose();`, this, COMMENTS);
-      this.body.removeChild(this.hDetailWindow);
-      super.disableUI(false, this.menuBox, this.headerSearchBox);
+  detailClose() {
+    super.addListener(this.hierarchyDetailCloseButton, 'click', () => {
+      // this.body.removeChild(this.hierarchyDetailWindow);
+      this.hierarchyDetailWindow.remove();
+      super.disableUI(false, this.MENU, this.SEARCH);
       super.enableOverlay(false);
-    }, {once: true});
+      logger(`detailClose();`, this, COMMENTS);
+    }, true);
   }
 
-  async hDetailDownload() {
-    this.hDetailExportButton.addEventListener('click', async () => {
-      const options = `?unique_code=${this.hCurrentObjectUniqueCode}`;
-      this.hCurrentObjectUniqueCode = '';
+  detailDownload() {
+    super.addListener(this.hierarchyDetailExportButton, 'click', () => {
+      const options = `?unique_code=${this.currentUniqueCode}`;
+      this.currentUniqueCode = '';
       const a = document.createElement('a');
-      a.href = this.serverURL + this.hDetailExportURL + options;
-      document.body.appendChild(a);
+      a.href = this.serverURL + this.hierarchyDetailExportURL + options;
+      super.insertElement(this.BODY, a);
+      // document.body.appendChild(a);
       a.click();
       a.remove();
-      logger(`hDetailExportButton();`, this, COMMENTS);
-      this.body.removeChild(this.hDetailWindow);
-      super.disableUI(false, this.menuBox, this.headerSearchBox);
+      this.hierarchyDetailWindow.remove();
+      // this.body.removeChild(this.hDetailWindow);
+      super.disableUI(false, this.MENU, this.SEARCH);
       super.enableOverlay(false);
-    }, {once: true});
+      logger(`detailDownload();`, this, COMMENTS);
+    }, true);
   }
 
-  async hNext() {
-    logger(`hNext();`, this, COMMENTS);
-    const options = this.getFilterValue() +
-        `&page=${parseInt(this.hPageDisplay.textContent) + 1}`;
-    this.hPageDisplay.textContent = parseInt(this.hPageDisplay.textContent) + 1;
-    this.enableOverlay(true);
-    this.disableUI(true, this.filterBox, this.headerSearchBox);
-    this.hFill(await this.sendQuery(this.hURL, options));
-    this.enableOverlay(false);
-    this.disableUI(false, this.filterBox, this.headerSearchBox);
-    this.hWatchPagination();
-    logger(options);
-  }
-
-  async hPrev() {
-    logger(`hPrev();`, this, COMMENTS);
-    const options = this.getFilterValue() +
-        `&page=${parseInt(this.hPageDisplay.textContent) - 1}`;
-    this.hPageDisplay.textContent = parseInt(this.hPageDisplay.textContent) - 1;
-    this.enableOverlay(true);
-    this.disableUI(true, this.filterBox, this.headerSearchBox);
-    this.hFill(await this.sendQuery(this.hURL, options));
-    this.enableOverlay(false);
-    this.disableUI(false, this.filterBox, this.headerSearchBox);
-    this.hWatchPagination();
-    logger(options);
-  }
-
-  async hGoTo() {
-    if (parseInt(this.hGoToInput.value) > parseInt(this.hTotalPages.textContent)
-        || parseInt(this.hGoToInput.value) < 0
-        || this.hGoToInput.value === ''
-        || parseInt(this.hGoToInput.value) ===
-        parseInt(this.hPageDisplay.textContent)
-    ) {
-      logger(`hGoTo(); ERROR: Out of range.`, this, COMMENTS);
-      this.hGoToInput.value = '';
-      this.errorMessage(this.hPaginationGoToBox, 'Такой страницы нет.');
-    } else {
-      this.hPageDisplay.textContent = this.hGoToInput.value;
-      const options = this.getFilterValue() +
-          `&page=${this.hGoToInput.value}`;
-      this.enableOverlay(true);
-      this.disableUI(true, this.filterBox, this.headerSearchBox);
-      this.hFill(await this.sendQuery(this.hURL, options));
-      this.enableOverlay(false);
-      this.disableUI(false, this.filterBox, this.headerSearchBox);
-      this.hWatchPagination();
-      this.hGoToInput.value = '';
-      logger(options);
-      logger(`hGoTo();`, this, COMMENTS);
+  objectEdit(e) {
+    try {
+      logger(`editObject(); index: ${e.target.dataset.index}`, this, COMMENTS);
+    } catch (e) {
+      this.errorMessage(e.target, 'Ошибка');
     }
   }
 
-  async hFilterApply() {
-    logger(`filterApply();`, this, COMMENTS);
-    const options = this.getFilterValue();
-    this.enableOverlay(true);
-    this.disableUI(true, this.filterBox, this.headerSearchBox);
-    this.hFill(await this.sendQuery(this.hURL, options));
-    this.hPageDisplay.textContent = '1';
-    this.hWatchPagination();
-    this.enableOverlay(false);
-    this.disableUI(false, this.filterBox, this.headerSearchBox);
+  initListButtons() {
+    this.hierarchyButtons = [];
+    try {
+      logger(`initListButtons();`, this, COMMENTS);
+      const dropdown = super.initialize('.hierarchy-view__object-dropdown', false);
+      this.hierarchyButtons.push(dropdown);
+      const details = super.initialize('.hierarchy-view__object-details', false);
+      this.hierarchyButtons.push(details);
+      const edit = super.initialize('.hierarchy-view__object-edit', false);
+      this.hierarchyButtons.push(edit);
+    } catch (e) {
+      logger(`initListButtons(); ` + e, this, COMMENTS);
+    }
   }
 
-  async hFilterSearch() {
-    logger(`filterSearch();`, this, COMMENTS);
-    // should return data to fill hierarchy or linker
+  addListeners() {
+    try {
+      let index = 0;
+      this.hierarchyButtons.forEach((entry) => {
+        entry.forEach((button) => {
+          super.addListener(button, 'click', this.hierarchyButtonFunctions[index]);
+        });
+        index++;
+      });
+      logger(`addListeners();`, this, COMMENTS);
+    } catch (e) {
+      logger(`addListeners(); ` + e, this, COMMENTS);
+    }
+  }
+
+  removeListeners() {
+    try {
+      let index = 0;
+      this.hierarchyButtons.forEach((entry) => {
+        entry.forEach((button) => {
+          super.removeListener(button, 'click', this.hierarchyButtonFunctions[index]);
+        });
+        index++;
+      });
+      logger(`removeListeners();`, this, COMMENTS);
+    } catch (e) {
+      logger(`removeListeners(); ` + e, this, COMMENTS);
+    }
   }
 }
