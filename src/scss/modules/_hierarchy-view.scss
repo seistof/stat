@@ -130,6 +130,7 @@
   }
 
   &__object-container {
+    position: relative;
     height: 100%;
     margin-top: 10px;
     //padding-top: 30px;
@@ -137,6 +138,11 @@
     //padding-bottom: 50px;
     margin-bottom: 10px;
     //border: 1px solid black;
+    .error-message-box {
+      top: 50%;
+      transform: translate(-50%, -50%);
+      left: 50%;
+    }
   }
 
   &__object {
@@ -249,15 +255,16 @@
 
     &-buttons {
 
-
     }
 
     &-details {
-
+      margin: 0 3px;
+      padding: 0 2px;
     }
 
     &-edit {
-
+      margin: 0 3px;
+      padding: 0 2px;
     }
 
     &-body {

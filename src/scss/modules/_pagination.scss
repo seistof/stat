@@ -4,6 +4,9 @@
   justify-content: space-between;
   padding: 10px 0;
   min-height: 55px;
+  position: relative;
+  user-select: none;
+
 
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
@@ -22,6 +25,10 @@
     &-input {
       width: 35px;
       margin-right: 5px;
+
+      &:focus {
+        outline: none;
+      }
     }
   }
 

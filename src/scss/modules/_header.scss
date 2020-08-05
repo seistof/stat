@@ -49,11 +49,12 @@
   &__search-box {
     position: relative;
     margin: 20px;
-    //disable
-    //opacity: .3;
-    //pointer-events: none;
-    //
 
+    .error-message-box {
+      top: 50%;
+      transform: translate(-50%, -50%);
+      left: 50%;
+    }
   }
 
   &__search-checkbox {

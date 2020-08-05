@@ -1,7 +1,8 @@
 import {Query} from '@core/Query';
 import {logger} from '@core/utils';
 import {COMMENTS} from '@/index';
-import filtersTEST from '../../filters.json';
+
+// import filtersTEST from '../../filters.json';
 
 export class MainView extends Query {
   constructor(overlay) {
@@ -14,11 +15,7 @@ export class MainView extends Query {
     this.filterReadyDisplay = super.initialize('.select-ready-display');
     this.filterReadyInput = super.initialize('#select-ready');
     this.filterReadyAll = super.initialize('#select-ready-all');
-    this.filterApply = super.initialize('.filter__button-search');
     this.filterReset = super.initialize('.filter__button-reset');
-    this.filterSearch = super.initialize('.header__search-button');
-    this.filterUseFiltersSearch = super.initialize(
-        '.header__search__use-filters');
     // Navigation
     this.navMain = super.initialize('.navigation__button-main');
     this.navLinker = super.initialize('.navigation__button-constructor');
@@ -31,65 +28,73 @@ export class MainView extends Query {
     this.dicProgram = super.initialize('.dictionaries__button-program');
     // Utils
     this.OVERLAY = overlay;
+    // Search
   }
 
-  async mainInit(main, hierarchy, linker, upload, dictionary) {
-    logger(``, this, COMMENTS);
+  async mainInit(main, hierarchy, linker, search, upload, dictionary) {
+    logger(``, false, COMMENTS);
     logger(`mainInit();`, this, COMMENTS);
     this.enableOverlay(true);
     this.disableUI(true, this.MENU, this.SEARCH);
-    this.mainListenersInit(main, hierarchy, linker, upload, dictionary);
+    this.mainListenersInit(main, hierarchy, linker, search, upload, dictionary);
     // TEST
-    this.fillFilters(filtersTEST);
+    // this.fillFilters(filtersTEST);
     // console.log(filtersTEST);
-    // console.log(localStorage.getItem('auth'));
     // TEST
-    // this.fillFilters(await super.sendQuery(this.filterURL));
-    this.enableOverlay(false);
-    this.disableUI(false, this.MENU, this.SEARCH);
+    this.fillFilters(await super.sendQuery(this.filterURL));
+    // this.fillFilters(await fetch(this.serverURL+this.filterURL));
+    await this.enableOverlay(false);
+    await this.disableUI(false, this.MENU, this.SEARCH);
     // Hierarchy init
-    hierarchy.init();
+    hierarchy.init(main, hierarchy, search);
     // Hierarchy init
     // Pagination(Hierarchy) init
     // Pagination(Hierarchy) init
   }
 
   disableUI(token, ...target) {
-    if (token) {
-      target.forEach((el) => {
-        el.style['pointer-events'] = 'none';
-        el.style.opacity = '.33';
-      });
-    } else {
-      target.forEach((el) => {
-        el.style['pointer-events'] = 'auto';
-        el.style.opacity = '1';
-      });
-    }
+    return new Promise((r) => {
+      if (token) {
+        target.forEach((el) => {
+          el.style['pointer-events'] = 'none';
+          el.style.opacity = '.33';
+        });
+        r();
+      } else {
+        target.forEach((el) => {
+          el.style['pointer-events'] = 'auto';
+          el.style.opacity = '1';
+        });
+        r();
+      }
+    });
   }
 
   enableOverlay(token) {
-    try {
-      logger(`#Check overlay`, this, COMMENTS);
-      this.OVERLAY.remove();
-      logger(`#Overlay disabled`, this, COMMENTS);
-    } catch (e) {
-      logger(`#No overlay detected`, this, COMMENTS);
-    }
-    if (token) {
-      const overlay = document.createElement('div');
-      const overlayIndicator = document.createElement('div');
-      const span = document.createElement('span');
-      overlay.classList.add('overlay');
-      overlayIndicator.classList.add('overlay__indicator');
-      span.classList.add('material-icons');
-      span.textContent = 'autorenew';
-      overlay.appendChild(overlayIndicator);
-      overlayIndicator.appendChild(span);
-      this.OVERLAY = overlay;
-      super.insertElement(this.CENTER, this.OVERLAY);
-      logger(`enableOverlay(${token});`, this, COMMENTS);
-    }
+    return new Promise((r) => {
+      try {
+        logger(`>>> Check overlay`, this, COMMENTS);
+        this.OVERLAY.remove();
+        logger(`>>> Overlay disabled`, this, COMMENTS);
+      } catch (e) {
+        logger(`>>> No overlay detected`, this, COMMENTS);
+      }
+      if (token) {
+        const overlay = document.createElement('div');
+        const overlayIndicator = document.createElement('div');
+        const span = document.createElement('span');
+        overlay.classList.add('overlay');
+        overlayIndicator.classList.add('overlay__indicator');
+        span.classList.add('material-icons');
+        span.textContent = 'autorenew';
+        overlay.appendChild(overlayIndicator);
+        overlayIndicator.appendChild(span);
+        this.OVERLAY = overlay;
+        super.insertElement(this.CENTER, this.OVERLAY);
+        logger(`enableOverlay(${token});`, this, COMMENTS);
+      }
+      r();
+    });
   }
 
   getFilterValue() {
@@ -99,24 +104,24 @@ export class MainView extends Query {
       : `&year=${this.filterYear.options[this.filterYear.selectedIndex].value}`;
     options += parseInt(this.filterMinistry.options[this.filterMinistry.selectedIndex].value) === 0
       ? ''
-      : `&ministryID=${this.filterMinistry.options[this.filterMinistry.selectedIndex].value}`;
+      : `&ministry_id=${this.filterMinistry.options[this.filterMinistry.selectedIndex].value}`;
     options += parseInt(this.filterTerritory.options[this.filterTerritory.selectedIndex].value) === 0
       ? ''
-      : `&territoryID=${this.filterTerritory.options[this.filterTerritory.selectedIndex].value}`;
+      : `&territory_id=${this.filterTerritory.options[this.filterTerritory.selectedIndex].value}`;
     options += parseInt(this.filterProgram.options[this.filterProgram.selectedIndex].value) === 0
       ? ''
-      : `&programID=${this.filterProgram.options[this.filterProgram.selectedIndex].value}`;
+      : `&program_id=${this.filterProgram.options[this.filterProgram.selectedIndex].value}`;
     options += this.filterReadyAll.checked
       ? ''
       : `&technical_readiness=${this.filterReadyInput.value}`;
     if (options.length > 0) {
       return options.replace('&', '?');
     } else {
-      return 'ok';
+      return '';
     }
   }
 
-  mainListenersInit(main, hierarchy, linker, upload, dictionary) {
+  mainListenersInit(main, hierarchy, linker, search, upload, dictionary) {
     super.addListener(this.filterReadyInput, 'input', () => {
       this.filterReadyAll.checked = false;
       this.filterReadyDisplay.value = this.filterReadyInput.value;
@@ -139,7 +144,7 @@ export class MainView extends Query {
       logger(`Reset filters.`, this, COMMENTS);
     });
     super.addListener(this.navMain, 'click', () => {
-      hierarchy.init();
+      hierarchy.init(main, hierarchy, search);
       logger(`Hierarchy`, this, COMMENTS);
     });
     super.addListener(this.navLinker, 'click', () => {
@@ -207,29 +212,6 @@ export class MainView extends Query {
     }
   }
 
-  async testQuery() {
-    logger(``);
-    logger(`TEST2`);
-    /*eslint-disable */
-    var data = new FormData();
-    
-    var xhr = new XMLHttpRequest();
-    xhr.withCredentials = true;
-    
-    xhr.addEventListener('readystatechange', function() {
-      if (this.readyState === 4) {
-        console.log(this.responseText);
-      }
-    });
-    
-    xhr.open('GET', 'http://293474-cd03243.tmweb.ru/get_filters_list/');
-    xhr.setRequestHeader('Authorization',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiaHR0cHM6Ly9nb2xhbmcub3JnIiwiaHR0cHM6Ly9qd3QuaW8iXSwiZXhwIjoxNTk2NjIxNjEyLCJuYmYiOjE1OTYxMDM1MTIsImlhdCI6MTU5NjEwMzIxMiwiVXNlcm5hbWUiOiJJaCU2cWJsTVFrUm8iLCJJc0FkbWluIjpmYWxzZX0.8H3sJ8bx_F-pDd2q2UdSAXRRrHK66szdJhGburHL0yQ');
-    
-    xhr.send(data);
-    /* eslint-enable */
-  }
-
   errorMessage(element, text, delay = .75) {
     const box = document.createElement('div');
     box.classList.add('error-message-box');
@@ -251,6 +233,7 @@ export class MainView extends Query {
   }
 
   clearDisplay() {
+    logger(`clearDisplay();`, this, COMMENTS);
     this.DISPLAY.innerHTML = '';
   }
 }
