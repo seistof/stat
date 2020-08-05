@@ -6,13 +6,15 @@ const COMMENTS = true;
 export class Query extends DomMethods {
   constructor() {
     super();
-    this.serverURL = 'http://5.23.55.163';
-    this.filterURL = '/get_filters_list/';
+    // this.serverURL = 'http://127.0.0.1:8080';
+    this.serverURL = 'https://4c8e9ce66c5d.ngrok.io';
+    this.authURL = '/login';
+    this.filterURL = '/get_filters_list';
     this.hierarchyURL = '/';
-    this.hierarchyDetailURL = '/linked_details/';
+    this.hierarchyDetailURL = '/linked_details';
     this.hierarchyDetailExportURL = '/linked_details_to_excel/';
-    this.hierarchySearchURL = 'hierarchySearch';
-    this.linkerURL = 'linker';
+    this.hierarchySearchURL = '/linked_search';
+    this.linkerURL = '/normalized_objects_list';
     this.linkerUpdateURL = 'linkerUpdate';
     this.linkerPredictionURL = 'linkerPrediction';
     this.linkerExistingURL = 'LinkerExisting';
@@ -22,31 +24,35 @@ export class Query extends DomMethods {
 
   async sendQuery(url, options = '', method = 'GET') {
     try {
-      const response = await fetch(this.serverURL + url + options, {
-        method: method,
-        headers: {
-          'Authorization': localStorage.getItem('auth'),
-        },
-      });
+      const h = new Headers();
+      h.append('Authorization', localStorage.getItem('auth'));
+      const requestOptions = {
+        method: 'GET',
+        headers: h,
+        redirect: 'follow',
+      };
+      const response = await fetch(this.serverURL + url + options, requestOptions);
       logger(`sendQuery(${this.serverURL + url + options});`, this, COMMENTS);
+      console.log(await response);
       return await response.json();
     } catch (e) {
+      console.log(e);
       logger(`sendQuery(${this.serverURL + url + options}); ` + e, this, COMMENTS);
     }
   }
 
-  async authQuery(username, password) {
+  async authQuery(username = 'serGEY', password = 'a_man_with_a_homosexual_identity') {
     try {
-      const auth = `{
-      "username": "Ih%6qblMQkRo",
-      "password": "p@3XROXEwPGq8X3mqy"
-      }`;
-      const response = await fetch(this.serverURL + '/auth/', {
+      const response = await fetch(this.serverURL + this.authURL, {
         method: 'POST',
-        body: auth,
+        body: `{
+      "username":"${username}",
+      "password":"${password}"
+      }`,
+        redirect: 'follow',
       });
-      const key = await response.json();
-      localStorage.setItem('auth', await key.token);
+      const r = JSON.parse(await response.text());
+      localStorage.setItem('auth', r.token);
       logger(`authQuery();`, this, COMMENTS);
     } catch (e) {
       logger(`authQuery(); ` + e, this, COMMENTS);

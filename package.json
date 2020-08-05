@@ -49,6 +49,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.10.1",
     "material-design-icons": "^3.0.1",
+    "node": "^14.5.0",
     "normalize.css": "^8.0.1"
   }
 }
