@@ -34,22 +34,15 @@ export class MainView extends Query {
   async mainInit(main, hierarchy, linker, search, upload, dictionary) {
     logger(``, false, COMMENTS);
     logger(`mainInit();`, this, COMMENTS);
-    this.enableOverlay(true);
-    this.disableUI(true, this.MENU, this.SEARCH);
+    await this.enableOverlay(true);
+    await this.disableUI(true, this.MENU, this.SEARCH);
     this.mainListenersInit(main, hierarchy, linker, search, upload, dictionary);
-    // TEST
-    // this.fillFilters(filtersTEST);
-    // console.log(filtersTEST);
-    // TEST
     this.fillFilters(await super.sendQuery(this.filterURL));
-    // this.fillFilters(await fetch(this.serverURL+this.filterURL));
     await this.enableOverlay(false);
     await this.disableUI(false, this.MENU, this.SEARCH);
-    // Hierarchy init
-    hierarchy.init(main, hierarchy, search);
-    // Hierarchy init
-    // Pagination(Hierarchy) init
-    // Pagination(Hierarchy) init
+    /* Hierarchy init */
+    await hierarchy.hierarchyInit(main, hierarchy, search);
+    /* Hierarchy init */
   }
 
   disableUI(token, ...target) {
@@ -91,7 +84,7 @@ export class MainView extends Query {
         overlayIndicator.appendChild(span);
         this.OVERLAY = overlay;
         super.insertElement(this.CENTER, this.OVERLAY);
-        logger(`enableOverlay(${token});`, this, COMMENTS);
+        logger(`>>> Overlay enabled`, this, COMMENTS);
       }
       r();
     });
@@ -143,15 +136,19 @@ export class MainView extends Query {
       this.filterReadyAll.checked = true;
       logger(`Reset filters.`, this, COMMENTS);
     });
-    super.addListener(this.navMain, 'click', () => {
-      hierarchy.init(main, hierarchy, search);
+    super.addListener(this.navMain, 'click', async () => {
+      linker.linkerListSelectRemoveListeners();
+      linker.controlButtonsRemoveListeners();
+      await hierarchy.hierarchyInit(main, hierarchy, search, linker);
       logger(`Hierarchy`, this, COMMENTS);
     });
-    super.addListener(this.navLinker, 'click', () => {
-      linker.init();
+    super.addListener(this.navLinker, 'click', async () => {
+      hierarchy.removeListeners();
+      await linker.linkerInit(hierarchy);
       logger(`Linker`, this, COMMENTS);
     });
     super.addListener(this.navUpload, 'click', () => {
+      // delete all other listeners
       upload.init();
       logger(`Upload`, this, COMMENTS);
     });
@@ -162,14 +159,17 @@ export class MainView extends Query {
       logger(`Exit`, this, COMMENTS);
     });
     super.addListener(this.dicMinistry, 'click', () => {
+      // delete all other listeners
       dictionary.init('ministry');
       logger(`Ministry`, this, COMMENTS);
     });
     super.addListener(this.dicTerritory, 'click', () => {
+      // delete all other listeners
       dictionary.init('territory');
       logger(`Territory`, this, COMMENTS);
     });
     super.addListener(this.dicProgram, 'click', () => {
+      // delete all other listeners
       dictionary.init('program');
       logger(`Program`, this, COMMENTS);
     });

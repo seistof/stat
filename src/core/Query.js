@@ -6,8 +6,8 @@ const COMMENTS = true;
 export class Query extends DomMethods {
   constructor() {
     super();
-    // this.serverURL = 'http://127.0.0.1:8080';
-    this.serverURL = 'https://4c8e9ce66c5d.ngrok.io';
+    this.serverURL = 'http://127.0.0.1:8080';
+    // this.serverURL = 'https://aa07451d3f76.ngrok.io';
     this.authURL = '/login';
     this.filterURL = '/get_filters_list';
     this.hierarchyURL = '/';
@@ -33,10 +33,8 @@ export class Query extends DomMethods {
       };
       const response = await fetch(this.serverURL + url + options, requestOptions);
       logger(`sendQuery(${this.serverURL + url + options});`, this, COMMENTS);
-      console.log(await response);
       return await response.json();
     } catch (e) {
-      console.log(e);
       logger(`sendQuery(${this.serverURL + url + options}); ` + e, this, COMMENTS);
     }
   }

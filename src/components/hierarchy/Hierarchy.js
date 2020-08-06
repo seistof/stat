@@ -1,11 +1,12 @@
-import {MainView} from '@core/MainView';
+// import {MainView} from '@core/MainView';
 import {logger} from '@core/utils';
 import {COMMENTS} from '@/index';
+import {Search} from '@/components/search/Search';
 // import hierarchyTEST from '../../../hierarchy.json';
 
 export let HIERARCHY;
 
-export class Hierarchy extends MainView {
+export class Hierarchy extends Search {
   constructor(
       hierarchyContainer,
       currentUniqueCode,
@@ -34,7 +35,7 @@ export class Hierarchy extends MainView {
     this.totalObjects = totalObjects;
   }
 
-  async init(main, hierarchy, search) {
+  async hierarchyInit(main, hierarchy, search) {
     logger(``, false, COMMENTS);
     logger(`init();`, this, COMMENTS);
     HIERARCHY = this;
@@ -45,22 +46,14 @@ export class Hierarchy extends MainView {
     this.totalObjects = super.initialize('.pagination__info-objects-value');
     this.currentPage = super.initialize('.pagination__nav-display');
     this.totalPages = super.initialize('.pagination__info-pages-value');
-    search.init(main, hierarchy);
-    // TEST
-    // await this.fill(hierarchyTEST);
-    // console.log(hierarchyTEST);
-    // TEST
-    this.fill(await super.sendQuery(this.hierarchyURL));
-    this.initListButtons();
-    this.removeListeners();
-    this.addListeners();
+    await search.searchInit(main, hierarchy);
+    await this.fill(await super.sendQuery(this.hierarchyURL));
     await this.enableOverlay(false);
     await this.disableUI(false, this.MENU, this.SEARCH);
   }
 
   async fill(data) {
     try {
-      console.log(data);
       logger(`fill();`, this, COMMENTS);
       await this.enableOverlay(true);
       await this.disableUI(true, this.MENU, this.SEARCH);
@@ -182,8 +175,8 @@ export class Hierarchy extends MainView {
         }
         super.insertElement(this.hierarchyContainer, object);
       });
-      this.initListButtons();
       this.removeListeners();
+      this.initListButtons();
       this.addListeners();
       await this.enableOverlay(false);
       await this.disableUI(false, this.MENU, this.SEARCH);
@@ -301,127 +294,6 @@ export class Hierarchy extends MainView {
       super.enableOverlay(true);
       // const data = await super.sendQuery(this.hierarchyDetailURL, `?unique_code=${e.target.dataset.id}`);
       this.currentUniqueCode = e.target.dataset.id;
-      // TEST
-      // const data = [
-      //   {
-      //     'buildCode': 4900,
-      //     'buildCostTotal': 0,
-      //     'commissioningProjectPower': 4.6,
-      //     'durationCommissioning': 0,
-      //     'factExecutedBeginningPagesBeforeJanuary1ReportYear': 0,
-      //     'factExecutedBeginningYearsReportingMonthInclusive': 0,
-      //     'factFinancedBeginningYearFederalBudget': 0,
-      //     'factFinancedBeginningYearsBudgetEntitiesRFBudget': 0,
-      //     'factFinancedBeginningYearsOtherSources': 0,
-      //     'factYearMonth': 0,
-      //     'form_ownerCode': null,
-      //     'introducedBeginningConstructionUntilJanuary1ReportYear': 0,
-      //     'introducedBeginningYearReportingMonthInclusively': 0,
-      //     'investmentLimitYearEntitiesRFBudget': 0,
-      //     'investmentLimitYearOtherSources': 0,
-      //     'investmentObjectType': null,
-      //     'investment_limitYearFederalBudget': 0,
-      //     'ministryEconomyDataLimit': 0,
-      //     'ministryEconomyTerm': 2012,
-      //     'ministryListCode': 13220,
-      //     'ministryListName': 'Министерство здравоохранения и социального развития РФ',
-      //     'name': 'ГОУ высшего профобразования Алтайский государственный медицинский университет, г.Барнаул, Алтайский край - 0049/*/Реконструкция морфологического корпуса - 004910',
-      //     'normalizedID': 1,
-      //     'percentageTechnicalReadiness': 0,
-      //     'powerAccordingMinistryEconomy': 4.6,
-      //     'powerData': 363,
-      //     'processingSign': 0,
-      //     'programLisName': 'Объекты, мероприятия (укрупненные инвестиционные проекты), не включенные в долгосрочные (федеральные) целевые программы',
-      //     'programListCode': '9900',
-      //     'scheduledCommissioningYear': 0,
-      //     'targetCostItems': 5,
-      //     'taskCode': 4,
-      //     'territoryListCode': '01000000000',
-      //     'territoryListName': 'Алтайский край',
-      //     'uniqueCode': '43.43.43.56.76',
-      //     'yearData': 2011,
-      //     'year_usageCode': 2,
-      //   },
-      //   {
-      //     'buildCode': 4900,
-      //     'buildCostTotal': 0,
-      //     'commissioningProjectPower': 4.6,
-      //     'durationCommissioning': 0,
-      //     'factExecutedBeginningPagesBeforeJanuary1ReportYear': 0,
-      //     'factExecutedBeginningYearsReportingMonthInclusive': 0,
-      //     'factFinancedBeginningYearFederalBudget': 0,
-      //     'factFinancedBeginningYearsBudgetEntitiesRFBudget': 0,
-      //     'factFinancedBeginningYearsOtherSources': 0,
-      //     'factYearMonth': 0,
-      //     'form_ownerCode': null,
-      //     'introducedBeginningConstructionUntilJanuary1ReportYear': 0,
-      //     'introducedBeginningYearReportingMonthInclusively': 0,
-      //     'investmentLimitYearEntitiesRFBudget': 0,
-      //     'investmentLimitYearOtherSources': 0,
-      //     'investmentObjectType': null,
-      //     'investment_limitYearFederalBudget': 0,
-      //     'ministryEconomyDataLimit': 0,
-      //     'ministryEconomyTerm': 2012,
-      //     'ministryListCode': 13220,
-      //     'ministryListName': 'Министерство здравоохранения и социального развития РФ',
-      //     'name': 'ГОУ высшего профобразования Алтайский государственный медицинский университет, г.Барнаул, Алтайский край - 0049/*/Реконструкция морфологического корпуса - 004910',
-      //     'normalizedID': 1,
-      //     'percentageTechnicalReadiness': 0,
-      //     'powerAccordingMinistryEconomy': 4.6,
-      //     'powerData': 363,
-      //     'processingSign': 0,
-      //     'programLisName': 'Объекты, мероприятия (укрупненные инвестиционные проекты), не включенные в долгосрочные (федеральные) целевые программы',
-      //     'programListCode': '9900',
-      //     'scheduledCommissioningYear': 0,
-      //     'targetCostItems': 5,
-      //     'taskCode': 4,
-      //     'territoryListCode': '01000000000',
-      //     'territoryListName': 'Алтайский край',
-      //     'uniqueCode': '43.43.43.56.76',
-      //     'yearData': 2011,
-      //     'year_usageCode': 2,
-      //   },
-      //   {
-      //     'buildCode': 4900,
-      //     'buildCostTotal': 0,
-      //     'commissioningProjectPower': 4.6,
-      //     'durationCommissioning': 0,
-      //     'factExecutedBeginningPagesBeforeJanuary1ReportYear': 0,
-      //     'factExecutedBeginningYearsReportingMonthInclusive': 0,
-      //     'factFinancedBeginningYearFederalBudget': 0,
-      //     'factFinancedBeginningYearsBudgetEntitiesRFBudget': 0,
-      //     'factFinancedBeginningYearsOtherSources': 0,
-      //     'factYearMonth': 0,
-      //     'form_ownerCode': null,
-      //     'introducedBeginningConstructionUntilJanuary1ReportYear': 0,
-      //     'introducedBeginningYearReportingMonthInclusively': 0,
-      //     'investmentLimitYearEntitiesRFBudget': 0,
-      //     'investmentLimitYearOtherSources': 0,
-      //     'investmentObjectType': null,
-      //     'investment_limitYearFederalBudget': 0,
-      //     'ministryEconomyDataLimit': 0,
-      //     'ministryEconomyTerm': 2012,
-      //     'ministryListCode': 13220,
-      //     'ministryListName': 'Министерство здравоохранения и социального развития РФ',
-      //     'name': 'ГОУ высшего профобразования Алтайский государственный медицинский университет, г.Барнаул, Алтайский край - 0049/*/Реконструкция морфологического корпуса - 004910',
-      //     'normalizedID': 1,
-      //     'percentageTechnicalReadiness': 0,
-      //     'powerAccordingMinistryEconomy': 4.6,
-      //     'powerData': 363,
-      //     'processingSign': 0,
-      //     'programLisName': 'Объекты, мероприятия (укрупненные инвестиционные проекты), не включенные в долгосрочные (федеральные) целевые программы',
-      //     'programListCode': '9900',
-      //     'scheduledCommissioningYear': 0,
-      //     'targetCostItems': 5,
-      //     'taskCode': 4,
-      //     'territoryListCode': '01000000000',
-      //     'territoryListName': 'Алтайский край',
-      //     'uniqueCode': '43.43.43.56.76',
-      //     'yearData': 2011,
-      //     'year_usageCode': 2,
-      //   },
-      // ];
-      // TEST
       const data = await super.sendQuery(this.hierarchyDetailURL, `?unique_code=${e.target.dataset.id}`);
       const headers = [
         'Год',

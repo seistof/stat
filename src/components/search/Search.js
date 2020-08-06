@@ -25,7 +25,7 @@ export class Search extends MainView {
     this.searchColorTextFn = this.searchColorText.bind(this);
   }
 
-  async init(main, current) {
+  async searchInit(main, current) {
     logger(``, false, COMMENTS);
     logger(`init();`, this, COMMENTS);
     this.nextButton = super.initialize('.pagination__nav-next');
@@ -49,6 +49,8 @@ export class Search extends MainView {
     this.addListeners();
     this.checkPagination();
   }
+
+  /* Hierarchy */
 
   async nextFn() {
     logger(``, false, COMMENTS);
@@ -173,6 +175,8 @@ export class Search extends MainView {
     }
   }
 
+  /* Hierarchy */
+
   checkPagination() {
     super.disableUI(false, this.prevButton);
     super.disableUI(false, this.nextButton);
@@ -233,9 +237,75 @@ export class Search extends MainView {
     }
   }
 
-  // Hierarchy
-  // Hierarchy
+  /* linker */
 
-  // linker
-  // linker
+  /* normalized objects */
+  async lObjectsApplyFn() {
+    logger(`lObjectsApplyFn();`, this, COMMENTS);
+  }
+
+  async lObjectsSearchFn() {
+    logger(`lObjectsSearchFn();`, this, COMMENTS);
+  }
+
+  async lObjectsNextFn() {
+    logger(`lObjectsNextFn();`, this, COMMENTS);
+  }
+
+  async lObjectsPrevFn() {
+    logger(`lObjectsPrevFn();`, this, COMMENTS);
+  }
+
+  async lObjectsGotoFn() {
+    logger(`lObjectsGotoFn();`, this, COMMENTS);
+  }
+
+  /* normalized objects */
+
+  /* predicted new */
+  async lPredictedNewApplyFn() {
+    logger(`lPredictedNewApplyFn();`, this, COMMENTS);
+  }
+
+  async lPredictedNewSearchFn() {
+    logger(`lPredictedNewSearchFn();`, this, COMMENTS);
+  }
+
+  async lPredictedNewNextFn() {
+    logger(`lPredictedNewNextFn();`, this, COMMENTS);
+  }
+
+  async lPredictedNewPrevFn() {
+    logger(`lPredictedNewPrevFn();`, this, COMMENTS);
+  }
+
+  async lPredictedNewGotoFn() {
+    logger(`lPredictedNewGotoFn();`, this, COMMENTS);
+  }
+
+  /* predicted new */
+
+  /* predicted existing */
+  async lPredictedExistingApplyFn() {
+    logger(`lPredictedExistingApplyFn();`, this, COMMENTS);
+  }
+
+  async lPredictedExistingSearchFn() {
+    logger(`lPredictedExistingSearchFn();`, this, COMMENTS);
+  }
+
+  async lPredictedExistingNextFn() {
+    logger(`lPredictedExistingNextFn();`, this, COMMENTS);
+  }
+
+  async lPredictedExistingPrevFn() {
+    logger(`lPredictedExistingPrevFn();`, this, COMMENTS);
+  }
+
+  async lPredictedExistingGotoFn() {
+    logger(`lPredictedExistingGotoFn();`, this, COMMENTS);
+  }
+
+  /* predicted existing */
+  /* linker */
 }
