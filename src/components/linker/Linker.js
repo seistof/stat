@@ -1,8 +1,10 @@
-import {MainView} from '@core/MainView';
 import {logger} from '@core/utils';
 import {COMMENTS} from '@/index';
+import {Search} from '@/components/search/Search';
 
-export class Linker extends MainView {
+export let LINKER;
+
+export class Linker extends Search {
   constructor(
       linkerList,
       totalObjects,
@@ -17,6 +19,14 @@ export class Linker extends MainView {
       controlButtons,
       selectSimilarity,
       selectSimilarityDisplay,
+      mainObjectSelect,
+      mainObjectAdd,
+      objectControlButtons,
+      additionalContainer,
+      additionalObjects,
+      currentlySelectedObject,
+      linkerListSelectButtons,
+      linkerListDetailsButtons,
   ) {
     super();
     this.linkerList = linkerList;
@@ -39,13 +49,28 @@ export class Linker extends MainView {
       this.deleteFn.bind(this),
       this.resetFn.bind(this),
       this.goMainPageFn.bind(this),
+      this.objectMainSelect.bind(this),
+      this.objectMainAdd.bind(this),
     ];
     this.similarityInputWatchFn = this.similarityInputWatch.bind(this);
+    this.additionalContainer = additionalContainer;
+    this.mainObjectSelect = mainObjectSelect;
+    this.mainObjectAdd = mainObjectAdd;
+    this.additionalObjects = additionalObjects;
+    this.additionalObjectsFuncs = [
+      this.objectAdditionalSelect.bind(this),
+      this.objectAdditionalRemove.bind(this),
+    ];
+    this.currentlySelectedObject = currentlySelectedObject;
+    this.linkerListSelectButtons = linkerListSelectButtons;
+    this.linkerListDetailsButtons = linkerListDetailsButtons;
+    this.listItemSelectFunc = this.listItemSelectFn.bind(this);
   }
 
-  async init() {
+  async linkerInit() {
     logger(``, false, COMMENTS);
     logger(`init();`, this, COMMENTS);
+    LINKER = this;
     this.enableOverlay(true);
     this.disableUI(true, this.MENU, this.SEARCH);
     super.clearDisplay();
@@ -62,6 +87,10 @@ export class Linker extends MainView {
     this.mainButton = super.initialize('.linker__control-main-page');
     this.selectSimilarity = super.initialize('.select-similarity');
     this.selectSimilarityDisplay = super.initialize('.select-similarity-display');
+    this.mainObjectSelect = super.initialize('.linker__object-main-select');
+    this.mainObjectAdd = super.initialize('.linker__object-main-add');
+    this.additionalContainer = super.initialize('.linker__object-additional-container');
+    this.controlButtonsRemoveListeners();
     this.controlButtons = [];
     this.controlButtons.push(this.saveButton);
     this.controlButtons.push(this.checkButton);
@@ -69,14 +98,15 @@ export class Linker extends MainView {
     this.controlButtons.push(this.deleteButton);
     this.controlButtons.push(this.resetButton);
     this.controlButtons.push(this.mainButton);
-    this.controlButtonsRemoveListeners();
+    this.controlButtons.push(this.mainObjectSelect);
+    this.controlButtons.push(this.mainObjectAdd);
     this.controlButtonsAddListeners();
-    await this.fill(await super.sendQuery(this.linkerURL));
+    this.additionalObjects = [];
     await this.enableOverlay(false);
     await this.disableUI(false, this.MENU, this.SEARCH);
   }
 
-  async fill(data) {
+  async fill(data, detailsHierarchy = false) {
     logger(`fill();`, this, COMMENTS);
     console.log(data);
     await this.enableOverlay(true);
@@ -88,6 +118,10 @@ export class Linker extends MainView {
     data.data.forEach((entry) => {
       const listItem = document.createElement('div');
       listItem.classList.add('linker__list-item');
+      const objectId = document.createElement('div');
+      objectId.classList.add('linker__list-item-id');
+      objectId.textContent = entry.id;
+      objectId.style.display = 'none';
       const code = document.createElement('div');
       code.classList.add('linker__list-item-code', 'linker__list-size-code');
       code.textContent = entry.buildCode;
@@ -131,12 +165,14 @@ export class Linker extends MainView {
       name.appendChild(nameTooltip);
       const detailButton = document.createElement('button');
       detailButton.classList.add('linker__list-item-details-button', 'button');
+      detailButton.dataset.id = entry.id;
       detailButton.textContent = 'Подробнее';
       const selectButton = document.createElement('button');
       selectButton.classList.add('linker__list-item-pick-button', 'button');
       selectButton.textContent = 'Выбрать';
       details.appendChild(detailButton);
       details.appendChild(selectButton);
+      listItem.appendChild(objectId);
       listItem.appendChild(code);
       listItem.appendChild(year);
       listItem.appendChild(ready);
@@ -147,12 +183,27 @@ export class Linker extends MainView {
       listItem.appendChild(details);
       this.linkerList.appendChild(listItem);
     });
+    this.linkerListSelectRemoveListeners();
+    this.linkerListSelectButtons = [];
+    this.linkerListSelectButtons = this.linkerList.querySelectorAll('.linker__list-item-pick-button');
+    this.linkerListDetailsButtons = [];
+    this.linkerListDetailsButtons = this.linkerList.querySelectorAll('.linker__list-item-details-button');
+    this.linkerListSelectAddListeners();
+    if (detailsHierarchy) {
+      this.linkerListDetailsButtons.forEach((button) => {
+        button.style.display = 'none';
+      });
+    } else {
+      // add common details
+    }
     await this.enableOverlay(false);
     await this.disableUI(false, this.MENU, this.SEARCH);
   }
 
   saveFn() {
     logger(`saveFn();`, this, COMMENTS);
+    const removeButtons = this.additionalContainer.querySelectorAll('.linker__object-additional-remove');
+    removeButtons.forEach((button) => button.click());
   }
 
   checkFn() {
@@ -169,6 +220,8 @@ export class Linker extends MainView {
 
   resetFn() {
     logger(`resetFn();`, this, COMMENTS);
+    const removeButtons = this.additionalContainer.querySelectorAll('.linker__object-additional-remove');
+    removeButtons.forEach((button) => button.click());
   }
 
   goMainPageFn() {
@@ -180,23 +233,250 @@ export class Linker extends MainView {
   }
 
   controlButtonsAddListeners() {
-    logger(`controlButtonsAddListeners();`, this, COMMENTS);
-    let index = 0;
-    this.controlButtons.forEach((button) => {
-      super.addListener(button, 'click', this.controlButtonFuncs[index]);
-      index++;
-    });
-    super.addListener(this.selectSimilarity, 'input', this.similarityInputWatchFn);
+    try {
+      logger(`controlButtonsAddListeners();`, this, COMMENTS);
+      let index = 0;
+      this.controlButtons.forEach((button) => {
+        super.addListener(button, 'click', this.controlButtonFuncs[index]);
+        index++;
+      });
+      super.addListener(this.selectSimilarity, 'input', this.similarityInputWatchFn);
+    } catch (e) {
+      logger(`controlButtonsAddListeners(); ` + e, this, COMMENTS);
+    }
   }
 
   controlButtonsRemoveListeners() {
-    logger(`controlButtonsRemoveListeners();`, this, COMMENTS);
-    let index = 0;
-    this.controlButtons.forEach((button) => {
-      super.removeListener(button, 'click', this.controlButtonFuncs[index]);
-      index++;
+    try {
+      logger(`controlButtonsRemoveListeners();`, this, COMMENTS);
+      let index = 0;
+      this.controlButtons.forEach((button) => {
+        super.removeListener(button, 'click', this.controlButtonFuncs[index]);
+        index++;
+      });
+      super.removeListener(this.selectSimilarity, 'input', this.similarityInputWatchFn);
+    } catch (e) {
+      logger(`controlButtonsRemoveListeners(); ` + e, this, COMMENTS);
+    }
+  }
+
+  objectMainAdd() {
+    logger(`objectMainAdd();`, this, COMMENTS);
+    const additionalObject = document.createElement('div');
+    additionalObject.classList.add('linker__object-additional');
+    const objectBox = document.createElement('div');
+    objectBox.classList.add('linker__object-additional-box');
+    const objectSelectButton = document.createElement('span');
+    objectSelectButton.classList.add('linker__object-additional-select', 'button', 'material-icons');
+    objectSelectButton.textContent = 'playlist_add_check';
+    const objectDeleteButton = document.createElement('span');
+    objectDeleteButton.classList.add('linker__object-additional-remove', 'button', 'material-icons');
+    objectDeleteButton.textContent = 'remove';
+    additionalObject.appendChild(objectBox);
+    additionalObject.appendChild(objectSelectButton);
+    additionalObject.appendChild(objectDeleteButton);
+    const additionalId = document.createElement('div');
+    additionalId.classList.add('linker-object-id');
+    additionalId.style.display = 'none';
+    const code = document.createElement('div');
+    code.classList.add('linker__object-additional-code', 'linker__object-size-code', 'linker-object-code');
+    const year = document.createElement('div');
+    year.classList.add('linker__object-additional-year', 'linker__object-size-year', 'linker-object-year');
+    const name = document.createElement('div');
+    name.classList.add('linker__object-additional-name', 'linker__object-size-name', 'linker-object-name');
+    const nameTooltip = document.createElement('div');
+    nameTooltip.classList.add('tooltip');
+    name.appendChild(nameTooltip);
+    objectBox.appendChild(additionalId);
+    objectBox.appendChild(code);
+    objectBox.appendChild(year);
+    objectBox.appendChild(name);
+    this.additionalContainer.appendChild(additionalObject);
+    this.additionalObjects.push(additionalObject);
+    this.additionalObjectAddListeners();
+  }
+
+  async objectMainSelect(e) {
+    logger(`objectMainSelect();`, this, COMMENTS);
+    await this.fill(await super.sendQuery(this.linkerURL));
+    this.currentlySelectedObject = e.target.parentElement;
+  }
+
+  async objectAdditionalSelect(e) {
+    logger(`objectAdditionalSelect();`, this, COMMENTS);
+    await this.fill(await super.sendQuery(this.linkerURL));
+    this.currentlySelectedObject = e.target.parentElement;
+  }
+
+  objectAdditionalRemove(e) {
+    logger(`objectAdditionalRemove();`, this, COMMENTS);
+    const selectButtons = e.target.parentElement.querySelector('.linker__object-additional-select');
+    super.removeListener(selectButtons, 'click', this.additionalObjectsFuncs[0]);
+    e.target.parentElement.remove();
+    this.additionalObjects = this.additionalObjects.filter((el) => {
+      if (el !== e.target.parentElement) {
+        return el;
+      }
     });
-    super.removeListener(this.selectSimilarity, 'input', this.similarityInputWatchFn);
+  }
+
+  additionalObjectAddListeners() {
+    logger(`additionalObjectAddListeners();`, this, COMMENTS);
+    const selectButtons = this.additionalContainer.querySelectorAll('.linker__object-additional-select');
+    const removeButtons = this.additionalContainer.querySelectorAll('.linker__object-additional-remove');
+    try {
+      selectButtons.forEach((button) => {
+        super.removeListener(button, 'click', this.additionalObjectsFuncs[0]);
+      });
+      removeButtons.forEach((button) => {
+        super.removeListener(button, 'click', this.additionalObjectsFuncs[1]);
+      }, true);
+    } catch (e) {
+      logger(`additionalObjectAddListeners(); ` + e, this, COMMENTS);
+    }
+    selectButtons.forEach((button) => {
+      super.addListener(button, 'click', this.additionalObjectsFuncs[0]);
+    });
+    removeButtons.forEach((button) => {
+      super.addListener(button, 'click', this.additionalObjectsFuncs[1]);
+    }, true);
+  }
+
+  listItemSelectFn(e) {
+    logger(`listItemSelectFn();`, this, COMMENTS);
+    const id = this.currentlySelectedObject.querySelector('.linker-object-id');
+    const code = this.currentlySelectedObject.querySelector('.linker-object-code');
+    const year = this.currentlySelectedObject.querySelector('.linker-object-year');
+    const name = this.currentlySelectedObject.querySelector('.linker-object-name');
+    id.textContent = e.target.parentElement.parentElement.querySelector('.linker__list-item-id').textContent;
+    code.textContent = e.target.parentElement.parentElement.querySelector('.linker__list-item-code').textContent;
+    year.textContent = e.target.parentElement.parentElement.querySelector('.linker__list-item-year').textContent;
+    name.textContent = e.target.parentElement.parentElement.querySelector('.linker__list-item-name').textContent;
+  }
+
+  linkerListSelectAddListeners() {
+    logger(`linkerListSelectAddListeners();`, this, COMMENTS);
+    this.linkerListSelectButtons.forEach((button) => {
+      super.addListener(button, 'click', this.listItemSelectFunc);
+    });
+  }
+
+  linkerListSelectRemoveListeners() {
+    logger(`linkerListSelectRemoveListeners();`, this, COMMENTS);
+    try {
+      this.linkerListSelectButtons.forEach((button) => {
+        super.removeListener(button, 'click', this.listItemSelectFunc);
+      });
+    } catch (e) {
+      logger(`linkerListSelectRemoveListeners(); ` + e, this, COMMENTS);
+    }
+  }
+
+  linkerListDetailsAddListeners() {
+    logger(`linkerListDetailsAddListeners();`, this, COMMENTS);
+  }
+
+  linkerListDetailsRemoveListeners() {
+    logger(`linkerListDetailsRemoveListeners();`, this, COMMENTS);
+  }
+
+  async listItemDetails(e) {
+    logger(`listItemDetails();`, this, COMMENTS);
+    try {
+      super.disableUI(true, this.MENU, this.SEARCH);
+      super.enableOverlay(true);
+      // const data = await super.sendQuery(this.hierarchyDetailURL, `?unique_code=${e.target.dataset.id}`);
+      const data = await super.sendQuery(this.hierarchyDetailURL, `?unique_code=${e.target.dataset.id}`);
+      const headers = [
+        'Год',
+        'Уникальный код объекта',
+        'Код стройки и объекта',
+        'Вид инвестиционного проекта',
+        'Код территории',
+        'Наименование территории',
+        'Код министерства',
+        'Наименование министерства',
+        'Код программы',
+        'Наименование программы',
+        'Код года ввода в действие',
+        'Код задания',
+        'Код формы собствен-ника',
+        'Целевые статьи расходов',
+        'Признак обработки',
+        'Наименование',
+        'Мощность',
+        'Срок Минэкономики',
+        'Лимит по данным Минэкономики',
+        'Мощность по данным Минэкономики',
+        'Срок ввода в действие стройки',
+        'Ввод в действие мощности по проекту',
+        'Введено с начала стр-ва до 1 января отч. года',
+        'Намечено к вводу на год',
+        'Введено с начала года по отчетный месяц включительно',
+        'Месяц фактического года',
+        'Стоимость стр-ва - всего',
+        'Лимит капвложений на год (федеральный бюджет)',
+        'Лимит капвложений на год (бюджет субъектов РФ)',
+        'Лимит капвложений на год (прочие источники)',
+        'Фактически исп-но с нач. стр-ва до 1 января отч. года',
+        'Фактически исп-но с нач. года по отчетный месяц включительно',
+        'Фактически профинан-но с нач. года (федеральный бюджет)',
+        'Фактически профинан-но с нач. года (бюджет субъектов РФ)',
+        'Фактически профинан-но с нач. года (прочие источники)',
+        'Процент технической готовности',
+      ];
+      const detailWindow = document.createElement('div');
+      detailWindow.classList.add('detail-window');
+      const innerContainer = document.createElement('div');
+      innerContainer.classList.add('detail-window_inner-container');
+      const header = document.createElement('div');
+      header.classList.add('detail-window__header');
+      headers.forEach((name) => {
+        const h = document.createElement('div');
+        h.textContent = name;
+        header.appendChild(h);
+      });
+      const rows = document.createElement('div');
+      rows.classList.add('detail-view__rows');
+      const closeButton = document.createElement('button');
+      closeButton.classList.add('detail-window__close-button', 'button');
+      closeButton.textContent = 'Закрыть';
+      const exportButton = document.createElement('button');
+      exportButton.classList.add('detail-window__export-button', 'button');
+      exportButton.textContent = 'Экспорт';
+      data.forEach((entry) => {
+        const row = document.createElement('div');
+        row.classList.add('detail-window__block');
+        Object.keys(entry).forEach((k) => {
+          const outer = document.createElement('div');
+          outer.classList.add('detail-window__outer-row');
+          const el = document.createElement('div');
+          el.textContent = entry[k];
+          super.insertElement(outer, el);
+          super.insertElement(row, outer);
+        });
+        rows.appendChild(row);
+      });
+      super.insertElement(detailWindow, innerContainer);
+      super.insertElement(detailWindow, closeButton);
+      super.insertElement(detailWindow, exportButton);
+      super.insertElement(innerContainer, header);
+      super.insertElement(innerContainer, rows);
+      this.insertElement(this.BODY, detailWindow);
+      this.hierarchyDetailWindow = this.initialize('.detail-window');
+      this.hierarchyDetailCloseButton = this.initialize(
+          '.detail-window__close-button');
+      this.hierarchyDetailExportButton = this.initialize(
+          '.detail-window__export-button');
+      this.detailClose();
+      this.detailDownload();
+      logger(`detailsShow(); id: ${e.target.dataset.id}`, this, COMMENTS);
+    } catch (error) {
+      super.disableUI(false, this.MENU, this.SEARCH);
+      super.enableOverlay(false);
+      logger(`detailsShow(); ` + e, this, COMMENTS);
+      this.errorMessage(e.target, 'Не удалось получить данные с сервера.', 3);
+    }
   }
 
   linkerNode() {
@@ -253,14 +533,18 @@ export class Linker extends MainView {
     linkerObjectMain.appendChild(linkerObjectMainBox);
     linkerObjectMain.appendChild(linkerObjectMainSelect);
     linkerObjectMain.appendChild(linkerObjectMainAdd);
+    const linkerObjectMainId = document.createElement('div');
+    linkerObjectMainId.classList.add('linker-object-id');
+    linkerObjectMainId.style.display = 'none';
     const linkerObjectMainCode = document.createElement('div');
-    linkerObjectMainCode.classList.add('linker__object-main-code', 'linker__object-size-code');
+    linkerObjectMainCode.classList.add('linker__object-main-code', 'linker__object-size-code', 'linker-object-code');
     const linkerObjectMainYear = document.createElement('div');
-    linkerObjectMainYear.classList.add('linker__object-main-year', 'linker__object-size-year');
+    linkerObjectMainYear.classList.add('linker__object-main-year', 'linker__object-size-year', 'linker-object-year');
     const linkerObjectMainName = document.createElement('div');
-    linkerObjectMainName.classList.add('linker__object-main-name', 'linker__object-size-name');
+    linkerObjectMainName.classList.add('linker__object-main-name', 'linker__object-size-name', 'linker-object-name');
     const mainNameTooltip = document.createElement('div');
     mainNameTooltip.classList.add('tooltip');
+    linkerObjectMainBox.appendChild(linkerObjectMainId);
     linkerObjectMainBox.appendChild(linkerObjectMainCode);
     linkerObjectMainBox.appendChild(linkerObjectMainYear);
     linkerObjectMainBox.appendChild(linkerObjectMainName);
@@ -343,7 +627,7 @@ export class Linker extends MainView {
     listName.textContent = 'Название';
     const listDetails = document.createElement('div');
     listDetails.classList.add('linker__list-header-details', 'linker__list-size-details');
-    listDetails.textContent = 'Подробнее';
+    listDetails.textContent = 'Выбрать';
     bottomContainer.appendChild(linkerListHeaders);
     linkerListHeaders.appendChild(listCode);
     linkerListHeaders.appendChild(listYear);
