@@ -1,8 +1,9 @@
-import {logger} from '@core/utils';
+import {logger, removeInactiveListeners} from '@core/utils';
 import {COMMENTS} from '@/index';
+import {SEARCH} from '@/index';
 import {Search} from '@/components/search/Search';
 
-export let LINKER;
+// export let LINKER;
 
 export class Linker extends Search {
   constructor(
@@ -27,6 +28,8 @@ export class Linker extends Search {
       currentlySelectedObject,
       linkerListSelectButtons,
       linkerListDetailsButtons,
+      currentUniqueCodeEdit,
+      currentUniqueCode,
   ) {
     super();
     this.linkerList = linkerList;
@@ -65,16 +68,22 @@ export class Linker extends Search {
     this.linkerListSelectButtons = linkerListSelectButtons;
     this.linkerListDetailsButtons = linkerListDetailsButtons;
     this.listItemSelectFunc = this.listItemSelectFn.bind(this);
+    this.currentUniqueCodeEdit = currentUniqueCodeEdit;
+    this.currentUniqueCode = currentUniqueCode;
+    this.currenListStat = 'normal'; // normal/similarity/check
+    this.linkerState = 'normal'; // normal/update
   }
 
-  async linkerInit() {
+  async linkerInit(hierarchy, search) {
     logger(``, false, COMMENTS);
     logger(`init();`, this, COMMENTS);
-    LINKER = this;
-    this.enableOverlay(true);
-    this.disableUI(true, this.MENU, this.SEARCH);
+    removeInactiveListeners();
+    await this.enableOverlay(true);
+    await this.disableUI(true, this.MENU, this.SEARCH);
     super.clearDisplay();
     super.insertElement(this.DISPLAY, this.linkerNode());
+    await search.searchInit();
+    console.log(search.applyButton);
     this.linkerList = super.initialize('.linker__list');
     this.totalObjects = super.initialize('.pagination__info-objects-value');
     this.currentPage = super.initialize('.pagination__nav-display');
@@ -90,6 +99,17 @@ export class Linker extends Search {
     this.mainObjectSelect = super.initialize('.linker__object-main-select');
     this.mainObjectAdd = super.initialize('.linker__object-main-add');
     this.additionalContainer = super.initialize('.linker__object-additional-container');
+    await this.disableUI(true,
+        this.saveButton,
+        this.checkButton,
+        this.similarButton,
+        this.deleteButton,
+        this.resetButton,
+        SEARCH.applyButton,
+        SEARCH.searchButton,
+        SEARCH.nextButton,
+        SEARCH.prevButton,
+        SEARCH.goToButton);
     this.controlButtonsRemoveListeners();
     this.controlButtons = [];
     this.controlButtons.push(this.saveButton);
@@ -102,6 +122,34 @@ export class Linker extends Search {
     this.controlButtons.push(this.mainObjectAdd);
     this.controlButtonsAddListeners();
     this.additionalObjects = [];
+    this.currentUniqueCodeEdit = '';
+    if (hierarchy.uniqueCodeToEdit !== '') {
+      this.currentUniqueCodeEdit = hierarchy.uniqueCodeToEdit;
+      hierarchy.uniqueCodeToEdit = '';
+      const response = await super.sendQuery(this.linkerGetEditURL, `?unique_code=${this.currentUniqueCodeEdit}`);
+      await response.data.forEach(() => this.mainObjectAdd.click());
+      this.additionalObjects[this.additionalObjects.length - 1].querySelector('.linker__object-additional-remove').click();
+      const mainObject = super.initialize('.linker__object-main');
+      mainObject.querySelector('.linker-main-unique-code').textContent = this.currentUniqueCodeEdit;
+      mainObject.querySelector('.linker-object-id').textContent = response.data[0].id;
+      mainObject.querySelector('.linker-object-code').textContent = response.data[0].build_code;
+      mainObject.querySelector('.linker-object-year').textContent = response.data[0].year_data;
+      mainObject.querySelector('.linker-object-name').textContent = response.data[0].generate_name;
+      let index = 1;
+      this.linkerState = 'normal';
+      this.additionalObjects.forEach((obj) => {
+        if (index < response.length - 1); {
+          obj.querySelector('.linker-object-id').textContent = response.data[index].id;
+          obj.querySelector('.linker-object-code').textContent = response.data[index].build_code;
+          obj.querySelector('.linker-object-year').textContent = response.data[index].year_data;
+          obj.querySelector('.linker-object-name').textContent = response.data[index].generate_name;
+          index++;
+        }
+      });
+      this.linkerState = 'update';
+      await super.disableUI(false, this.deleteButton, this.resetButton);
+      await super.disableUI(true, this.saveButton, this.mainObjectSelect);
+    }
     await this.enableOverlay(false);
     await this.disableUI(false, this.MENU, this.SEARCH);
   }
@@ -118,6 +166,10 @@ export class Linker extends Search {
     data.data.forEach((entry) => {
       const listItem = document.createElement('div');
       listItem.classList.add('linker__list-item');
+      const objectUniqueCode = document.createElement('div');
+      objectUniqueCode.classList.add('linker__list-item-unique-code');
+      objectUniqueCode.textContent = entry.uniqueCode ? entry.uniqueCode : '';
+      objectUniqueCode.style.display = 'none';
       const objectId = document.createElement('div');
       objectId.classList.add('linker__list-item-id');
       objectId.textContent = entry.id;
@@ -172,6 +224,7 @@ export class Linker extends Search {
       selectButton.textContent = 'Выбрать';
       details.appendChild(detailButton);
       details.appendChild(selectButton);
+      listItem.appendChild(objectUniqueCode);
       listItem.appendChild(objectId);
       listItem.appendChild(code);
       listItem.appendChild(year);
@@ -190,42 +243,80 @@ export class Linker extends Search {
     this.linkerListDetailsButtons = this.linkerList.querySelectorAll('.linker__list-item-details-button');
     this.linkerListSelectAddListeners();
     if (detailsHierarchy) {
+      // add hierarchy details
+    } else {
       this.linkerListDetailsButtons.forEach((button) => {
         button.style.display = 'none';
       });
-    } else {
-      // add common details
     }
+
     await this.enableOverlay(false);
     await this.disableUI(false, this.MENU, this.SEARCH);
   }
 
   saveFn() {
     logger(`saveFn();`, this, COMMENTS);
+
     const removeButtons = this.additionalContainer.querySelectorAll('.linker__object-additional-remove');
     removeButtons.forEach((button) => button.click());
+    const mainBox = super.initialize('.linker__object-main');
+    mainBox.querySelector('.linker-main-unique-code').textContent = '';
+    mainBox.querySelector('.linker-object-id').textContent = '';
+    mainBox.querySelector('.linker-object-code').textContent = '';
+    mainBox.querySelector('.linker-object-year').textContent = '';
+    mainBox.querySelector('.linker-object-name').textContent = '';
+    this.currentUniqueCode = '';
+    this.currentUniqueCodeEdit = '';
+    super.disableUI(true, this.saveButton, this.deleteButton);
   }
 
   checkFn() {
     logger(`checkFn();`, this, COMMENTS);
+    super.disableUI(true, SEARCH.applyButton, SEARCH.searchButton);
+    const uniqueCode = super.initialize('.linker-main-unique-code').textContent;
+    console.log(uniqueCode);
   }
 
-  similarityFn() {
+  async similarityFn() {
     logger(`similarityFn();`, this, COMMENTS);
+    super.disableUI(true, SEARCH.applyButton, SEARCH.searchButton);
+    const uniqueCode = super.initialize('.linker-main-unique-code').textContent;
+    console.log(uniqueCode);
+    await this.fill(await super.sendQuery(this.linkerPredictionNewURL));
   }
 
-  deleteFn() {
+  async deleteFn(e) {
     logger(`deleteFn();`, this, COMMENTS);
+    console.log(this.currentUniqueCodeEdit);
+    const q = await super.deleteQuery(this.currentUniqueCodeEdit);
+    if (q === 200) {
+      this.resetButton.click();
+      super.errorMessage(e.target, 'удалено', 1, '#0f7814');
+    } else {
+      super.errorMessage(e.target, 'ошибка, объект не удален');
+    }
+    console.log(q);
   }
 
   resetFn() {
     logger(`resetFn();`, this, COMMENTS);
     const removeButtons = this.additionalContainer.querySelectorAll('.linker__object-additional-remove');
     removeButtons.forEach((button) => button.click());
+    const mainBox = super.initialize('.linker__object-main');
+    mainBox.querySelector('.linker-main-unique-code').textContent = '';
+    mainBox.querySelector('.linker-object-id').textContent = '';
+    mainBox.querySelector('.linker-object-code').textContent = '';
+    mainBox.querySelector('.linker-object-year').textContent = '';
+    mainBox.querySelector('.linker-object-name').textContent = '';
+    super.disableUI(true, this.saveButton, this.deleteButton);
+    super.disableUI(false, this.mainObjectSelect);
+    this.currentUniqueCode = '';
+    this.currentUniqueCodeEdit = '';
   }
 
   goMainPageFn() {
     logger(`goMainPageFn();`, this, COMMENTS);
+    this.navMain.click();
   }
 
   similarityInputWatch() {
@@ -248,15 +339,15 @@ export class Linker extends Search {
 
   controlButtonsRemoveListeners() {
     try {
-      logger(`controlButtonsRemoveListeners();`, this, COMMENTS);
       let index = 0;
       this.controlButtons.forEach((button) => {
         super.removeListener(button, 'click', this.controlButtonFuncs[index]);
         index++;
       });
       super.removeListener(this.selectSimilarity, 'input', this.similarityInputWatchFn);
+      logger(`>>> Listeners removed.`, this, COMMENTS);
     } catch (e) {
-      logger(`controlButtonsRemoveListeners(); ` + e, this, COMMENTS);
+      logger(`>>> No listeners detected. ` + e, this, COMMENTS);
     }
   }
 
@@ -298,21 +389,42 @@ export class Linker extends Search {
 
   async objectMainSelect(e) {
     logger(`objectMainSelect();`, this, COMMENTS);
+    try {
+      this.currentlySelectedObject.style.background = 'none';
+    } catch (e) {
+      logger(`>>> No selection detected ` + e, this, COMMENTS);
+    }
     await this.fill(await super.sendQuery(this.linkerURL));
     this.currentlySelectedObject = e.target.parentElement;
+    this.currentlySelectedObject.style.background = '#11a0111c';
+    super.disableUI(true, this.checkButton, this.similarButton);
+    super.disableUI(false, SEARCH.applyButton, SEARCH.searchButton);
   }
 
   async objectAdditionalSelect(e) {
     logger(`objectAdditionalSelect();`, this, COMMENTS);
+    try {
+      this.currentlySelectedObject.style.background = 'none';
+    } catch (e) {
+      logger(`>>> No selection detected ` + e, this, COMMENTS);
+    }
     await this.fill(await super.sendQuery(this.linkerURL));
     this.currentlySelectedObject = e.target.parentElement;
+    this.currentlySelectedObject.style.background = '#11a0111c';
+    if (this.currentUniqueCodeEdit !== '') {
+      super.disableUI(false, this.similarButton, SEARCH.applyButton, SEARCH.searchButton);
+    } else {
+      super.disableUI(false, this.similarButton, this.checkButton, SEARCH.applyButton, SEARCH.searchButton);
+    }
   }
 
   objectAdditionalRemove(e) {
     logger(`objectAdditionalRemove();`, this, COMMENTS);
+    this.disableUI(true, this.similarButton, this.checkButton, SEARCH.applyButton, SEARCH.searchButton);
     const selectButtons = e.target.parentElement.querySelector('.linker__object-additional-select');
     super.removeListener(selectButtons, 'click', this.additionalObjectsFuncs[0]);
     e.target.parentElement.remove();
+    super.disableUI(false, this.saveButton);
     this.additionalObjects = this.additionalObjects.filter((el) => {
       if (el !== e.target.parentElement) {
         return el;
@@ -342,12 +454,25 @@ export class Linker extends Search {
     }, true);
   }
 
-  listItemSelectFn(e) {
+  async listItemSelectFn(e) {
     logger(`listItemSelectFn();`, this, COMMENTS);
+    await super.disableUI(true, this.similarButton, this.checkButton, SEARCH.applyButton, SEARCH.searchButton);
+    if (this.currentUniqueCodeEdit !== '') {
+      await super.disableUI(false, this.saveButton);
+    } else {
+      await super.disableUI(false, this.saveButton, this.resetButton);
+    }
+    this.currentlySelectedObject.style.background = 'none';
+    const uniqueCode = this.currentlySelectedObject.querySelector('.linker-main-unique-code');
     const id = this.currentlySelectedObject.querySelector('.linker-object-id');
     const code = this.currentlySelectedObject.querySelector('.linker-object-code');
     const year = this.currentlySelectedObject.querySelector('.linker-object-year');
     const name = this.currentlySelectedObject.querySelector('.linker-object-name');
+    try {
+      uniqueCode.textContent = e.target.parentElement.parentElement.querySelector('.linker__list-item-unique-code').textContent;
+    } catch (e) {
+      logger(`>>> No Unique Code for Additional object. ` + e, this, COMMENTS);
+    }
     id.textContent = e.target.parentElement.parentElement.querySelector('.linker__list-item-id').textContent;
     code.textContent = e.target.parentElement.parentElement.querySelector('.linker__list-item-code').textContent;
     year.textContent = e.target.parentElement.parentElement.querySelector('.linker__list-item-year').textContent;
@@ -362,13 +487,13 @@ export class Linker extends Search {
   }
 
   linkerListSelectRemoveListeners() {
-    logger(`linkerListSelectRemoveListeners();`, this, COMMENTS);
     try {
       this.linkerListSelectButtons.forEach((button) => {
         super.removeListener(button, 'click', this.listItemSelectFunc);
       });
+      logger(`>>> Listeners removed.`, this, COMMENTS);
     } catch (e) {
-      logger(`linkerListSelectRemoveListeners(); ` + e, this, COMMENTS);
+      logger(`>>> No listeners detected. ` + e, this, COMMENTS);
     }
   }
 
@@ -479,6 +604,30 @@ export class Linker extends Search {
     }
   }
 
+  async createNewHierarchy() {
+    logger(`createNewHierarchy();`, this, COMMENTS);
+    // const hierarchy = `{
+    //   "main": ${},
+    //   "additional": ${}
+    // }`;
+  }
+
+  async updateHierarchy() {
+    logger(`updateHierarchy();`, this, COMMENTS);
+    // const hierarchy = `{
+    //   "uniqueCode": "${}",
+    //   "toAdd": ${},
+    //   "toDelete": ${}
+    // }`;
+  }
+
+  async deleteHierarchy() {
+    logger(`deleteHierarchy();`, this, COMMENTS);
+    // const uniqueCode = `{
+    //   "uniqueCode": ${}
+    // }`;
+  }
+
   linkerNode() {
     const linker = document.createElement('div');
     linker.classList.add('linker');
@@ -533,6 +682,9 @@ export class Linker extends Search {
     linkerObjectMain.appendChild(linkerObjectMainBox);
     linkerObjectMain.appendChild(linkerObjectMainSelect);
     linkerObjectMain.appendChild(linkerObjectMainAdd);
+    const linkerObjectMainUniqueCode = document.createElement('div');
+    linkerObjectMainUniqueCode.classList.add('linker-main-unique-code');
+    linkerObjectMainUniqueCode.style.display = 'none';
     const linkerObjectMainId = document.createElement('div');
     linkerObjectMainId.classList.add('linker-object-id');
     linkerObjectMainId.style.display = 'none';
@@ -544,6 +696,7 @@ export class Linker extends Search {
     linkerObjectMainName.classList.add('linker__object-main-name', 'linker__object-size-name', 'linker-object-name');
     const mainNameTooltip = document.createElement('div');
     mainNameTooltip.classList.add('tooltip');
+    linkerObjectMainBox.appendChild(linkerObjectMainUniqueCode);
     linkerObjectMainBox.appendChild(linkerObjectMainId);
     linkerObjectMainBox.appendChild(linkerObjectMainCode);
     linkerObjectMainBox.appendChild(linkerObjectMainYear);

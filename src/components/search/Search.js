@@ -1,7 +1,7 @@
 import {MainView} from '@core/MainView';
 import {logger} from '@core/utils';
 import {COMMENTS} from '@/index';
-import {HIERARCHY} from '@/components/hierarchy/Hierarchy';
+import {HIERARCHY} from '@/index';
 
 export class Search extends MainView {
   constructor(applyButton, searchButton, goToButton, prevButton, nextButton, goToInput, searchInput, searchUseFilters) {
@@ -103,7 +103,7 @@ export class Search extends MainView {
         HIERARCHY.fill(await super.sendQuery(this.hierarchyURL, options));
       }
     } else {
-      super.errorMessage(e.target, 'Такой страницы нет.');
+      super.errorMessage(e.target, 'такой страницы нет');
       this.goToInput.value = '';
       this.goToInput.focus();
       logger(`goToFn(); ` + e, this, COMMENTS);
@@ -142,7 +142,7 @@ export class Search extends MainView {
         this.checkPagination();
       }
     } else {
-      super.errorMessage(this.SEARCH, 'Введите запрос.');
+      super.errorMessage(this.SEARCH, 'введите запрос');
       this.searchInput.focus();
     }
   }
@@ -163,7 +163,7 @@ export class Search extends MainView {
 
   removeListeners() {
     try {
-      logger(`removeListeners();`, this, COMMENTS);
+      logger(`>>> Listeners removed.`, this, COMMENTS);
       let index = 0;
       this.buttons.forEach((button) => {
         super.removeListener(button, 'click', this.funcs[index]);
@@ -171,7 +171,7 @@ export class Search extends MainView {
       });
       super.removeListener(this.searchInput, 'input', this.searchColorTextFn);
     } catch (e) {
-      logger(`removeListeners(); ` + e, this, COMMENTS);
+      logger(`>>> No listeners detected. ` + e, this, COMMENTS);
     }
   }
 

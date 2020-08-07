@@ -1,10 +1,10 @@
 // import {MainView} from '@core/MainView';
-import {logger} from '@core/utils';
-import {COMMENTS} from '@/index';
+import {logger, removeInactiveListeners} from '@core/utils';
+import {COMMENTS, SEARCH} from '@/index';
 import {Search} from '@/components/search/Search';
+import {LINKER} from '@/index';
+import {HIERARCHY} from '@/index';
 // import hierarchyTEST from '../../../hierarchy.json';
-
-export let HIERARCHY;
 
 export class Hierarchy extends Search {
   constructor(
@@ -33,12 +33,13 @@ export class Hierarchy extends Search {
     this.currentPage = currentPage;
     this.totalPages = totalPages;
     this.totalObjects = totalObjects;
+    this.uniqueCodeToEdit = '';
   }
 
-  async hierarchyInit(main, hierarchy, search) {
+  async hierarchyInit(main, hierarchy, search, linker) {
     logger(``, false, COMMENTS);
     logger(`init();`, this, COMMENTS);
-    HIERARCHY = this;
+    removeInactiveListeners();
     await this.enableOverlay(true);
     await this.disableUI(true, this.MENU, this.SEARCH);
     this.clearDisplay();
@@ -49,7 +50,7 @@ export class Hierarchy extends Search {
     await search.searchInit(main, hierarchy);
     await this.fill(await super.sendQuery(this.hierarchyURL));
     await this.enableOverlay(false);
-    await this.disableUI(false, this.MENU, this.SEARCH);
+    await this.disableUI(false, this.MENU, this.SEARCH, SEARCH.applyButton, SEARCH.searchButton);
   }
 
   async fill(data) {
@@ -184,7 +185,7 @@ export class Hierarchy extends Search {
       logger(`fill(); ` + e, this, COMMENTS);
       await this.enableOverlay(false);
       await this.disableUI(false, this.MENU, this.SEARCH);
-      super.errorMessage(this.hierarchyContainer, 'Нет данных.', 2);
+      super.errorMessage(this.hierarchyContainer, 'нет данных', 2);
       this.totalObjects.textContent = 0;
       this.totalPages.textContent = 0;
     }
@@ -383,7 +384,7 @@ export class Hierarchy extends Search {
       super.disableUI(false, this.MENU, this.SEARCH);
       super.enableOverlay(false);
       logger(`detailsShow(); ` + e, this, COMMENTS);
-      this.errorMessage(e.target, 'Не удалось получить данные с сервера.', 3);
+      this.errorMessage(e.target, 'не удалось получить данные с сервера', 3);
     }
   }
 
@@ -415,11 +416,14 @@ export class Hierarchy extends Search {
     }, true);
   }
 
-  objectEdit(e) {
+  async objectEdit(e) {
     try {
       logger(`editObject(); index: ${e.target.dataset.index}`, this, COMMENTS);
-    } catch (e) {
-      this.errorMessage(e.target, 'Ошибка');
+      this.uniqueCodeToEdit = e.target.parentElement.querySelector('.hierarchy-view__object-details').dataset.id;
+      await LINKER.linkerInit(HIERARCHY, SEARCH);
+    } catch (err) {
+      this.errorMessage(e.target, 'ошибка');
+      console.error(err);
     }
   }
 
@@ -462,9 +466,9 @@ export class Hierarchy extends Search {
         });
         index++;
       });
-      logger(`removeListeners();`, this, COMMENTS);
+      logger(`>>> Listeners removed.`, this, COMMENTS);
     } catch (e) {
-      logger(`removeListeners(); ` + e, this, COMMENTS);
+      logger(`>>> No listeners detected. ` + e, this, COMMENTS);
     }
   }
 }

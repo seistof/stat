@@ -46,21 +46,25 @@ export class MainView extends Query {
   }
 
   disableUI(token, ...target) {
-    return new Promise((r) => {
-      if (token) {
-        target.forEach((el) => {
-          el.style['pointer-events'] = 'none';
-          el.style.opacity = '.33';
-        });
-        r();
-      } else {
-        target.forEach((el) => {
-          el.style['pointer-events'] = 'auto';
-          el.style.opacity = '1';
-        });
-        r();
-      }
-    });
+    try {
+      return new Promise((r) => {
+        if (token) {
+          target.forEach((el) => {
+            el.style['pointer-events'] = 'none';
+            el.style.opacity = '.33';
+          });
+          r();
+        } else {
+          target.forEach((el) => {
+            el.style['pointer-events'] = 'auto';
+            el.style.opacity = '1';
+          });
+          r();
+        }
+      });
+    } catch (e) {
+      logger(`disableUI(); ` + e, this, COMMENTS);
+    }
   }
 
   enableOverlay(token) {
@@ -137,14 +141,11 @@ export class MainView extends Query {
       logger(`Reset filters.`, this, COMMENTS);
     });
     super.addListener(this.navMain, 'click', async () => {
-      linker.linkerListSelectRemoveListeners();
-      linker.controlButtonsRemoveListeners();
       await hierarchy.hierarchyInit(main, hierarchy, search, linker);
       logger(`Hierarchy`, this, COMMENTS);
     });
     super.addListener(this.navLinker, 'click', async () => {
-      hierarchy.removeListeners();
-      await linker.linkerInit(hierarchy);
+      await linker.linkerInit(hierarchy, search);
       logger(`Linker`, this, COMMENTS);
     });
     super.addListener(this.navUpload, 'click', () => {
@@ -176,6 +177,7 @@ export class MainView extends Query {
   }
 
   fillFilters(data) {
+    console.log(data);
     try {
       data.year.forEach((el) => {
         const option = document.createElement('option');
@@ -212,10 +214,11 @@ export class MainView extends Query {
     }
   }
 
-  errorMessage(element, text, delay = .75) {
+  errorMessage(element, text, delay = .75, color = '#af2323') {
     const box = document.createElement('div');
     box.classList.add('error-message-box');
     box.textContent = text;
+    box.style.background = color;
     element.appendChild(box);
     this.disableUI(true, element);
     element.style.opacity = '1';

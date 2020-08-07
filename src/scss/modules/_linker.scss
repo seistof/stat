@@ -86,6 +86,8 @@
     &-main {
       display: flex;
       align-items: center;
+      //justify-content: space-between;
+      border-radius: 6px;
 
       &:hover {
         background: lightgray;
@@ -100,7 +102,10 @@
     &-additional {
       display: flex;
       align-items: center;
+      //justify-content: space-between;
       padding: 2px 0;
+      border-radius: 6px;
+
 
       &:hover {
         background: lightgray;
@@ -154,8 +159,12 @@
       flex-direction: column;
 
       .button {
+        position: relative;
         margin: 3px 0;
         padding: 1px;
+        .error-message-box {
+          top: 20px;
+        }
       }
     }
   }

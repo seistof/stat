@@ -42,6 +42,11 @@
       .select-ready {
         margin-top: 5px;
         padding: 3px 0 3px 0;
+        @-moz-document url-prefix() {
+          .select-ready {
+            padding: 7px 0 7px 0;
+          }
+        }
       }
 
       select {
