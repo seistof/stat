@@ -23,9 +23,9 @@ const s = new Search();
 const u = new Upload();
 const d = new Dictionary();
 
-export const LINKER = l;
-export const HIERARCHY = h;
-export const SEARCH = s;
+// export const LINKER = l;
+// export const HIERARCHY = h;
+// export const SEARCH = s;
 
 (async () => {
   logger('', false, COMMENTS);

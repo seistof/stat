@@ -1,6 +1,5 @@
-import {logger, removeInactiveListeners} from '@core/utils';
+import {logger} from '@core/utils';
 import {COMMENTS} from '@/index';
-import {SEARCH} from '@/index';
 import {Search} from '@/components/search/Search';
 
 // export let LINKER;
@@ -74,16 +73,15 @@ export class Linker extends Search {
     this.linkerState = 'normal'; // normal/update
   }
 
-  async linkerInit(hierarchy, search) {
+  async linkerInit() {
     logger(``, false, COMMENTS);
     logger(`init();`, this, COMMENTS);
-    removeInactiveListeners();
+    this.removeInactiveListeners();
     await this.enableOverlay(true);
-    await this.disableUI(true, this.MENU, this.SEARCH);
+    await this.disableUI(true, this.MENU, this.SEARCHBOX);
     super.clearDisplay();
     super.insertElement(this.DISPLAY, this.linkerNode());
-    await search.searchInit();
-    console.log(search.applyButton);
+    await this.SEARCH.searchInit();
     this.linkerList = super.initialize('.linker__list');
     this.totalObjects = super.initialize('.pagination__info-objects-value');
     this.currentPage = super.initialize('.pagination__nav-display');
@@ -105,11 +103,11 @@ export class Linker extends Search {
         this.similarButton,
         this.deleteButton,
         this.resetButton,
-        SEARCH.applyButton,
-        SEARCH.searchButton,
-        SEARCH.nextButton,
-        SEARCH.prevButton,
-        SEARCH.goToButton);
+        this.SEARCH.applyButton,
+        this.SEARCH.searchButton,
+        this.SEARCH.nextButton,
+        this.SEARCH.prevButton,
+        this.SEARCH.goToButton);
     this.controlButtonsRemoveListeners();
     this.controlButtons = [];
     this.controlButtons.push(this.saveButton);
@@ -123,9 +121,9 @@ export class Linker extends Search {
     this.controlButtonsAddListeners();
     this.additionalObjects = [];
     this.currentUniqueCodeEdit = '';
-    if (hierarchy.uniqueCodeToEdit !== '') {
-      this.currentUniqueCodeEdit = hierarchy.uniqueCodeToEdit;
-      hierarchy.uniqueCodeToEdit = '';
+    if (this.HIERARCHY.uniqueCodeToEdit !== '') {
+      this.currentUniqueCodeEdit = this.HIERARCHY.uniqueCodeToEdit;
+      this.HIERARCHY.uniqueCodeToEdit = '';
       const response = await super.sendQuery(this.linkerGetEditURL, `?unique_code=${this.currentUniqueCodeEdit}`);
       await response.data.forEach(() => this.mainObjectAdd.click());
       this.additionalObjects[this.additionalObjects.length - 1].querySelector('.linker__object-additional-remove').click();
@@ -138,7 +136,8 @@ export class Linker extends Search {
       let index = 1;
       this.linkerState = 'normal';
       this.additionalObjects.forEach((obj) => {
-        if (index < response.length - 1); {
+        if (index < response.length - 1) ;
+        {
           obj.querySelector('.linker-object-id').textContent = response.data[index].id;
           obj.querySelector('.linker-object-code').textContent = response.data[index].build_code;
           obj.querySelector('.linker-object-year').textContent = response.data[index].year_data;
@@ -151,107 +150,113 @@ export class Linker extends Search {
       await super.disableUI(true, this.saveButton, this.mainObjectSelect);
     }
     await this.enableOverlay(false);
-    await this.disableUI(false, this.MENU, this.SEARCH);
+    await this.disableUI(false, this.MENU, this.SEARCHBOX);
   }
 
   async fill(data, detailsHierarchy = false) {
-    logger(`fill();`, this, COMMENTS);
-    console.log(data);
-    await this.enableOverlay(true);
-    await this.disableUI(true, this.MENU, this.SEARCH);
-    this.linkerList.innerHTML = '';
-    this.totalObjects.textContent = data.totalLen;
-    this.totalPages.textContent = Math.ceil(data.totalLen / 50);
-    this.linkerList.innerHTML = '';
-    data.data.forEach((entry) => {
-      const listItem = document.createElement('div');
-      listItem.classList.add('linker__list-item');
-      const objectUniqueCode = document.createElement('div');
-      objectUniqueCode.classList.add('linker__list-item-unique-code');
-      objectUniqueCode.textContent = entry.uniqueCode ? entry.uniqueCode : '';
-      objectUniqueCode.style.display = 'none';
-      const objectId = document.createElement('div');
-      objectId.classList.add('linker__list-item-id');
-      objectId.textContent = entry.id;
-      objectId.style.display = 'none';
-      const code = document.createElement('div');
-      code.classList.add('linker__list-item-code', 'linker__list-size-code');
-      code.textContent = entry.buildCode;
-      const year = document.createElement('div');
-      year.classList.add('linker__list-item-year', 'linker__list-size-year');
-      year.textContent = entry.yearData;
-      const ready = document.createElement('div');
-      ready.classList.add('linker__list-item-ready', 'linker__list-size-ready');
-      ready.textContent = entry.maxPercentage;
-      const ministry = document.createElement('div');
-      ministry.classList.add('linker__list-item-ministry', 'linker__list-size-ministry');
-      ministry.textContent = entry.ministryName.replace('Министерство', 'Мин.');
-      const ministryTooltip = document.createElement('div');
-      ministryTooltip.classList.add('tooltip');
-      ministryTooltip.textContent = entry.ministryName;
-      const territory = document.createElement('div');
-      territory.classList.add('linker__list-item-territory', 'linker__list-size-territory');
-      territory.textContent = entry.territoryName;
-      const territoryTooltip = document.createElement('div');
-      territoryTooltip.classList.add('tooltip');
-      territoryTooltip.textContent = entry.territoryName;
-      const program = document.createElement('div');
-      program.classList.add('linker__list-item-program', 'linker__list-size-program');
-      program.textContent = entry.programName;
-      const programTooltip = document.createElement('div');
-      programTooltip.classList.add('tooltip');
-      programTooltip.textContent = entry.programName;
-      const name = document.createElement('div');
-      name.classList.add('linker__list-item-name', 'linker__list-size-name');
-      name.textContent = entry.name.replace('***', ' ');
-      const nameTooltip = document.createElement('div');
-      nameTooltip.classList.add('tooltip');
-      nameTooltip.innerHTML = entry.name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>');
-      const details = document.createElement('div');
-      details.classList.add('linker__list-item-details', 'linker__list-size-details');
-      const detailsTooltip = document.createElement('div');
-      detailsTooltip.classList.add('tooltip');
-      ministry.appendChild(ministryTooltip);
-      territory.appendChild(territoryTooltip);
-      program.appendChild(programTooltip);
-      name.appendChild(nameTooltip);
-      const detailButton = document.createElement('button');
-      detailButton.classList.add('linker__list-item-details-button', 'button');
-      detailButton.dataset.id = entry.id;
-      detailButton.textContent = 'Подробнее';
-      const selectButton = document.createElement('button');
-      selectButton.classList.add('linker__list-item-pick-button', 'button');
-      selectButton.textContent = 'Выбрать';
-      details.appendChild(detailButton);
-      details.appendChild(selectButton);
-      listItem.appendChild(objectUniqueCode);
-      listItem.appendChild(objectId);
-      listItem.appendChild(code);
-      listItem.appendChild(year);
-      listItem.appendChild(ready);
-      listItem.appendChild(ministry);
-      listItem.appendChild(territory);
-      listItem.appendChild(program);
-      listItem.appendChild(name);
-      listItem.appendChild(details);
-      this.linkerList.appendChild(listItem);
-    });
-    this.linkerListSelectRemoveListeners();
-    this.linkerListSelectButtons = [];
-    this.linkerListSelectButtons = this.linkerList.querySelectorAll('.linker__list-item-pick-button');
-    this.linkerListDetailsButtons = [];
-    this.linkerListDetailsButtons = this.linkerList.querySelectorAll('.linker__list-item-details-button');
-    this.linkerListSelectAddListeners();
-    if (detailsHierarchy) {
-      // add hierarchy details
-    } else {
-      this.linkerListDetailsButtons.forEach((button) => {
-        button.style.display = 'none';
+    try {
+      logger(`fill();`, this, COMMENTS);
+      console.log(data);
+      this.linkerList.innerHTML = '';
+      this.totalObjects.textContent = data.totalLen;
+      this.totalPages.textContent = Math.ceil(data.totalLen / 50);
+      this.linkerList.innerHTML = '';
+      data.data.forEach((entry) => {
+        const listItem = document.createElement('div');
+        listItem.classList.add('linker__list-item');
+        const objectUniqueCode = document.createElement('div');
+        objectUniqueCode.classList.add('linker__list-item-unique-code');
+        objectUniqueCode.textContent = entry.uniqueCode ? entry.uniqueCode : '';
+        objectUniqueCode.style.display = 'none';
+        const objectId = document.createElement('div');
+        objectId.classList.add('linker__list-item-id');
+        objectId.textContent = entry.id;
+        objectId.style.display = 'none';
+        const code = document.createElement('div');
+        code.classList.add('linker__list-item-code', 'linker__list-size-code');
+        code.textContent = entry.buildCode;
+        const year = document.createElement('div');
+        year.classList.add('linker__list-item-year', 'linker__list-size-year');
+        year.textContent = entry.yearData;
+        const ready = document.createElement('div');
+        ready.classList.add('linker__list-item-ready', 'linker__list-size-ready');
+        ready.textContent = entry.maxPercentage;
+        const ministry = document.createElement('div');
+        ministry.classList.add('linker__list-item-ministry', 'linker__list-size-ministry');
+        ministry.textContent = entry.ministryName.replace('Министерство', 'Мин.');
+        const ministryTooltip = document.createElement('div');
+        ministryTooltip.classList.add('tooltip');
+        ministryTooltip.textContent = entry.ministryName;
+        const territory = document.createElement('div');
+        territory.classList.add('linker__list-item-territory', 'linker__list-size-territory');
+        territory.textContent = entry.territoryName;
+        const territoryTooltip = document.createElement('div');
+        territoryTooltip.classList.add('tooltip');
+        territoryTooltip.textContent = entry.territoryName;
+        const program = document.createElement('div');
+        program.classList.add('linker__list-item-program', 'linker__list-size-program');
+        program.textContent = entry.programName;
+        const programTooltip = document.createElement('div');
+        programTooltip.classList.add('tooltip');
+        programTooltip.textContent = entry.programName;
+        const name = document.createElement('div');
+        name.classList.add('linker__list-item-name', 'linker__list-size-name');
+        name.textContent = entry.name.replace('***', ' ');
+        const nameTooltip = document.createElement('div');
+        nameTooltip.classList.add('tooltip');
+        nameTooltip.innerHTML = entry.name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>');
+        const details = document.createElement('div');
+        details.classList.add('linker__list-item-details', 'linker__list-size-details');
+        const detailsTooltip = document.createElement('div');
+        detailsTooltip.classList.add('tooltip');
+        ministry.appendChild(ministryTooltip);
+        territory.appendChild(territoryTooltip);
+        program.appendChild(programTooltip);
+        name.appendChild(nameTooltip);
+        const detailButton = document.createElement('button');
+        detailButton.classList.add('linker__list-item-details-button', 'button');
+        detailButton.dataset.id = entry.id;
+        detailButton.textContent = 'Подробнее';
+        const selectButton = document.createElement('button');
+        selectButton.classList.add('linker__list-item-pick-button', 'button');
+        selectButton.textContent = 'Выбрать';
+        details.appendChild(detailButton);
+        details.appendChild(selectButton);
+        listItem.appendChild(objectUniqueCode);
+        listItem.appendChild(objectId);
+        listItem.appendChild(code);
+        listItem.appendChild(year);
+        listItem.appendChild(ready);
+        listItem.appendChild(ministry);
+        listItem.appendChild(territory);
+        listItem.appendChild(program);
+        listItem.appendChild(name);
+        listItem.appendChild(details);
+        this.linkerList.appendChild(listItem);
       });
+      this.linkerListSelectRemoveListeners();
+      this.linkerListSelectButtons = [];
+      this.linkerListSelectButtons = this.linkerList.querySelectorAll('.linker__list-item-pick-button');
+      this.linkerListDetailsButtons = [];
+      this.linkerListDetailsButtons = this.linkerList.querySelectorAll('.linker__list-item-details-button');
+      this.linkerListSelectAddListeners();
+      if (detailsHierarchy) {
+        // add hierarchy details
+      } else {
+        this.linkerListDetailsButtons.forEach((button) => {
+          button.style.display = 'none';
+        });
+      }
+      await this.enableOverlay(false);
+      await this.disableUI(false, this.MENU, this.SEARCHBOX);
+    } catch (e) {
+      logger(`fill(); ` + e, this, COMMENTS);
+      await this.enableOverlay(false);
+      await this.disableUI(false, this.MENU, this.SEARCHBOX);
+      super.errorMessage(this.linkerList, 'нет данных', 2);
+      this.totalObjects.textContent = 0;
+      this.totalPages.textContent = 0;
     }
-
-    await this.enableOverlay(false);
-    await this.disableUI(false, this.MENU, this.SEARCH);
   }
 
   saveFn() {
@@ -270,24 +275,33 @@ export class Linker extends Search {
     super.disableUI(true, this.saveButton, this.deleteButton);
   }
 
-  checkFn() {
+  async checkFn() {
     logger(`checkFn();`, this, COMMENTS);
-    super.disableUI(true, SEARCH.applyButton, SEARCH.searchButton);
+    super.disableUI(true, this.SEARCH.applyButton, this.SEARCH.searchButton);
     const uniqueCode = super.initialize('.linker-main-unique-code').textContent;
     console.log(uniqueCode);
+    await this.enableOverlay(true);
+    await this.disableUI(true, this.MENU, this.SEARCHBOX);
   }
 
   async similarityFn() {
     logger(`similarityFn();`, this, COMMENTS);
-    super.disableUI(true, SEARCH.applyButton, SEARCH.searchButton);
-    const uniqueCode = super.initialize('.linker-main-unique-code').textContent;
-    console.log(uniqueCode);
-    await this.fill(await super.sendQuery(this.linkerPredictionNewURL));
+    super.disableUI(true, this.SEARCH.applyButton, this.SEARCH.searchButton);
+    const id = super.initialize('.linker-object-id').textContent;
+    const y = super.initialize('.linker__object-main-year').textContent;
+    const p = super.initialize('.select-similarity-display').value;
+    await this.enableOverlay(true);
+    await this.disableUI(true, this.MENU, this.SEARCHBOX);
+    await this.fill(await super.sendQuery(this.linkerPredictionNewURL,
+        `?normalized_id=${id}&year_data=${y}&percentage_limit=${p}`,
+    ));
   }
 
   async deleteFn(e) {
     logger(`deleteFn();`, this, COMMENTS);
     console.log(this.currentUniqueCodeEdit);
+    await this.enableOverlay(true);
+    await this.disableUI(true, this.MENU, this.SEARCHBOX);
     const q = await super.deleteQuery(this.currentUniqueCodeEdit);
     if (q === 200) {
       this.resetButton.click();
@@ -295,7 +309,8 @@ export class Linker extends Search {
     } else {
       super.errorMessage(e.target, 'ошибка, объект не удален');
     }
-    console.log(q);
+    await this.enableOverlay(false);
+    await this.disableUI(false, this.MENU, this.SEARCHBOX);
   }
 
   resetFn() {
@@ -394,11 +409,13 @@ export class Linker extends Search {
     } catch (e) {
       logger(`>>> No selection detected ` + e, this, COMMENTS);
     }
+    await this.enableOverlay(true);
+    await this.disableUI(true, this.MENU, this.SEARCHBOX);
     await this.fill(await super.sendQuery(this.linkerURL));
     this.currentlySelectedObject = e.target.parentElement;
     this.currentlySelectedObject.style.background = '#11a0111c';
     super.disableUI(true, this.checkButton, this.similarButton);
-    super.disableUI(false, SEARCH.applyButton, SEARCH.searchButton);
+    super.disableUI(false, this.SEARCH.applyButton, this.SEARCH.searchButton);
   }
 
   async objectAdditionalSelect(e) {
@@ -408,19 +425,21 @@ export class Linker extends Search {
     } catch (e) {
       logger(`>>> No selection detected ` + e, this, COMMENTS);
     }
+    await this.enableOverlay(true);
+    await this.disableUI(true, this.MENU, this.SEARCHBOX);
     await this.fill(await super.sendQuery(this.linkerURL));
     this.currentlySelectedObject = e.target.parentElement;
     this.currentlySelectedObject.style.background = '#11a0111c';
     if (this.currentUniqueCodeEdit !== '') {
-      super.disableUI(false, this.similarButton, SEARCH.applyButton, SEARCH.searchButton);
+      super.disableUI(false, this.similarButton, this.SEARCH.applyButton, this.SEARCH.searchButton);
     } else {
-      super.disableUI(false, this.similarButton, this.checkButton, SEARCH.applyButton, SEARCH.searchButton);
+      super.disableUI(false, this.similarButton, this.checkButton, this.SEARCH.applyButton, this.SEARCH.searchButton);
     }
   }
 
   objectAdditionalRemove(e) {
     logger(`objectAdditionalRemove();`, this, COMMENTS);
-    this.disableUI(true, this.similarButton, this.checkButton, SEARCH.applyButton, SEARCH.searchButton);
+    this.disableUI(true, this.similarButton, this.checkButton, this.SEARCH.applyButton, this.SEARCH.searchButton);
     const selectButtons = e.target.parentElement.querySelector('.linker__object-additional-select');
     super.removeListener(selectButtons, 'click', this.additionalObjectsFuncs[0]);
     e.target.parentElement.remove();
@@ -456,7 +475,7 @@ export class Linker extends Search {
 
   async listItemSelectFn(e) {
     logger(`listItemSelectFn();`, this, COMMENTS);
-    await super.disableUI(true, this.similarButton, this.checkButton, SEARCH.applyButton, SEARCH.searchButton);
+    await super.disableUI(true, this.similarButton, this.checkButton, this.SEARCH.applyButton, this.SEARCH.searchButton);
     if (this.currentUniqueCodeEdit !== '') {
       await super.disableUI(false, this.saveButton);
     } else {
@@ -508,7 +527,7 @@ export class Linker extends Search {
   async listItemDetails(e) {
     logger(`listItemDetails();`, this, COMMENTS);
     try {
-      super.disableUI(true, this.MENU, this.SEARCH);
+      super.disableUI(true, this.MENU, this.SEARCHBOX);
       super.enableOverlay(true);
       // const data = await super.sendQuery(this.hierarchyDetailURL, `?unique_code=${e.target.dataset.id}`);
       const data = await super.sendQuery(this.hierarchyDetailURL, `?unique_code=${e.target.dataset.id}`);
@@ -597,7 +616,7 @@ export class Linker extends Search {
       this.detailDownload();
       logger(`detailsShow(); id: ${e.target.dataset.id}`, this, COMMENTS);
     } catch (error) {
-      super.disableUI(false, this.MENU, this.SEARCH);
+      super.disableUI(false, this.MENU, this.SEARCHBOX);
       super.enableOverlay(false);
       logger(`detailsShow(); ` + e, this, COMMENTS);
       this.errorMessage(e.target, 'Не удалось получить данные с сервера.', 3);

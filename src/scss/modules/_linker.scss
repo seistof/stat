@@ -264,6 +264,11 @@
     min-height: 200px;
     overflow: auto;
     position: relative;
+    .error-message-box {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50% -50%);
+    }
 
     &-header {
       height: 40px;

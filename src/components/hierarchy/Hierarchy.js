@@ -1,10 +1,6 @@
-// import {MainView} from '@core/MainView';
-import {logger, removeInactiveListeners} from '@core/utils';
-import {COMMENTS, SEARCH} from '@/index';
+import {logger} from '@core/utils';
+import {COMMENTS} from '@/index';
 import {Search} from '@/components/search/Search';
-import {LINKER} from '@/index';
-import {HIERARCHY} from '@/index';
-// import hierarchyTEST from '../../../hierarchy.json';
 
 export class Hierarchy extends Search {
   constructor(
@@ -36,28 +32,26 @@ export class Hierarchy extends Search {
     this.uniqueCodeToEdit = '';
   }
 
-  async hierarchyInit(main, hierarchy, search, linker) {
+  async hierarchyInit() {
     logger(``, false, COMMENTS);
     logger(`init();`, this, COMMENTS);
-    removeInactiveListeners();
+    this.removeInactiveListeners();
     await this.enableOverlay(true);
-    await this.disableUI(true, this.MENU, this.SEARCH);
+    await this.disableUI(true, this.MENU, this.SEARCHBOX);
     this.clearDisplay();
     super.insertElement(this.DISPLAY, this.hierarchyNode());
     this.totalObjects = super.initialize('.pagination__info-objects-value');
     this.currentPage = super.initialize('.pagination__nav-display');
     this.totalPages = super.initialize('.pagination__info-pages-value');
-    await search.searchInit(main, hierarchy);
+    await this.SEARCH.searchInit();
     await this.fill(await super.sendQuery(this.hierarchyURL));
     await this.enableOverlay(false);
-    await this.disableUI(false, this.MENU, this.SEARCH, SEARCH.applyButton, SEARCH.searchButton);
+    await this.disableUI(false, this.MENU, this.SEARCHBOX, this.SEARCH.applyButton, this.SEARCH.searchButton);
   }
 
   async fill(data) {
     try {
       logger(`fill();`, this, COMMENTS);
-      await this.enableOverlay(true);
-      await this.disableUI(true, this.MENU, this.SEARCH);
       this.hierarchyContainer = super.initialize('.hierarchy-view__object-container');
       this.hierarchyContainer.innerHTML = '';
       this.currentData = data;
@@ -179,12 +173,8 @@ export class Hierarchy extends Search {
       this.removeListeners();
       this.initListButtons();
       this.addListeners();
-      await this.enableOverlay(false);
-      await this.disableUI(false, this.MENU, this.SEARCH);
     } catch (e) {
       logger(`fill(); ` + e, this, COMMENTS);
-      await this.enableOverlay(false);
-      await this.disableUI(false, this.MENU, this.SEARCH);
       super.errorMessage(this.hierarchyContainer, 'нет данных', 2);
       this.totalObjects.textContent = 0;
       this.totalPages.textContent = 0;
@@ -291,7 +281,7 @@ export class Hierarchy extends Search {
 
   async objectDetails(e) {
     try {
-      super.disableUI(true, this.MENU, this.SEARCH);
+      super.disableUI(true, this.MENU, this.SEARCHBOX);
       super.enableOverlay(true);
       // const data = await super.sendQuery(this.hierarchyDetailURL, `?unique_code=${e.target.dataset.id}`);
       this.currentUniqueCode = e.target.dataset.id;
@@ -381,7 +371,7 @@ export class Hierarchy extends Search {
       this.detailDownload();
       logger(`detailsShow(); id: ${e.target.dataset.id}`, this, COMMENTS);
     } catch (error) {
-      super.disableUI(false, this.MENU, this.SEARCH);
+      super.disableUI(false, this.MENU, this.SEARCHBOX);
       super.enableOverlay(false);
       logger(`detailsShow(); ` + e, this, COMMENTS);
       this.errorMessage(e.target, 'не удалось получить данные с сервера', 3);
@@ -392,7 +382,7 @@ export class Hierarchy extends Search {
     super.addListener(this.hierarchyDetailCloseButton, 'click', () => {
       // this.body.removeChild(this.hierarchyDetailWindow);
       this.hierarchyDetailWindow.remove();
-      super.disableUI(false, this.MENU, this.SEARCH);
+      super.disableUI(false, this.MENU, this.SEARCHBOX);
       super.enableOverlay(false);
       logger(`detailClose();`, this, COMMENTS);
     }, true);
@@ -410,7 +400,7 @@ export class Hierarchy extends Search {
       a.remove();
       this.hierarchyDetailWindow.remove();
       // this.body.removeChild(this.hDetailWindow);
-      super.disableUI(false, this.MENU, this.SEARCH);
+      super.disableUI(false, this.MENU, this.SEARCHBOX);
       super.enableOverlay(false);
       logger(`detailDownload();`, this, COMMENTS);
     }, true);
@@ -420,7 +410,7 @@ export class Hierarchy extends Search {
     try {
       logger(`editObject(); index: ${e.target.dataset.index}`, this, COMMENTS);
       this.uniqueCodeToEdit = e.target.parentElement.querySelector('.hierarchy-view__object-details').dataset.id;
-      await LINKER.linkerInit(HIERARCHY, SEARCH);
+      await this.LINKER.linkerInit();
     } catch (err) {
       this.errorMessage(e.target, 'ошибка');
       console.error(err);

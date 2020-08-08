@@ -1,4 +1,4 @@
-import {COMMENTS, HIERARCHY, LINKER, SEARCH} from '@/index';
+import {COMMENTS} from '@/index';
 
 export function logger(text, context = false, show = COMMENTS) {
   if (show) {
@@ -12,15 +12,4 @@ export function logger(text, context = false, show = COMMENTS) {
 
 export function addressBarText(text = '') {
   document.location.hash = text.toString();
-}
-
-export function removeInactiveListeners() {
-  try {
-    HIERARCHY.removeListeners();
-    LINKER.linkerListSelectRemoveListeners();
-    LINKER.controlButtonsRemoveListeners();
-    SEARCH.removeListeners();
-  } catch (e) {
-    logger(`>>> No other listeners detected. ` + e, false, COMMENTS);
-  }
 }

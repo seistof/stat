@@ -5,7 +5,7 @@ import {COMMENTS} from '@/index';
 // import filtersTEST from '../../filters.json';
 
 export class MainView extends Query {
-  constructor(overlay) {
+  constructor(overlay, MAIN, HIERARCHY, LINKER, SEARCH, UPLOAD, DICTIONARY) {
     super();
     // Filter
     this.filterYear = super.initialize('#select-year');
@@ -29,19 +29,34 @@ export class MainView extends Query {
     // Utils
     this.OVERLAY = overlay;
     // Search
+    this.MAIN = MAIN;
+    this.HIERARCHY = HIERARCHY;
+    this.LINKER = LINKER;
+    this.SEARCH = SEARCH;
+    this.UPLOAD = UPLOAD;
+    this.DICTIONARY = DICTIONARY;
   }
 
   async mainInit(main, hierarchy, linker, search, upload, dictionary) {
+    const classes = [main, hierarchy, linker, search, upload, dictionary];
+    classes.forEach((c) => {
+      c.MAIN = this;
+      c.HIERARCHY = hierarchy;
+      c.LINKER = linker;
+      c.SEARCH = search;
+      c.UPLOAD = upload;
+      c.DICTIONARY = dictionary;
+    });
     logger(``, false, COMMENTS);
     logger(`mainInit();`, this, COMMENTS);
     await this.enableOverlay(true);
-    await this.disableUI(true, this.MENU, this.SEARCH);
+    await this.disableUI(true, this.MENU, this.SEARCHBOX);
     this.mainListenersInit(main, hierarchy, linker, search, upload, dictionary);
     this.fillFilters(await super.sendQuery(this.filterURL));
     await this.enableOverlay(false);
-    await this.disableUI(false, this.MENU, this.SEARCH);
+    await this.disableUI(false, this.MENU, this.SEARCHBOX);
     /* Hierarchy init */
-    await hierarchy.hierarchyInit(main, hierarchy, search);
+    await this.HIERARCHY.hierarchyInit();
     /* Hierarchy init */
   }
 
@@ -118,7 +133,7 @@ export class MainView extends Query {
     }
   }
 
-  mainListenersInit(main, hierarchy, linker, search, upload, dictionary) {
+  mainListenersInit() {
     super.addListener(this.filterReadyInput, 'input', () => {
       this.filterReadyAll.checked = false;
       this.filterReadyDisplay.value = this.filterReadyInput.value;
@@ -141,16 +156,16 @@ export class MainView extends Query {
       logger(`Reset filters.`, this, COMMENTS);
     });
     super.addListener(this.navMain, 'click', async () => {
-      await hierarchy.hierarchyInit(main, hierarchy, search, linker);
+      await this.HIERARCHY.hierarchyInit();
       logger(`Hierarchy`, this, COMMENTS);
     });
     super.addListener(this.navLinker, 'click', async () => {
-      await linker.linkerInit(hierarchy, search);
+      await this.LINKER.linkerInit();
       logger(`Linker`, this, COMMENTS);
     });
     super.addListener(this.navUpload, 'click', () => {
       // delete all other listeners
-      upload.init();
+      this.UPLOAD.init();
       logger(`Upload`, this, COMMENTS);
     });
     super.addListener(this.navExport, 'click', () => {
@@ -161,17 +176,17 @@ export class MainView extends Query {
     });
     super.addListener(this.dicMinistry, 'click', () => {
       // delete all other listeners
-      dictionary.init('ministry');
+      this.DICTIONARY.init('ministry');
       logger(`Ministry`, this, COMMENTS);
     });
     super.addListener(this.dicTerritory, 'click', () => {
       // delete all other listeners
-      dictionary.init('territory');
+      this.DICTIONARY.init('territory');
       logger(`Territory`, this, COMMENTS);
     });
     super.addListener(this.dicProgram, 'click', () => {
       // delete all other listeners
-      dictionary.init('program');
+      this.DICTIONARY.init('program');
       logger(`Program`, this, COMMENTS);
     });
   }
@@ -238,5 +253,16 @@ export class MainView extends Query {
   clearDisplay() {
     logger(`clearDisplay();`, this, COMMENTS);
     this.DISPLAY.innerHTML = '';
+  }
+
+  removeInactiveListeners() {
+    try {
+      this.HIERARCHY.removeListeners();
+      this.LINKER.linkerListSelectRemoveListeners();
+      this.LINKER.controlButtonsRemoveListeners();
+      this.SEARCH.removeListeners();
+    } catch (e) {
+      logger(`>>> No other listeners detected. ` + e, false, COMMENTS);
+    }
   }
 }
