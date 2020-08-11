@@ -36,6 +36,7 @@ export class Hierarchy extends Search {
     logger(``, false, COMMENTS);
     logger(`init();`, this, COMMENTS);
     this.SEARCH.sourceView = 'hierarchy';
+    this.filterReset.click();
     this.removeInactiveListeners();
     await this.enableOverlay(true);
     this.clearDisplay();
@@ -182,7 +183,7 @@ export class Hierarchy extends Search {
       this.addListeners();
     } catch (e) {
       logger(`fill(); ` + e, this, COMMENTS);
-      super.errorMessage(this.hierarchyContainer, 'данных, соответствующих запросу не найдено', 3);
+      super.errorMessage(this.hierarchyContainer, 'записей, соответствующих запросу, не найдено', 3);
       this.totalObjects.textContent = 0;
       this.totalPages.textContent = 0;
     }
@@ -416,7 +417,8 @@ export class Hierarchy extends Search {
       await this.LINKER.linkerInit();
     } catch (err) {
       this.errorMessage(e.target, 'ошибка');
-      console.error(err);
+      console.log(err);
+      super.enableOverlay(false);
     }
   }
 

@@ -73,7 +73,7 @@ export class Search extends MainView {
     this.checkPagination();
     let options = super.getFilterValue();
     await this.enableOverlay(true);
-    await this.disableUI(true, this.MENU, this.SEARCHBOX);
+    await this.disableUI(true, this.MENU);
     if (this.sourceView === 'hierarchy') {
       if (options.length === 0) {
         await this.HIERARCHY.fill(
@@ -94,7 +94,7 @@ export class Search extends MainView {
       }
     }
     await this.enableOverlay(false);
-    await this.disableUI(false, this.MENU, this.SEARCHBOX);
+    await this.disableUI(false, this.MENU);
   }
 
   async prevFn() {
@@ -105,7 +105,6 @@ export class Search extends MainView {
     this.checkPagination();
     let options = super.getFilterValue();
     await this.enableOverlay(true);
-    await this.disableUI(true, this.MENU, this.SEARCHBOX);
     if (this.sourceView === 'hierarchy') {
       if (options.length === 0) {
         await this.HIERARCHY.fill(
@@ -126,7 +125,6 @@ export class Search extends MainView {
       }
     }
     await this.enableOverlay(false);
-    await this.disableUI(false, this.MENU, this.SEARCHBOX);
   }
 
   async goToFn(e) {
@@ -143,35 +141,29 @@ export class Search extends MainView {
       this.goToInput.value = '';
       let options = super.getFilterValue();
       await this.enableOverlay(true);
-      await this.disableUI(true, this.MENU, this.SEARCHBOX);
       if (this.sourceView === 'hierarchy') {
-        await this.enableOverlay(true);
-        await this.disableUI(true, this.MENU, this.SEARCHBOX);
+        await this.enableOverlay(false);
         if (options.length === 0) {
-          await this.HIERARCHY.fill(
-              await super.sendQuery(this.hierarchyURL, `?page=${page}`));
+          await this.HIERARCHY.fill(await super.sendQuery(this.hierarchyURL, `?page=${page}`));
           this.checkPagination();
+          await this.enableOverlay(false);
         } else {
           options += `&page=${page}`;
-          await this.HIERARCHY.fill(
-              await super.sendQuery(this.hierarchyURL, options));
+          await this.HIERARCHY.fill(await super.sendQuery(this.hierarchyURL, options));
           this.checkPagination();
+          await this.enableOverlay(false);
         }
       }
-      if (this.sourceView === 'linker' && this.linkerCurrentState ===
-        'normal') {
+      if (this.sourceView === 'linker' && this.linkerCurrentState === 'normal') {
         if (options.length === 0) {
-          await this.LINKER.fill(
-              await super.sendQuery(this.linkerURL, `?page=${page}`));
+          await this.LINKER.fill(await super.sendQuery(this.linkerURL, `?page=${page}`));
           this.checkPagination();
         } else {
           options += `&page=${page}`;
-          await this.LINKER.fill(
-              await super.sendQuery(this.linkerURL, options));
+          await this.LINKER.fill(await super.sendQuery(this.linkerURL, options));
           this.checkPagination();
         }
         await this.enableOverlay(false);
-        await this.disableUI(false, this.MENU, this.SEARCHBOX);
       }
     } else {
       super.errorMessage(e.target, 'такой страницы нет');
@@ -187,7 +179,6 @@ export class Search extends MainView {
     const options = super.getFilterValue();
     console.log(super.getFilterValue());
     await this.enableOverlay(true);
-    await this.disableUI(true, this.MENU, this.SEARCHBOX);
     if (this.sourceView === 'hierarchy') {
       if (options.length === 0) {
         await this.HIERARCHY.fill(await super.sendQuery(this.hierarchyURL));
@@ -208,7 +199,6 @@ export class Search extends MainView {
       }
     }
     await this.enableOverlay(false);
-    await this.disableUI(false, this.MENU, this.SEARCHBOX);
     this.checkPagination();
   }
 
@@ -219,14 +209,12 @@ export class Search extends MainView {
       let options = super.getFilterValue();
       const str = this.searchInput.value.trim();
       await this.enableOverlay(true);
-      await this.disableUI(true, this.MENU, this.SEARCHBOX);
       if (options.length > 0 && this.searchUseFilters.checked) {
         options += `&search_query=${str}`;
         logger(options, this, COMMENTS);
         await this.HIERARCHY.fill(
             await super.sendQuery(this.hierarchySearchURL, options));
         await this.enableOverlay(false);
-        await this.disableUI(false, this.MENU, this.SEARCHBOX);
         this.currentPage.textContent = 1;
         this.checkPagination();
       } else {
@@ -235,12 +223,11 @@ export class Search extends MainView {
         await this.HIERARCHY.fill(await super.sendQuery(this.hierarchySearchURL,
             `?search_query=${str}`));
         await this.enableOverlay(false);
-        await this.disableUI(false, this.MENU, this.SEARCHBOX);
         this.currentPage.textContent = 1;
         this.checkPagination();
       }
     } else {
-      super.errorMessage(this.SEARCH, 'введите запрос');
+      super.errorMessage(this.SEARCHBOX, 'введите запрос');
       this.searchInput.focus();
     }
   }
@@ -284,6 +271,7 @@ export class Search extends MainView {
   }
 
   checkPagination() {
+    console.log(`PAGINATION CHECK`);
     super.disableUI(false, this.prevButton);
     super.disableUI(false, this.nextButton);
     super.disableUI(false, this.goToButton);
