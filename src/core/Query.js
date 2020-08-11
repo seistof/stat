@@ -7,7 +7,7 @@ export class Query extends DomMethods {
   constructor() {
     super();
     this.serverURL = 'http://127.0.0.1:8080';
-    // this.serverURL = 'https://beb3f5a6550b.ngrok.io';
+    // this.serverURL = 'https://c7974e93b9a6.ngrok.io';
     this.authURL = '/login';
     this.filterURL = '/get_filters_list';
     this.hierarchyURL = '/';
@@ -27,11 +27,11 @@ export class Query extends DomMethods {
 
   async sendQuery(url, options = '', method = 'GET') {
     try {
-      const h = new Headers();
-      h.append('Authorization', localStorage.getItem('auth'));
+      // const h = new Headers();
+      // h.append('Authorization', localStorage.getItem('auth'));
       const requestOptions = {
         method: method,
-        headers: h,
+        // headers: h,
         redirect: 'follow',
       };
       const response = await fetch(this.serverURL + url + options, requestOptions);
@@ -44,11 +44,11 @@ export class Query extends DomMethods {
 
   async deleteQuery(uniqueCode) {
     try {
-      const h = new Headers();
-      h.append('Authorization', localStorage.getItem('auth'));
+      // const h = new Headers();
+      // h.append('Authorization', localStorage.getItem('auth'));
       const requestOptions = {
         method: 'DELETE',
-        headers: h,
+        // headers: h,
         redirect: 'follow',
       };
       const response = await fetch(this.serverURL + this.linkerDeleteURL + `?unique_code=${uniqueCode}`, requestOptions);
@@ -59,7 +59,7 @@ export class Query extends DomMethods {
     }
   }
 
-  async authQuery(username = 'serGEY', password = 'a_man_with_a_homosexual_identity') {
+  async authQuery(username = '', password = '') {
     try {
       const response = await fetch(this.serverURL + this.authURL, {
         method: 'POST',

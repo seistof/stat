@@ -35,9 +35,9 @@ export class Hierarchy extends Search {
   async hierarchyInit() {
     logger(``, false, COMMENTS);
     logger(`init();`, this, COMMENTS);
+    this.SEARCH.sourceView = 'hierarchy';
     this.removeInactiveListeners();
     await this.enableOverlay(true);
-    await this.disableUI(true, this.MENU, this.SEARCHBOX);
     this.clearDisplay();
     super.insertElement(this.DISPLAY, this.hierarchyNode());
     this.totalObjects = super.initialize('.pagination__info-objects-value');
@@ -46,7 +46,14 @@ export class Hierarchy extends Search {
     await this.SEARCH.searchInit();
     await this.fill(await super.sendQuery(this.hierarchyURL));
     await this.enableOverlay(false);
-    await this.disableUI(false, this.MENU, this.SEARCHBOX, this.SEARCH.applyButton, this.SEARCH.searchButton);
+    await this.disableUI(false,
+        this.MENU,
+        this.SEARCH.nextButton,
+        this.SEARCH.prevButton,
+        this.SEARCH.goToButton,
+        this.SEARCHBOX,
+        this.FILTERS,
+    );
   }
 
   async fill(data) {
@@ -175,7 +182,7 @@ export class Hierarchy extends Search {
       this.addListeners();
     } catch (e) {
       logger(`fill(); ` + e, this, COMMENTS);
-      super.errorMessage(this.hierarchyContainer, 'нет данных', 2);
+      super.errorMessage(this.hierarchyContainer, 'данных, соответствующих запросу не найдено', 3);
       this.totalObjects.textContent = 0;
       this.totalPages.textContent = 0;
     }
@@ -281,7 +288,6 @@ export class Hierarchy extends Search {
 
   async objectDetails(e) {
     try {
-      super.disableUI(true, this.MENU, this.SEARCHBOX);
       super.enableOverlay(true);
       // const data = await super.sendQuery(this.hierarchyDetailURL, `?unique_code=${e.target.dataset.id}`);
       this.currentUniqueCode = e.target.dataset.id;
@@ -371,7 +377,6 @@ export class Hierarchy extends Search {
       this.detailDownload();
       logger(`detailsShow(); id: ${e.target.dataset.id}`, this, COMMENTS);
     } catch (error) {
-      super.disableUI(false, this.MENU, this.SEARCHBOX);
       super.enableOverlay(false);
       logger(`detailsShow(); ` + e, this, COMMENTS);
       this.errorMessage(e.target, 'не удалось получить данные с сервера', 3);
@@ -382,7 +387,6 @@ export class Hierarchy extends Search {
     super.addListener(this.hierarchyDetailCloseButton, 'click', () => {
       // this.body.removeChild(this.hierarchyDetailWindow);
       this.hierarchyDetailWindow.remove();
-      super.disableUI(false, this.MENU, this.SEARCHBOX);
       super.enableOverlay(false);
       logger(`detailClose();`, this, COMMENTS);
     }, true);
@@ -400,7 +404,6 @@ export class Hierarchy extends Search {
       a.remove();
       this.hierarchyDetailWindow.remove();
       // this.body.removeChild(this.hDetailWindow);
-      super.disableUI(false, this.MENU, this.SEARCHBOX);
       super.enableOverlay(false);
       logger(`detailDownload();`, this, COMMENTS);
     }, true);

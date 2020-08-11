@@ -55,9 +55,7 @@ export class MainView extends Query {
     this.fillFilters(await super.sendQuery(this.filterURL));
     await this.enableOverlay(false);
     await this.disableUI(false, this.MENU, this.SEARCHBOX);
-    /* Hierarchy init */
     await this.HIERARCHY.hierarchyInit();
-    /* Hierarchy init */
   }
 
   disableUI(token, ...target) {
@@ -145,7 +143,7 @@ export class MainView extends Query {
         this.filterReadyDisplay.value = this.filterReadyInput.value;
       }
     });
-    super.addListener(this.filterReset, 'click', () => {
+    super.addListener(this.filterReset, 'click', async () => {
       this.filterYear.selectedIndex = 0;
       this.filterMinistry.selectedIndex = 0;
       this.filterTerritory.selectedIndex = 0;
@@ -194,21 +192,23 @@ export class MainView extends Query {
   fillFilters(data) {
     console.log(data);
     try {
-      data.year.forEach((el) => {
+      data.yearList.forEach((el) => {
         const option = document.createElement('option');
-        option.value = el;
-        option.textContent = el;
+        option.value = el.yeardata;
+        option.textContent = el.yeardata;
         this.filterYear.appendChild(option);
       });
-      data.ministry.forEach((el) => {
+      data.ministryList.forEach((el) => {
         const option = document.createElement('option');
         option.value = el.ID;
-        option.textContent = el.name.replace('Министерство', 'Мин.').
-            replace('Федеральная служба', 'ФС').
-            replace('Федеральное агенство', 'ФА');
+        option.textContent = el.shortName !== null ? el.shortName : el.name;
+        const years = el.fromYear === el.toYear ?
+          ` (${el.fromYear})` :
+          ` (${el.fromYear} - ${el.toYear})`;
+        option.textContent += years;
         this.filterMinistry.appendChild(option);
       });
-      data.territory.forEach((el) => {
+      data.territoryList.forEach((el) => {
         const option = document.createElement('option');
         option.value = el.ID;
         option.textContent = el.name.replace('область', 'обл.').
@@ -216,15 +216,20 @@ export class MainView extends Query {
             replace('Город', 'г.');
         this.filterTerritory.appendChild(option);
       });
-      data.program.forEach((el) => {
+      data.programList.forEach((el) => {
         const option = document.createElement('option');
         option.value = el.ID;
         option.textContent = el.name.replace('Федеральная целевая программа',
             '');
+        const years = el.fromYear === el.toYear ?
+          ` (${el.fromYear})` :
+          ` (${el.fromYear} - ${el.toYear})`;
+        option.textContent += years;
         this.filterProgram.appendChild(option);
       });
       logger(`fillFilters();`, this, COMMENTS);
     } catch (e) {
+      this.errorMessage(this.MENU, 'не удалось загрузить фильтры', 3);
       logger(`fillFilters(); ${e}`, this, COMMENTS);
     }
   }

@@ -51,7 +51,7 @@
       white-space: nowrap;
       padding: 0 5px;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-size-year {
@@ -61,7 +61,7 @@
       white-space: nowrap;
       padding: 0 5px;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-size-name {
@@ -71,7 +71,7 @@
       white-space: nowrap;
       padding: 0 5px;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-title {
@@ -157,6 +157,14 @@
       font-size: 14px;
       display: flex;
       flex-direction: column;
+      position: relative;
+
+      .error-message-box {
+
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%);
+      }
 
       .button {
         position: relative;
@@ -185,7 +193,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-year {
@@ -195,7 +203,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-ready {
@@ -205,7 +213,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-ministry {
@@ -215,7 +223,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-territory {
@@ -225,7 +233,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-program {
@@ -235,7 +243,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-name {
@@ -245,7 +253,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-details {
@@ -255,7 +263,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
   }
 
@@ -293,7 +301,7 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         display: inline-block;
-
+        cursor: default;
         &:hover .tooltip {
           visibility: visible;
           opacity: 1;

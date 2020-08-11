@@ -37,6 +37,6 @@ const d = new Dictionary();
   console.log(`[${u.constructor.name}]`);
   console.log(`[${d.constructor.name}]`);
   logger('', false, COMMENTS);
-  await q.authQuery();
+  // await q.authQuery();
   await m.mainInit(m, h, l, s, u, d);
 })();
