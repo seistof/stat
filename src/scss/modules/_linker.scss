@@ -51,7 +51,7 @@
       white-space: nowrap;
       padding: 0 5px;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-size-year {
@@ -61,7 +61,7 @@
       white-space: nowrap;
       padding: 0 5px;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-size-name {
@@ -71,7 +71,34 @@
       white-space: nowrap;
       padding: 0 5px;
       text-overflow: ellipsis;
+      cursor: default;
+      &:hover .tooltip {
+        visibility: visible;
+        opacity: 1;
+      }
 
+      .tooltip {
+        display: inline-block;
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0.3s linear, opacity 0.3s linear;
+        background-color: rgb(75, 75, 75);
+        color: #fff;
+        border-radius: 4px;
+        padding: 5px;
+        position: absolute;
+        width: 80%;
+        margin-top: 20px;
+        left: 10%;
+        white-space: normal;
+        z-index: 1;
+        font-size: 14px;
+
+        &:hover {
+          visibility: hidden;
+          opacity: 0;
+        }
+      }
     }
 
     &-title {
@@ -86,6 +113,8 @@
     &-main {
       display: flex;
       align-items: center;
+      //justify-content: space-between;
+      border-radius: 6px;
 
       &:hover {
         background: lightgray;
@@ -100,7 +129,10 @@
     &-additional {
       display: flex;
       align-items: center;
+      //justify-content: space-between;
       padding: 2px 0;
+      border-radius: 6px;
+
 
       &:hover {
         background: lightgray;
@@ -152,10 +184,25 @@
       font-size: 14px;
       display: flex;
       flex-direction: column;
+      position: relative;
+
+      .error-message-box {
+
+        top: 35%;
+        left: 50%;
+        transform: translate(-50%);
+        width: 90%;
+        text-align: center;
+      }
 
       .button {
+        position: relative;
         margin: 3px 0;
         padding: 1px;
+
+        .error-message-box {
+          top: 20px;
+        }
       }
     }
   }
@@ -176,7 +223,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-year {
@@ -186,7 +233,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-ready {
@@ -196,7 +243,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-ministry {
@@ -206,7 +253,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-territory {
@@ -216,7 +263,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-program {
@@ -226,7 +273,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-name {
@@ -236,7 +283,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
 
     &-details {
@@ -246,15 +293,23 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-
+      cursor: default;
     }
   }
 
   &__list {
     max-height: calc(100% - 40px);
     min-height: 200px;
+    height: calc(100% - 40px);
     overflow: auto;
     position: relative;
+
+    .error-message-box {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%);
+      font-size: 14px;
+    }
 
     &-header {
       height: 40px;
@@ -279,6 +334,7 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         display: inline-block;
+        cursor: default;
 
         &:hover .tooltip {
           visibility: visible;

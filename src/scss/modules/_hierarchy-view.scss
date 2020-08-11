@@ -21,6 +21,7 @@
       white-space: nowrap;
       padding: 0 5px;
       text-overflow: ellipsis;
+      cursor: default;
     }
 
     &-ready {
@@ -32,6 +33,7 @@
       white-space: nowrap;
       padding: 0 5px;
       text-overflow: ellipsis;
+      cursor: default;
     }
 
     &-code {
@@ -43,6 +45,7 @@
       white-space: nowrap;
       padding: 0 5px;
       text-overflow: ellipsis;
+      cursor: default;
     }
 
     &-info {
@@ -55,7 +58,7 @@
       padding: 0 5px;
       text-overflow: ellipsis;
       display: inline-block;
-
+      cursor: default;
       &:hover .tooltip {
         visibility: visible;
       }
@@ -83,7 +86,7 @@
       padding: 0 5px;
       text-overflow: ellipsis;
       display: inline-block;
-
+      cursor: default;
       &:hover .tooltip {
         visibility: visible;
       }
@@ -142,6 +145,7 @@
       top: 50%;
       transform: translate(-50%, -50%);
       left: 50%;
+      font-size: 14px;
     }
   }
 
@@ -155,6 +159,9 @@
     margin-bottom: 20px;
     border: 1px solid black;
     transition: 1s;
+    &:hover {
+      background: rgba(0, 0, 0, .1);
+    }
 
     &-info, &-name {
       display: inline-block;

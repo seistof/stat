@@ -51,8 +51,7 @@
     margin: 20px;
 
     .error-message-box {
-      top: 50%;
-      transform: translate(-50%, -50%);
+      top: -75%;
       left: 50%;
     }
   }
@@ -69,7 +68,8 @@
 
   &__search-line {
     width: 200px;
-    text-align: center;
+    //text-align: center;
+    padding-left: 5px;
   }
 
   &__search-button {

@@ -1,11 +1,8 @@
-import {MainView} from '@core/MainView';
 import {logger} from '@core/utils';
 import {COMMENTS} from '@/index';
-// import hierarchyTEST from '../../../hierarchy.json';
+import {Search} from '@/components/search/Search';
 
-export let HIERARCHY;
-
-export class Hierarchy extends MainView {
+export class Hierarchy extends Search {
   constructor(
       hierarchyContainer,
       currentUniqueCode,
@@ -32,38 +29,37 @@ export class Hierarchy extends MainView {
     this.currentPage = currentPage;
     this.totalPages = totalPages;
     this.totalObjects = totalObjects;
+    this.uniqueCodeToEdit = '';
   }
 
-  async init(main, hierarchy, search) {
+  async hierarchyInit() {
     logger(``, false, COMMENTS);
     logger(`init();`, this, COMMENTS);
-    HIERARCHY = this;
+    this.SEARCH.sourceView = 'hierarchy';
+    this.filterReset.click();
+    this.removeInactiveListeners();
     await this.enableOverlay(true);
-    await this.disableUI(true, this.MENU, this.SEARCH);
     this.clearDisplay();
     super.insertElement(this.DISPLAY, this.hierarchyNode());
     this.totalObjects = super.initialize('.pagination__info-objects-value');
     this.currentPage = super.initialize('.pagination__nav-display');
     this.totalPages = super.initialize('.pagination__info-pages-value');
-    search.init(main, hierarchy);
-    // TEST
-    // await this.fill(hierarchyTEST);
-    // console.log(hierarchyTEST);
-    // TEST
-    this.fill(await super.sendQuery(this.hierarchyURL));
-    this.initListButtons();
-    this.removeListeners();
-    this.addListeners();
+    await this.SEARCH.searchInit();
+    await this.fill(await super.sendQuery(this.hierarchyURL));
     await this.enableOverlay(false);
-    await this.disableUI(false, this.MENU, this.SEARCH);
+    await this.disableUI(false,
+        this.MENU,
+        this.SEARCH.nextButton,
+        this.SEARCH.prevButton,
+        this.SEARCH.goToButton,
+        this.SEARCHBOX,
+        this.FILTERS,
+    );
   }
 
   async fill(data) {
     try {
-      console.log(data);
       logger(`fill();`, this, COMMENTS);
-      await this.enableOverlay(true);
-      await this.disableUI(true, this.MENU, this.SEARCH);
       this.hierarchyContainer = super.initialize('.hierarchy-view__object-container');
       this.hierarchyContainer.innerHTML = '';
       this.currentData = data;
@@ -182,16 +178,12 @@ export class Hierarchy extends MainView {
         }
         super.insertElement(this.hierarchyContainer, object);
       });
-      this.initListButtons();
       this.removeListeners();
+      this.initListButtons();
       this.addListeners();
-      await this.enableOverlay(false);
-      await this.disableUI(false, this.MENU, this.SEARCH);
     } catch (e) {
       logger(`fill(); ` + e, this, COMMENTS);
-      await this.enableOverlay(false);
-      await this.disableUI(false, this.MENU, this.SEARCH);
-      super.errorMessage(this.hierarchyContainer, 'Нет данных.', 2);
+      super.errorMessage(this.hierarchyContainer, 'записей, соответствующих запросу, не найдено', 3);
       this.totalObjects.textContent = 0;
       this.totalPages.textContent = 0;
     }
@@ -297,131 +289,9 @@ export class Hierarchy extends MainView {
 
   async objectDetails(e) {
     try {
-      super.disableUI(true, this.MENU, this.SEARCH);
       super.enableOverlay(true);
       // const data = await super.sendQuery(this.hierarchyDetailURL, `?unique_code=${e.target.dataset.id}`);
       this.currentUniqueCode = e.target.dataset.id;
-      // TEST
-      // const data = [
-      //   {
-      //     'buildCode': 4900,
-      //     'buildCostTotal': 0,
-      //     'commissioningProjectPower': 4.6,
-      //     'durationCommissioning': 0,
-      //     'factExecutedBeginningPagesBeforeJanuary1ReportYear': 0,
-      //     'factExecutedBeginningYearsReportingMonthInclusive': 0,
-      //     'factFinancedBeginningYearFederalBudget': 0,
-      //     'factFinancedBeginningYearsBudgetEntitiesRFBudget': 0,
-      //     'factFinancedBeginningYearsOtherSources': 0,
-      //     'factYearMonth': 0,
-      //     'form_ownerCode': null,
-      //     'introducedBeginningConstructionUntilJanuary1ReportYear': 0,
-      //     'introducedBeginningYearReportingMonthInclusively': 0,
-      //     'investmentLimitYearEntitiesRFBudget': 0,
-      //     'investmentLimitYearOtherSources': 0,
-      //     'investmentObjectType': null,
-      //     'investment_limitYearFederalBudget': 0,
-      //     'ministryEconomyDataLimit': 0,
-      //     'ministryEconomyTerm': 2012,
-      //     'ministryListCode': 13220,
-      //     'ministryListName': 'Министерство здравоохранения и социального развития РФ',
-      //     'name': 'ГОУ высшего профобразования Алтайский государственный медицинский университет, г.Барнаул, Алтайский край - 0049/*/Реконструкция морфологического корпуса - 004910',
-      //     'normalizedID': 1,
-      //     'percentageTechnicalReadiness': 0,
-      //     'powerAccordingMinistryEconomy': 4.6,
-      //     'powerData': 363,
-      //     'processingSign': 0,
-      //     'programLisName': 'Объекты, мероприятия (укрупненные инвестиционные проекты), не включенные в долгосрочные (федеральные) целевые программы',
-      //     'programListCode': '9900',
-      //     'scheduledCommissioningYear': 0,
-      //     'targetCostItems': 5,
-      //     'taskCode': 4,
-      //     'territoryListCode': '01000000000',
-      //     'territoryListName': 'Алтайский край',
-      //     'uniqueCode': '43.43.43.56.76',
-      //     'yearData': 2011,
-      //     'year_usageCode': 2,
-      //   },
-      //   {
-      //     'buildCode': 4900,
-      //     'buildCostTotal': 0,
-      //     'commissioningProjectPower': 4.6,
-      //     'durationCommissioning': 0,
-      //     'factExecutedBeginningPagesBeforeJanuary1ReportYear': 0,
-      //     'factExecutedBeginningYearsReportingMonthInclusive': 0,
-      //     'factFinancedBeginningYearFederalBudget': 0,
-      //     'factFinancedBeginningYearsBudgetEntitiesRFBudget': 0,
-      //     'factFinancedBeginningYearsOtherSources': 0,
-      //     'factYearMonth': 0,
-      //     'form_ownerCode': null,
-      //     'introducedBeginningConstructionUntilJanuary1ReportYear': 0,
-      //     'introducedBeginningYearReportingMonthInclusively': 0,
-      //     'investmentLimitYearEntitiesRFBudget': 0,
-      //     'investmentLimitYearOtherSources': 0,
-      //     'investmentObjectType': null,
-      //     'investment_limitYearFederalBudget': 0,
-      //     'ministryEconomyDataLimit': 0,
-      //     'ministryEconomyTerm': 2012,
-      //     'ministryListCode': 13220,
-      //     'ministryListName': 'Министерство здравоохранения и социального развития РФ',
-      //     'name': 'ГОУ высшего профобразования Алтайский государственный медицинский университет, г.Барнаул, Алтайский край - 0049/*/Реконструкция морфологического корпуса - 004910',
-      //     'normalizedID': 1,
-      //     'percentageTechnicalReadiness': 0,
-      //     'powerAccordingMinistryEconomy': 4.6,
-      //     'powerData': 363,
-      //     'processingSign': 0,
-      //     'programLisName': 'Объекты, мероприятия (укрупненные инвестиционные проекты), не включенные в долгосрочные (федеральные) целевые программы',
-      //     'programListCode': '9900',
-      //     'scheduledCommissioningYear': 0,
-      //     'targetCostItems': 5,
-      //     'taskCode': 4,
-      //     'territoryListCode': '01000000000',
-      //     'territoryListName': 'Алтайский край',
-      //     'uniqueCode': '43.43.43.56.76',
-      //     'yearData': 2011,
-      //     'year_usageCode': 2,
-      //   },
-      //   {
-      //     'buildCode': 4900,
-      //     'buildCostTotal': 0,
-      //     'commissioningProjectPower': 4.6,
-      //     'durationCommissioning': 0,
-      //     'factExecutedBeginningPagesBeforeJanuary1ReportYear': 0,
-      //     'factExecutedBeginningYearsReportingMonthInclusive': 0,
-      //     'factFinancedBeginningYearFederalBudget': 0,
-      //     'factFinancedBeginningYearsBudgetEntitiesRFBudget': 0,
-      //     'factFinancedBeginningYearsOtherSources': 0,
-      //     'factYearMonth': 0,
-      //     'form_ownerCode': null,
-      //     'introducedBeginningConstructionUntilJanuary1ReportYear': 0,
-      //     'introducedBeginningYearReportingMonthInclusively': 0,
-      //     'investmentLimitYearEntitiesRFBudget': 0,
-      //     'investmentLimitYearOtherSources': 0,
-      //     'investmentObjectType': null,
-      //     'investment_limitYearFederalBudget': 0,
-      //     'ministryEconomyDataLimit': 0,
-      //     'ministryEconomyTerm': 2012,
-      //     'ministryListCode': 13220,
-      //     'ministryListName': 'Министерство здравоохранения и социального развития РФ',
-      //     'name': 'ГОУ высшего профобразования Алтайский государственный медицинский университет, г.Барнаул, Алтайский край - 0049/*/Реконструкция морфологического корпуса - 004910',
-      //     'normalizedID': 1,
-      //     'percentageTechnicalReadiness': 0,
-      //     'powerAccordingMinistryEconomy': 4.6,
-      //     'powerData': 363,
-      //     'processingSign': 0,
-      //     'programLisName': 'Объекты, мероприятия (укрупненные инвестиционные проекты), не включенные в долгосрочные (федеральные) целевые программы',
-      //     'programListCode': '9900',
-      //     'scheduledCommissioningYear': 0,
-      //     'targetCostItems': 5,
-      //     'taskCode': 4,
-      //     'territoryListCode': '01000000000',
-      //     'territoryListName': 'Алтайский край',
-      //     'uniqueCode': '43.43.43.56.76',
-      //     'yearData': 2011,
-      //     'year_usageCode': 2,
-      //   },
-      // ];
-      // TEST
       const data = await super.sendQuery(this.hierarchyDetailURL, `?unique_code=${e.target.dataset.id}`);
       const headers = [
         'Год',
@@ -508,10 +378,9 @@ export class Hierarchy extends MainView {
       this.detailDownload();
       logger(`detailsShow(); id: ${e.target.dataset.id}`, this, COMMENTS);
     } catch (error) {
-      super.disableUI(false, this.MENU, this.SEARCH);
       super.enableOverlay(false);
       logger(`detailsShow(); ` + e, this, COMMENTS);
-      this.errorMessage(e.target, 'Не удалось получить данные с сервера.', 3);
+      this.errorMessage(e.target, 'не удалось получить данные с сервера', 3);
     }
   }
 
@@ -519,7 +388,6 @@ export class Hierarchy extends MainView {
     super.addListener(this.hierarchyDetailCloseButton, 'click', () => {
       // this.body.removeChild(this.hierarchyDetailWindow);
       this.hierarchyDetailWindow.remove();
-      super.disableUI(false, this.MENU, this.SEARCH);
       super.enableOverlay(false);
       logger(`detailClose();`, this, COMMENTS);
     }, true);
@@ -537,17 +405,20 @@ export class Hierarchy extends MainView {
       a.remove();
       this.hierarchyDetailWindow.remove();
       // this.body.removeChild(this.hDetailWindow);
-      super.disableUI(false, this.MENU, this.SEARCH);
       super.enableOverlay(false);
       logger(`detailDownload();`, this, COMMENTS);
     }, true);
   }
 
-  objectEdit(e) {
+  async objectEdit(e) {
     try {
       logger(`editObject(); index: ${e.target.dataset.index}`, this, COMMENTS);
-    } catch (e) {
-      this.errorMessage(e.target, 'Ошибка');
+      this.uniqueCodeToEdit = e.target.parentElement.querySelector('.hierarchy-view__object-details').dataset.id;
+      await this.LINKER.linkerInit();
+    } catch (err) {
+      this.errorMessage(e.target, 'ошибка');
+      console.log(err);
+      super.enableOverlay(false);
     }
   }
 
@@ -590,9 +461,9 @@ export class Hierarchy extends MainView {
         });
         index++;
       });
-      logger(`removeListeners();`, this, COMMENTS);
+      logger(`>>> Listeners removed.`, this, COMMENTS);
     } catch (e) {
-      logger(`removeListeners(); ` + e, this, COMMENTS);
+      logger(`>>> No listeners detected. ` + e, this, COMMENTS);
     }
   }
 }

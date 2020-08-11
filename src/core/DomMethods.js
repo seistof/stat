@@ -7,7 +7,7 @@ export class DomMethods {
     this.DISPLAY = this.initialize('.display');
     this.MENU = this.initialize('.menu');
     this.FILTERS = this.initialize('.filter');
-    this.SEARCH = this.initialize('.header__search-box');
+    this.SEARCHBOX = this.initialize('.header__search-box');
     this.BODY = this.initialize('body');
   }
 

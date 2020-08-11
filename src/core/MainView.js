@@ -5,7 +5,7 @@ import {COMMENTS} from '@/index';
 // import filtersTEST from '../../filters.json';
 
 export class MainView extends Query {
-  constructor(overlay) {
+  constructor(overlay, MAIN, HIERARCHY, LINKER, SEARCH, UPLOAD, DICTIONARY) {
     super();
     // Filter
     this.filterYear = super.initialize('#select-year');
@@ -29,45 +29,55 @@ export class MainView extends Query {
     // Utils
     this.OVERLAY = overlay;
     // Search
+    this.MAIN = MAIN;
+    this.HIERARCHY = HIERARCHY;
+    this.LINKER = LINKER;
+    this.SEARCH = SEARCH;
+    this.UPLOAD = UPLOAD;
+    this.DICTIONARY = DICTIONARY;
   }
 
   async mainInit(main, hierarchy, linker, search, upload, dictionary) {
+    const classes = [main, hierarchy, linker, search, upload, dictionary];
+    classes.forEach((c) => {
+      c.MAIN = this;
+      c.HIERARCHY = hierarchy;
+      c.LINKER = linker;
+      c.SEARCH = search;
+      c.UPLOAD = upload;
+      c.DICTIONARY = dictionary;
+    });
     logger(``, false, COMMENTS);
     logger(`mainInit();`, this, COMMENTS);
-    this.enableOverlay(true);
-    this.disableUI(true, this.MENU, this.SEARCH);
+    await this.enableOverlay(true);
+    await this.disableUI(true, this.MENU, this.SEARCHBOX);
     this.mainListenersInit(main, hierarchy, linker, search, upload, dictionary);
-    // TEST
-    // this.fillFilters(filtersTEST);
-    // console.log(filtersTEST);
-    // TEST
     this.fillFilters(await super.sendQuery(this.filterURL));
-    // this.fillFilters(await fetch(this.serverURL+this.filterURL));
     await this.enableOverlay(false);
-    await this.disableUI(false, this.MENU, this.SEARCH);
-    // Hierarchy init
-    hierarchy.init(main, hierarchy, search);
-    // Hierarchy init
-    // Pagination(Hierarchy) init
-    // Pagination(Hierarchy) init
+    await this.disableUI(false, this.MENU, this.SEARCHBOX);
+    await this.HIERARCHY.hierarchyInit();
   }
 
   disableUI(token, ...target) {
-    return new Promise((r) => {
-      if (token) {
-        target.forEach((el) => {
-          el.style['pointer-events'] = 'none';
-          el.style.opacity = '.33';
-        });
-        r();
-      } else {
-        target.forEach((el) => {
-          el.style['pointer-events'] = 'auto';
-          el.style.opacity = '1';
-        });
-        r();
-      }
-    });
+    try {
+      return new Promise((r) => {
+        if (token) {
+          target.forEach((el) => {
+            el.style['pointer-events'] = 'none';
+            el.style.opacity = '.33';
+          });
+          r();
+        } else {
+          target.forEach((el) => {
+            el.style['pointer-events'] = 'auto';
+            el.style.opacity = '1';
+          });
+          r();
+        }
+      });
+    } catch (e) {
+      logger(`disableUI(); ` + e, this, COMMENTS);
+    }
   }
 
   enableOverlay(token) {
@@ -91,7 +101,7 @@ export class MainView extends Query {
         overlayIndicator.appendChild(span);
         this.OVERLAY = overlay;
         super.insertElement(this.CENTER, this.OVERLAY);
-        logger(`enableOverlay(${token});`, this, COMMENTS);
+        logger(`>>> Overlay enabled`, this, COMMENTS);
       }
       r();
     });
@@ -121,7 +131,7 @@ export class MainView extends Query {
     }
   }
 
-  mainListenersInit(main, hierarchy, linker, search, upload, dictionary) {
+  mainListenersInit() {
     super.addListener(this.filterReadyInput, 'input', () => {
       this.filterReadyAll.checked = false;
       this.filterReadyDisplay.value = this.filterReadyInput.value;
@@ -133,7 +143,7 @@ export class MainView extends Query {
         this.filterReadyDisplay.value = this.filterReadyInput.value;
       }
     });
-    super.addListener(this.filterReset, 'click', () => {
+    super.addListener(this.filterReset, 'click', async () => {
       this.filterYear.selectedIndex = 0;
       this.filterMinistry.selectedIndex = 0;
       this.filterTerritory.selectedIndex = 0;
@@ -143,16 +153,17 @@ export class MainView extends Query {
       this.filterReadyAll.checked = true;
       logger(`Reset filters.`, this, COMMENTS);
     });
-    super.addListener(this.navMain, 'click', () => {
-      hierarchy.init(main, hierarchy, search);
+    super.addListener(this.navMain, 'click', async () => {
+      await this.HIERARCHY.hierarchyInit();
       logger(`Hierarchy`, this, COMMENTS);
     });
-    super.addListener(this.navLinker, 'click', () => {
-      linker.init();
+    super.addListener(this.navLinker, 'click', async () => {
+      await this.LINKER.linkerInit();
       logger(`Linker`, this, COMMENTS);
     });
     super.addListener(this.navUpload, 'click', () => {
-      upload.init();
+      // delete all other listeners
+      this.UPLOAD.init();
       logger(`Upload`, this, COMMENTS);
     });
     super.addListener(this.navExport, 'click', () => {
@@ -162,36 +173,42 @@ export class MainView extends Query {
       logger(`Exit`, this, COMMENTS);
     });
     super.addListener(this.dicMinistry, 'click', () => {
-      dictionary.init('ministry');
+      // delete all other listeners
+      this.DICTIONARY.init('ministry');
       logger(`Ministry`, this, COMMENTS);
     });
     super.addListener(this.dicTerritory, 'click', () => {
-      dictionary.init('territory');
+      // delete all other listeners
+      this.DICTIONARY.init('territory');
       logger(`Territory`, this, COMMENTS);
     });
     super.addListener(this.dicProgram, 'click', () => {
-      dictionary.init('program');
+      // delete all other listeners
+      this.DICTIONARY.init('program');
       logger(`Program`, this, COMMENTS);
     });
   }
 
   fillFilters(data) {
+    console.log(data);
     try {
-      data.year.forEach((el) => {
+      data.yearList.forEach((el) => {
         const option = document.createElement('option');
-        option.value = el;
-        option.textContent = el;
+        option.value = el.yeardata;
+        option.textContent = el.yeardata;
         this.filterYear.appendChild(option);
       });
-      data.ministry.forEach((el) => {
+      data.ministryList.forEach((el) => {
         const option = document.createElement('option');
         option.value = el.ID;
-        option.textContent = el.name.replace('Министерство', 'Мин.').
-            replace('Федеральная служба', 'ФС').
-            replace('Федеральное агенство', 'ФА');
+        option.textContent = el.shortName !== null ? el.shortName : el.name;
+        const years = el.fromYear === el.toYear ?
+          ` (${el.fromYear})` :
+          ` (${el.fromYear} - ${el.toYear})`;
+        option.textContent += years;
         this.filterMinistry.appendChild(option);
       });
-      data.territory.forEach((el) => {
+      data.territoryList.forEach((el) => {
         const option = document.createElement('option');
         option.value = el.ID;
         option.textContent = el.name.replace('область', 'обл.').
@@ -199,23 +216,29 @@ export class MainView extends Query {
             replace('Город', 'г.');
         this.filterTerritory.appendChild(option);
       });
-      data.program.forEach((el) => {
+      data.programList.forEach((el) => {
         const option = document.createElement('option');
         option.value = el.ID;
         option.textContent = el.name.replace('Федеральная целевая программа',
             '');
+        const years = el.fromYear === el.toYear ?
+          ` (${el.fromYear})` :
+          ` (${el.fromYear} - ${el.toYear})`;
+        option.textContent += years;
         this.filterProgram.appendChild(option);
       });
       logger(`fillFilters();`, this, COMMENTS);
     } catch (e) {
+      this.errorMessage(this.MENU, 'не удалось загрузить фильтры', 3);
       logger(`fillFilters(); ${e}`, this, COMMENTS);
     }
   }
 
-  errorMessage(element, text, delay = .75) {
+  errorMessage(element, text, delay = .75, color = '#af2323') {
     const box = document.createElement('div');
     box.classList.add('error-message-box');
     box.textContent = text;
+    box.style.background = color;
     element.appendChild(box);
     this.disableUI(true, element);
     element.style.opacity = '1';
@@ -235,5 +258,16 @@ export class MainView extends Query {
   clearDisplay() {
     logger(`clearDisplay();`, this, COMMENTS);
     this.DISPLAY.innerHTML = '';
+  }
+
+  removeInactiveListeners() {
+    try {
+      this.HIERARCHY.removeListeners();
+      this.LINKER.linkerListSelectRemoveListeners();
+      this.LINKER.controlButtonsRemoveListeners();
+      this.SEARCH.removeListeners();
+    } catch (e) {
+      logger(`>>> No other listeners detected. ` + e, false, COMMENTS);
+    }
   }
 }

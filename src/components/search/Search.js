@@ -1,13 +1,14 @@
 import {MainView} from '@core/MainView';
 import {logger} from '@core/utils';
 import {COMMENTS} from '@/index';
-import {HIERARCHY} from '@/components/hierarchy/Hierarchy';
 
 export class Search extends MainView {
-  constructor(applyButton, searchButton, goToButton, prevButton, nextButton, goToInput, searchInput, searchUseFilters) {
+  constructor(
+      goToButton, prevButton, nextButton, goToInput, searchInput,
+      searchUseFilters) {
     super();
-    this.applyButton = applyButton;
-    this.searchButton = searchButton;
+    this.applyButton = super.initialize('.filter__button-search');
+    this.searchButton = super.initialize('.header__search-button');
     this.searchInput = searchInput;
     this.goToButton = goToButton;
     this.prevButton = prevButton;
@@ -23,9 +24,13 @@ export class Search extends MainView {
     ];
     this.buttons = [];
     this.searchColorTextFn = this.searchColorText.bind(this);
+    this.linkerCurrentState = 'normal';
+    this.sourceView = '';
+    this.filters = [];
+    this.filterApply = this.applyFn.bind(this);
   }
 
-  async init(main, current) {
+  async searchInit() {
     logger(``, false, COMMENTS);
     logger(`init();`, this, COMMENTS);
     this.nextButton = super.initialize('.pagination__nav-next');
@@ -45,6 +50,16 @@ export class Search extends MainView {
     this.buttons.push(this.goToButton);
     this.buttons.push(this.applyButton);
     this.buttons.push(this.searchButton);
+    this.filters = [];
+    this.filterYear = super.initialize('#select-year');
+    this.filterMinistry = super.initialize('#select-ministry');
+    this.filterTerritory = super.initialize('#select-territory');
+    this.filterProgram = super.initialize('#select-program');
+    this.filterReadyAll = super.initialize('#select-ready-all');
+    this.filters.push(this.filterYear);
+    this.filters.push(this.filterMinistry);
+    this.filters.push(this.filterTerritory);
+    this.filters.push(this.filterProgram);
     this.removeListeners();
     this.addListeners();
     this.checkPagination();
@@ -57,12 +72,29 @@ export class Search extends MainView {
     this.currentPage.textContent = page;
     this.checkPagination();
     let options = super.getFilterValue();
-    if (options.length === 0) {
-      HIERARCHY.fill(await super.sendQuery(this.hierarchyURL, `?page=${page}`));
-    } else {
-      options += `&page=${page}`;
-      HIERARCHY.fill(await super.sendQuery(this.hierarchyURL, options));
+    await this.enableOverlay(true);
+    await this.disableUI(true, this.MENU);
+    if (this.sourceView === 'hierarchy') {
+      if (options.length === 0) {
+        await this.HIERARCHY.fill(
+            await super.sendQuery(this.hierarchyURL, `?page=${page}`));
+      } else {
+        options += `&page=${page}`;
+        await this.HIERARCHY.fill(
+            await super.sendQuery(this.hierarchyURL, options));
+      }
     }
+    if (this.sourceView === 'linker' && this.linkerCurrentState === 'normal') {
+      if (options.length === 0) {
+        await this.LINKER.fill(
+            await super.sendQuery(this.linkerURL, `?page=${page}`));
+      } else {
+        options += `&page=${page}`;
+        await this.LINKER.fill(await super.sendQuery(this.linkerURL, options));
+      }
+    }
+    await this.enableOverlay(false);
+    await this.disableUI(false, this.MENU);
   }
 
   async prevFn() {
@@ -72,12 +104,27 @@ export class Search extends MainView {
     this.currentPage.textContent = page;
     this.checkPagination();
     let options = super.getFilterValue();
-    if (options.length === 0) {
-      HIERARCHY.fill(await super.sendQuery(this.hierarchyURL, `?page=${page}`));
-    } else {
-      options += `&page=${page}`;
-      HIERARCHY.fill(await super.sendQuery(this.hierarchyURL, options));
+    await this.enableOverlay(true);
+    if (this.sourceView === 'hierarchy') {
+      if (options.length === 0) {
+        await this.HIERARCHY.fill(
+            await super.sendQuery(this.hierarchyURL, `?page=${page}`));
+      } else {
+        options += `&page=${page}`;
+        await this.HIERARCHY.fill(
+            await super.sendQuery(this.hierarchyURL, options));
+      }
     }
+    if (this.sourceView === 'linker' && this.linkerCurrentState === 'normal') {
+      if (options.length === 0) {
+        await this.LINKER.fill(
+            await super.sendQuery(this.linkerURL, `?page=${page}`));
+      } else {
+        options += `&page=${page}`;
+        await this.LINKER.fill(await super.sendQuery(this.linkerURL, options));
+      }
+    }
+    await this.enableOverlay(false);
   }
 
   async goToFn(e) {
@@ -86,22 +133,40 @@ export class Search extends MainView {
     const page = this.goToInput.value;
     if (
       page > 0 &&
-      page < parseInt(this.totalPages.textContent) &&
+      page <= parseInt(this.totalPages.textContent) &&
       this.goToInput.value !== '' &&
       this.goToInput.value[0] !== '0'
     ) {
       this.currentPage.textContent = page;
       this.goToInput.value = '';
-      this.checkPagination();
       let options = super.getFilterValue();
-      if (options.length === 0) {
-        HIERARCHY.fill(await super.sendQuery(this.hierarchyURL, `?page=${page}`));
-      } else {
-        options += `&page=${page}`;
-        HIERARCHY.fill(await super.sendQuery(this.hierarchyURL, options));
+      await this.enableOverlay(true);
+      if (this.sourceView === 'hierarchy') {
+        await this.enableOverlay(false);
+        if (options.length === 0) {
+          await this.HIERARCHY.fill(await super.sendQuery(this.hierarchyURL, `?page=${page}`));
+          this.checkPagination();
+          await this.enableOverlay(false);
+        } else {
+          options += `&page=${page}`;
+          await this.HIERARCHY.fill(await super.sendQuery(this.hierarchyURL, options));
+          this.checkPagination();
+          await this.enableOverlay(false);
+        }
+      }
+      if (this.sourceView === 'linker' && this.linkerCurrentState === 'normal') {
+        if (options.length === 0) {
+          await this.LINKER.fill(await super.sendQuery(this.linkerURL, `?page=${page}`));
+          this.checkPagination();
+        } else {
+          options += `&page=${page}`;
+          await this.LINKER.fill(await super.sendQuery(this.linkerURL, options));
+          this.checkPagination();
+        }
+        await this.enableOverlay(false);
       }
     } else {
-      super.errorMessage(e.target, 'Такой страницы нет.');
+      super.errorMessage(e.target, 'такой страницы нет');
       this.goToInput.value = '';
       this.goToInput.focus();
       logger(`goToFn(); ` + e, this, COMMENTS);
@@ -112,13 +177,28 @@ export class Search extends MainView {
     logger(``, false, COMMENTS);
     logger(`applyFn();`, this, COMMENTS);
     const options = super.getFilterValue();
-    if (options.length === 0) {
-      HIERARCHY.fill(await super.sendQuery(this.hierarchyURL));
-      this.currentPage.textContent = 1;
-    } else {
-      HIERARCHY.fill(await super.sendQuery(this.hierarchyURL, options));
-      this.currentPage.textContent = 1;
+    console.log(super.getFilterValue());
+    await this.enableOverlay(true);
+    if (this.sourceView === 'hierarchy') {
+      if (options.length === 0) {
+        await this.HIERARCHY.fill(await super.sendQuery(this.hierarchyURL));
+        this.currentPage.textContent = 1;
+      } else {
+        await this.HIERARCHY.fill(
+            await super.sendQuery(this.hierarchyURL, options));
+        this.currentPage.textContent = 1;
+      }
     }
+    if (this.sourceView === 'linker' && this.linkerCurrentState === 'normal') {
+      if (options.length === 0) {
+        await this.LINKER.fill(await super.sendQuery(this.linkerURL));
+        this.currentPage.textContent = 1;
+      } else {
+        await this.LINKER.fill(await super.sendQuery(this.linkerURL, options));
+        this.currentPage.textContent = 1;
+      }
+    }
+    await this.enableOverlay(false);
     this.checkPagination();
   }
 
@@ -128,32 +208,46 @@ export class Search extends MainView {
     if (this.searchInput.value.length > 0) {
       let options = super.getFilterValue();
       const str = this.searchInput.value.trim();
+      await this.enableOverlay(true);
       if (options.length > 0 && this.searchUseFilters.checked) {
         options += `&search_query=${str}`;
         logger(options, this, COMMENTS);
-        HIERARCHY.fill(await super.sendQuery(this.hierarchySearchURL, options));
+        await this.HIERARCHY.fill(
+            await super.sendQuery(this.hierarchySearchURL, options));
+        await this.enableOverlay(false);
+        this.currentPage.textContent = 1;
         this.checkPagination();
       } else {
         this.filterReset.click();
         logger(str, this, COMMENTS);
-        HIERARCHY.fill(await super.sendQuery(this.hierarchySearchURL, `?search_query=${str}`));
+        await this.HIERARCHY.fill(await super.sendQuery(this.hierarchySearchURL,
+            `?search_query=${str}`));
+        await this.enableOverlay(false);
+        this.currentPage.textContent = 1;
         this.checkPagination();
       }
     } else {
-      super.errorMessage(this.SEARCH, 'Введите запрос.');
+      super.errorMessage(this.SEARCHBOX, 'введите запрос');
       this.searchInput.focus();
     }
   }
 
   addListeners() {
     try {
+      super.addListener(this.searchInput, 'input', this.searchColorTextFn);
       logger(`addListeners();`, this, COMMENTS);
       let index = 0;
       this.buttons.forEach((button) => {
         super.addListener(button, 'click', this.funcs[index]);
         index++;
       });
-      super.addListener(this.searchInput, 'input', this.searchColorTextFn);
+      this.filters.forEach((f) => {
+        super.addListener(f, 'change', this.filterApply);
+      });
+      super.addListener(this.filterReadyAll, 'change', async () => {
+        console.log(`INPUT`);
+        await this.applyFn();
+      });
     } catch (e) {
       logger(`addListeners(); ` + e, this, COMMENTS);
     }
@@ -161,19 +255,23 @@ export class Search extends MainView {
 
   removeListeners() {
     try {
-      logger(`removeListeners();`, this, COMMENTS);
+      super.removeListener(this.searchInput, 'input', this.searchColorTextFn);
       let index = 0;
       this.buttons.forEach((button) => {
         super.removeListener(button, 'click', this.funcs[index]);
         index++;
       });
-      super.removeListener(this.searchInput, 'input', this.searchColorTextFn);
+      this.filters.forEach((f) => {
+        super.removeListener(f, 'change', this.filterApply);
+      });
+      logger(`>>> Listeners removed.`, this, COMMENTS);
     } catch (e) {
-      logger(`removeListeners(); ` + e, this, COMMENTS);
+      logger(`>>> No listeners detected.`, this, COMMENTS);
     }
   }
 
   checkPagination() {
+    console.log(`PAGINATION CHECK`);
     super.disableUI(false, this.prevButton);
     super.disableUI(false, this.nextButton);
     super.disableUI(false, this.goToButton);
@@ -181,11 +279,17 @@ export class Search extends MainView {
       logger(`>>> First page`, this, COMMENTS);
       super.disableUI(true, this.prevButton);
     }
-    if (parseInt(this.currentPage.textContent) === parseInt(this.totalPages.textContent)) {
+    if (parseInt(this.currentPage.textContent) ===
+      parseInt(this.totalPages.textContent)) {
       logger(`>>> Last page`, this, COMMENTS);
       super.disableUI(true, this.nextButton);
     }
-    if (parseInt(this.currentPage.textContent) === 1 && parseInt(this.totalPages.textContent) === 1) {
+    if (
+      (
+        parseInt(this.currentPage.textContent) === 1 &&
+        parseInt(this.totalPages.textContent) === 1
+      ) ||
+      parseInt(this.totalObjects.textContent) === 0) {
       super.disableUI(true, this.prevButton);
       super.disableUI(true, this.nextButton);
       super.disableUI(true, this.goToButton);
@@ -197,8 +301,11 @@ export class Search extends MainView {
     const len = this.searchInput.value.length;
     let counterCode = 0;
     let counterUnique = 0;
+    // const charCode = [46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57];
+    // str.split('').some((item) => charCode.includes(item.charCodeAt(0)));
     for (let i = 0; i < len; i++) {
       if (
+        str[i].charCodeAt(0) !== 46 &&
         str[i].charCodeAt(0) !== 48 &&
         str[i].charCodeAt(0) !== 49 &&
         str[i].charCodeAt(0) !== 50 &&
@@ -208,7 +315,6 @@ export class Search extends MainView {
         str[i].charCodeAt(0) !== 54 &&
         str[i].charCodeAt(0) !== 55 &&
         str[i].charCodeAt(0) !== 56 &&
-        str[i].charCodeAt(0) !== 46 &&
         str[i].charCodeAt(0) !== 57
       ) {
         this.searchInput.style.color = 'black';
@@ -232,10 +338,4 @@ export class Search extends MainView {
       this.searchInput.style.fontWeight = '400';
     }
   }
-
-  // Hierarchy
-  // Hierarchy
-
-  // linker
-  // linker
 }

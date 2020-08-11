@@ -23,6 +23,10 @@ const s = new Search();
 const u = new Upload();
 const d = new Dictionary();
 
+// export const LINKER = l;
+// export const HIERARCHY = h;
+// export const SEARCH = s;
+
 (async () => {
   logger('', false, COMMENTS);
   console.log(`[${q.constructor.name}]`);
@@ -33,6 +37,6 @@ const d = new Dictionary();
   console.log(`[${u.constructor.name}]`);
   console.log(`[${d.constructor.name}]`);
   logger('', false, COMMENTS);
-  await q.authQuery();
+  // await q.authQuery();
   await m.mainInit(m, h, l, s, u, d);
 })();
