@@ -99,7 +99,7 @@ export class Linker extends Search {
     this.mainObjectSelect = super.initialize('.linker__object-main-select');
     this.mainObjectAdd = super.initialize('.linker__object-main-add');
     this.additionalContainer = super.initialize('.linker__object-additional-container');
-    await this.disableUI(true,
+    await super.disableUI(true,
         this.saveButton,
         this.checkButton,
         this.similarButton,
@@ -535,7 +535,7 @@ export class Linker extends Search {
     this.currentUniqueCodeEdit = '';
     this.linkerState = 'normal';
     super.disableUI(false, this.mainObjectSelect);
-    this.disableUI(true,
+    super.disableUI(true,
         this.saveButton,
         this.checkButton,
         this.similarButton,
@@ -548,7 +548,6 @@ export class Linker extends Search {
         this.resetButton,
         this.mainObjectAdd,
     );
-    console.log(this.linkerList);
     this.linkerList = super.initialize('.linker__list');
     this.linkerList.innerHTML = '';
     this.SEARCH.totalObjects.textContent = '';
@@ -626,6 +625,9 @@ export class Linker extends Search {
     objectBox.appendChild(name);
     this.additionalContainer.appendChild(additionalObject);
     this.additionalObjects.push(additionalObject);
+    if (this.additionalObjects.length !== 1) {
+      super.disableUI(true, this.checkButton);
+    }
     this.additionalObjectAddListeners();
   }
 
@@ -687,7 +689,7 @@ export class Linker extends Search {
         this.SEARCH.goToButton,
     );
     if (this.currentUniqueCodeEdit !== '') {
-      this.disableUI(true, this.checkButton);
+      super.disableUI(true, this.checkButton);
     }
     this.SEARCH.checkPagination();
     console.log(`PAGINATION CHECK`);

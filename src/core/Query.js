@@ -7,7 +7,6 @@ export class Query extends DomMethods {
   constructor() {
     super();
     this.serverURL = 'http://127.0.0.1:8080';
-    // this.serverURL = 'https://c7974e93b9a6.ngrok.io';
     this.authURL = '/login';
     this.filterURL = '/get_filters_list';
     this.hierarchyURL = '/';
