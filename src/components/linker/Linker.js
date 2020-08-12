@@ -79,6 +79,7 @@ export class Linker extends Search {
     logger(`init();`, this, COMMENTS);
     this.SEARCH.sourceView = 'linker';
     this.linkerState = 'normal';
+    super.disableUI(true, this.navExport);
     this.removeInactiveListeners();
     await this.enableOverlay(true);
     super.clearDisplay();

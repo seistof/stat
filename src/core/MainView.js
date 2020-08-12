@@ -98,7 +98,7 @@ export class MainView extends Query {
         overlay.appendChild(overlayIndicator);
         overlayIndicator.appendChild(span);
         this.OVERLAY = overlay;
-        super.insertElement(this.CENTER, this.OVERLAY);
+        super.insertElement(this.ROOT, this.OVERLAY);
         logger(`>>> Overlay enabled`, this, COMMENTS);
       }
       r();
@@ -156,6 +156,20 @@ export class MainView extends Query {
       logger(`Hierarchy`, this, COMMENTS);
     });
     super.addListener(this.navLinker, 'click', async () => {
+      const filter = this.getFilterValue();
+      if (filter !== '' && parseInt(this.SEARCH.currentPage.textContent) !== 1) {
+        this.HIERARCHY.lastState = `${filter}&page=${parseInt(this.SEARCH.currentPage.textContent)}`;
+        this.HIERARCHY.lastPage = parseInt(this.SEARCH.currentPage.textContent);
+      }
+      if (filter === '' && parseInt(this.SEARCH.currentPage.textContent) !== 1) {
+        this.HIERARCHY.lastState = `?page=${parseInt(this.SEARCH.currentPage.textContent)}`;
+        this.HIERARCHY.lastPage = parseInt(this.SEARCH.currentPage.textContent);
+      }
+      if (filter !== '' && parseInt(this.SEARCH.currentPage.textContent) === 1) {
+        this.HIERARCHY.lastState = filter;
+      }
+      console.log(this.HIERARCHY.lastState);
+      console.log(this.HIERARCHY.lastPage);
       await this.LINKER.linkerInit();
       logger(`Linker`, this, COMMENTS);
     });
@@ -164,8 +178,8 @@ export class MainView extends Query {
       this.UPLOAD.init();
       logger(`Upload`, this, COMMENTS);
     });
-    super.addListener(this.navExport, 'click', () => {
-      logger(`Export`, this, COMMENTS);
+    super.addListener(this.navExport, 'click', async () => {
+      await this.exportFn();
     });
     super.addListener(this.navExit, 'click', () => {
       logger(`Exit`, this, COMMENTS);
@@ -264,8 +278,33 @@ export class MainView extends Query {
       this.LINKER.linkerListSelectRemoveListeners();
       this.LINKER.controlButtonsRemoveListeners();
       this.SEARCH.removeListeners();
+      this.UPLOAD.removeUploadListeners();
     } catch (e) {
       logger(`>>> No other listeners detected. ` + e, false, COMMENTS);
     }
+  }
+
+  async exportFn() {
+    logger(`exportFn();`, this, COMMENTS);
+    await this.enableOverlay(true);
+    try {
+      const options = this.getFilterValue();
+      const response = await fetch(this.serverURL + this.hierarchyExportURL + options);
+      const url = window.URL.createObjectURL(await response.blob());
+      const a = document.createElement('a');
+      const name = response.headers.get('Content-Disposition')
+          .replace('attachment;', '')
+          .replace('filename=', '')
+          .replace('"', '')
+          .replace('"', '');
+      a.href = url;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (err) {
+      logger(`exportFn(); ` + err, this, COMMENTS);
+    }
+    await this.enableOverlay(false);
   }
 }

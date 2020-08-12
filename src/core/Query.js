@@ -11,7 +11,8 @@ export class Query extends DomMethods {
     this.filterURL = '/get_filters_list';
     this.hierarchyURL = '/';
     this.hierarchyDetailURL = '/linked_details';
-    this.hierarchyDetailExportURL = '/linked_details_to_excel/';
+    this.hierarchyDetailExportURL = '/linked_details_to_excel';
+    this.hierarchyExportURL = '/linked_objects_to_excel';
     this.hierarchySearchURL = '/linked_search';
     this.linkerURL = '/normalized_objects_list';
     this.linkerGetEditURL = '/get_edit_data';
@@ -20,7 +21,7 @@ export class Query extends DomMethods {
     this.linkerCreateURL = '/create_linked_object';
     this.linkerPredictionNewURL = '/predict_new_linking';
     this.linkerPredictionExistingURL = '/predict_exists_linking';
-    this.uploadURL = 'upload';
+    this.uploadURL = '/data_load';
     this.dictionaryURL = 'dictionary';
   }
 

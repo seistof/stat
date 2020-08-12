@@ -231,3 +231,142 @@ export function linkerNode() {
   infoP.appendChild(totalObjects);
   return linker;
 }
+
+export function hierarchyNode() {
+  const hierarchy = document.createElement('div');
+  hierarchy.classList.add('hierarchy-view');
+  const hierarchyViewWrapper = document.createElement('div');
+  hierarchyViewWrapper.classList.add('hierarchy-view-wrapper');
+  const pagination = document.createElement('div');
+  pagination.classList.add('pagination');
+  hierarchy.appendChild(hierarchyViewWrapper);
+  hierarchy.appendChild(pagination);
+  const header = document.createElement('div');
+  header.classList.add('hierarchy-view__header');
+  const container = document.createElement('div');
+  container.classList.add('hierarchy-view__object-container');
+  hierarchyViewWrapper.appendChild(header);
+  hierarchyViewWrapper.appendChild(container);
+  const year = document.createElement('div');
+  year.classList.add('hierarchy-view__header-item', 'hierarchy-view__header-year', 'hierarchy-view-size-year');
+  const ready = document.createElement('div');
+  ready.classList.add('hierarchy-view__header-item', 'hierarchy-view__header-ready', 'hierarchy-view-size-ready');
+  const code = document.createElement('div');
+  code.classList.add('hierarchy-view__header-item', 'hierarchy-view__header-code', 'hierarchy-view-size-code');
+  const info = document.createElement('div');
+  info.classList.add('hierarchy-view__header-item', 'hierarchy-view__header-info', 'hierarchy-view-size-info');
+  const name = document.createElement('div');
+  name.classList.add('hierarchy-view__header-item', 'hierarchy-view__header-name', 'hierarchy-view-size-name');
+  year.textContent = 'Год';
+  ready.textContent = 'Готово';
+  code.textContent = 'Код';
+  info.textContent = 'Министерство, территория, программа';
+  name.textContent = 'Название';
+  header.appendChild(year);
+  header.appendChild(ready);
+  header.appendChild(code);
+  header.appendChild(info);
+  header.appendChild(name);
+  const moveTo = document.createElement('div');
+  moveTo.classList.add('pagination__moveto');
+  const nav = document.createElement('div');
+  nav.classList.add('pagination__nav');
+  const infoP = document.createElement('div');
+  infoP.classList.add('pagination__info');
+  pagination.appendChild(moveTo);
+  pagination.appendChild(nav);
+  pagination.appendChild(infoP);
+  const moveToInput = document.createElement('input');
+  moveToInput.classList.add('pagination__moveto-input');
+  moveToInput.type = 'number';
+  const moveToButton = document.createElement('button');
+  moveToButton.classList.add('pagination__moveto-button', 'button');
+  moveToButton.textContent = 'Перейти';
+  moveTo.appendChild(moveToInput);
+  moveTo.appendChild(moveToButton);
+  const prev = document.createElement('span');
+  prev.classList.add('pagination__nav-prev', 'button', 'material-icons');
+  prev.textContent = 'chevron_left';
+  const currentPage = document.createElement('div');
+  currentPage.classList.add('pagination__nav-display');
+  currentPage.textContent = '1';
+  const next = document.createElement('span');
+  next.classList.add('pagination__nav-next', 'button', 'material-icons');
+  next.textContent = 'chevron_right';
+  nav.appendChild(prev);
+  nav.appendChild(currentPage);
+  nav.appendChild(next);
+  const totalPages = document.createElement('div');
+  totalPages.classList.add('pagination__info-pages');
+  const totalPagesTitle = document.createElement('div');
+  totalPagesTitle.classList.add('pagination__info-pages-title');
+  totalPagesTitle.textContent = 'Страниц:';
+  const totalPagesValue = document.createElement('div');
+  totalPagesValue.classList.add('pagination__info-pages-value');
+  const totalObjects = document.createElement('div');
+  totalObjects.classList.add('pagination__info-objects');
+  const totalObjectsTitle = document.createElement('div');
+  totalObjectsTitle.classList.add('pagination__info-objects-title');
+  totalObjectsTitle.textContent = 'Объектов:';
+  const totalObjectsValue = document.createElement('div');
+  totalObjectsValue.classList.add('pagination__info-objects-value');
+  totalPages.appendChild(totalPagesTitle);
+  totalPages.appendChild(totalPagesValue);
+  totalObjects.appendChild(totalObjectsTitle);
+  totalObjects.appendChild(totalObjectsValue);
+  infoP.appendChild(totalPages);
+  infoP.appendChild(totalObjects);
+  return hierarchy;
+}
+
+export function uploadNode() {
+  const upload = document.createElement('div');
+  upload.className = 'upload';
+  const uploadBox = document.createElement('div');
+  uploadBox.className = 'upload-box';
+  upload.appendChild(uploadBox);
+
+  const uploadForm = document.createElement('div');
+  uploadForm.className = 'upload-form';
+  const sendButton = document.createElement('button');
+  sendButton.classList.add('upload__button-send', 'button');
+  sendButton.id = 'press';
+  sendButton.textContent = 'Отправить';
+  uploadBox.appendChild(uploadForm);
+  uploadBox.appendChild(sendButton);
+
+  for (let i = 0; i < 3; i++) {
+    const item = document.createElement('div');
+    item.className = 'upload-form__item';
+    const title = document.createElement('div');
+    title.className = 'upload-form__item-title';
+    const input = document.createElement('input');
+    if (i===0) {
+      title.textContent = 'Каталог:';
+      input.type = 'file';
+      input.id = 'main-input';
+      input.name = 'main';
+      input.accept = 'text/plain';
+    }
+    if (i===1) {
+      title.textContent = 'Данные:';
+      input.type = 'file';
+      input.id = 'additional-input';
+      input.name = 'additional';
+      input.accept = 'text/plain';
+    }
+    if (i===2) {
+      title.textContent = 'Год:';
+      input.type = 'number';
+      input.id = 'year-input';
+      input.name = 'year';
+      input.value = '';
+      input.min = '2011';
+      input.max = '2100';
+    }
+    item.appendChild(title);
+    item.appendChild(input);
+    uploadForm.appendChild(item);
+  }
+  return upload;
+}
