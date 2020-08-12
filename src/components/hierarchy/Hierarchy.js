@@ -46,8 +46,8 @@ export class Hierarchy extends Search {
     this.totalPages = super.initialize('.pagination__info-pages-value');
     await this.SEARCH.searchInit();
     await this.fill(await super.sendQuery(this.hierarchyURL));
-    await this.enableOverlay(false);
-    await this.disableUI(false,
+    await super.enableOverlay(false);
+    await super.disableUI(false,
         this.MENU,
         this.SEARCH.nextButton,
         this.SEARCH.prevButton,

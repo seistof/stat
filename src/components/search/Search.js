@@ -73,7 +73,6 @@ export class Search extends MainView {
     this.checkPagination();
     let options = super.getFilterValue();
     await this.enableOverlay(true);
-    await this.disableUI(true, this.MENU);
     if (this.sourceView === 'hierarchy') {
       if (options.length === 0) {
         await this.HIERARCHY.fill(
@@ -94,7 +93,6 @@ export class Search extends MainView {
       }
     }
     await this.enableOverlay(false);
-    await this.disableUI(false, this.MENU);
   }
 
   async prevFn() {

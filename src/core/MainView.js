@@ -50,11 +50,9 @@ export class MainView extends Query {
     logger(``, false, COMMENTS);
     logger(`mainInit();`, this, COMMENTS);
     await this.enableOverlay(true);
-    await this.disableUI(true, this.MENU, this.SEARCHBOX);
     this.mainListenersInit(main, hierarchy, linker, search, upload, dictionary);
     this.fillFilters(await super.sendQuery(this.filterURL));
     await this.enableOverlay(false);
-    await this.disableUI(false, this.MENU, this.SEARCHBOX);
     await this.HIERARCHY.hierarchyInit();
   }
 
