@@ -51,7 +51,22 @@ export class MainView extends Query {
     logger(`mainInit();`, this, COMMENTS);
     await this.enableOverlay(true);
     this.mainListenersInit(main, hierarchy, linker, search, upload, dictionary);
-    this.fillFilters(await super.sendQuery(this.filterURL));
+    try {
+      logger(`>>> Check localStorage`, this, COMMENTS);
+      if (JSON.parse(localStorage.getItem('filters')).loaded !== new Date().getFullYear()) {
+        logger(`>>> localStorage is empty or outdated`, this, COMMENTS);
+        const filters = {
+          value: await super.sendQuery(this.filterURL),
+          loaded: new Date().getFullYear(),
+        };
+        localStorage.setItem('filters', JSON.stringify(filters));
+      } else {
+        logger(`>>> localStorage is OK, expires in ${JSON.parse(localStorage.getItem('filters')).loaded}`, this, COMMENTS);
+      }
+    } catch (e) {
+      logger(`localStorage error ` + e, this, COMMENTS);
+    }
+    this.fillFilters(JSON.parse(localStorage.getItem('filters')).value);
     await this.enableOverlay(false);
     await this.HIERARCHY.hierarchyInit();
   }
@@ -202,7 +217,6 @@ export class MainView extends Query {
   }
 
   fillFilters(data) {
-    console.log(data);
     try {
       data.yearList.forEach((el) => {
         const option = document.createElement('option');

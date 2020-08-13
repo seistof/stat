@@ -66,6 +66,7 @@ export class Hierarchy extends Search {
         this.FILTERS,
     );
     this.SEARCH.checkPagination();
+    this.SEARCH.paginationNumbersHandler();
   }
 
   async fill(data) {
@@ -210,6 +211,7 @@ export class Hierarchy extends Search {
     }
     const objectCount = this.hierarchyContainer.querySelectorAll('.hierarchy-view__object');
     objectCount.length === 0 ? super.disableUI(true, this.navExport) : super.disableUI(false, this.navExport);
+    this.SEARCH.paginationNumbersHandler();
   }
 
   objectDropdown(e) {

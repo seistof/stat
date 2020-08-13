@@ -5,7 +5,7 @@ import {COMMENTS} from '@/index';
 export class Search extends MainView {
   constructor(
       goToButton, prevButton, nextButton, goToInput, searchInput,
-      searchUseFilters) {
+      searchUseFilters, pagination1, pagination2, pagination3, pagination4, pagination5, navNums, paginationDiv, pagination6, pagination7) {
     super();
     this.applyButton = super.initialize('.filter__button-search');
     this.searchButton = super.initialize('.header__search-button');
@@ -14,6 +14,16 @@ export class Search extends MainView {
     this.prevButton = prevButton;
     this.nextButton = nextButton;
     this.goToInput = goToInput;
+    this.pagination1 = pagination1;
+    this.pagination2 = pagination2;
+    this.pagination3 = pagination3;
+    this.paginationDiv = paginationDiv;
+    this.pagination4 = pagination4;
+    this.pagination5 = pagination5;
+    this.pagination6 = pagination6;
+    this.pagination7 = pagination7;
+    this.navNums = navNums;
+    this.navNumValue = false;
     this.searchUseFilters = searchUseFilters;
     this.funcs = [
       this.nextFn.bind(this),
@@ -44,6 +54,23 @@ export class Search extends MainView {
     this.goToInput = super.initialize('.pagination__moveto-input');
     this.searchInput = super.initialize('.header__search-line');
     this.searchUseFilters = super.initialize('.header__search-use-filters');
+    this.pagination1 = super.initialize('.pagination__nav-1');
+    this.pagination2 = super.initialize('.pagination__nav-2');
+    this.pagination3 = super.initialize('.pagination__nav-3');
+    this.paginationDiv = super.initialize('.pagination__nav-div');
+    this.paginationDiv2 = super.initialize('.pagination__nav-div-2');
+    this.pagination4 = super.initialize('.pagination__nav-4');
+    this.pagination5 = super.initialize('.pagination__nav-5');
+    this.pagination6 = super.initialize('.pagination__nav-6');
+    this.pagination7 = super.initialize('.pagination__nav-7');
+    this.navNums = [];
+    this.navNums.push(this.pagination1);
+    this.navNums.push(this.pagination2);
+    this.navNums.push(this.pagination3);
+    this.navNums.push(this.pagination4);
+    this.navNums.push(this.pagination5);
+    this.navNums.push(this.pagination6);
+    this.navNums.push(this.pagination7);
     this.buttons = [];
     this.buttons.push(this.nextButton);
     this.buttons.push(this.prevButton);
@@ -128,12 +155,22 @@ export class Search extends MainView {
   async goToFn(e) {
     logger(``, false, COMMENTS);
     logger(`goTo();`, this, COMMENTS);
-    const page = this.goToInput.value;
+    console.log(parseInt(e.target.textContent));
+    let page;
+    if (parseInt(e.target.textContent) > 0) {
+      logger(`true`, this, COMMENTS);
+      page = parseInt(e.target.textContent);
+    } else {
+      logger(`false`, this, COMMENTS);
+      page = this.goToInput.value;
+    }
+    logger(`Page: ${page}`, this, COMMENTS);
     if (
-      page > 0 &&
+      (parseInt(e.target.textContent) > 0) ||
+      (page > 0 &&
       page <= parseInt(this.totalPages.textContent) &&
       this.goToInput.value !== '' &&
-      this.goToInput.value[0] !== '0'
+      this.goToInput.value[0] !== '0')
     ) {
       this.currentPage.textContent = page;
       this.goToInput.value = '';
@@ -167,7 +204,7 @@ export class Search extends MainView {
       super.errorMessage(e.target, 'такой страницы нет');
       this.goToInput.value = '';
       this.goToInput.focus();
-      logger(`goToFn(); ` + e, this, COMMENTS);
+      logger(`goToFn();`, this, COMMENTS);
     }
   }
 
@@ -242,6 +279,9 @@ export class Search extends MainView {
       this.filters.forEach((f) => {
         super.addListener(f, 'change', this.filterApply);
       });
+      this.navNums.forEach((button) => {
+        super.addListener(button, 'click', this.funcs[2]);
+      });
       super.addListener(this.filterReadyAll, 'change', async () => {
         console.log(`INPUT`);
         await this.applyFn();
@@ -261,6 +301,9 @@ export class Search extends MainView {
       });
       this.filters.forEach((f) => {
         super.removeListener(f, 'change', this.filterApply);
+      });
+      this.navNums.forEach((button) => {
+        super.removeListener(button, 'click', this.funcs[2]);
       });
       logger(`>>> Listeners removed.`, this, COMMENTS);
     } catch (e) {
@@ -335,5 +378,163 @@ export class Search extends MainView {
       this.searchInput.style.color = 'black';
       this.searchInput.style.fontWeight = '400';
     }
+  }
+
+  paginationNumbersHandler() {
+    logger(`>>> Pagination handler <<<`, this, COMMENTS);
+    if (parseInt(this.totalPages.textContent) === 1) {
+      this.pagination1.style.display = 'block';
+      this.pagination2.style.display = 'none';
+      this.pagination3.style.display = 'none';
+      this.pagination4.style.display = 'none';
+      this.pagination5.style.display = 'none';
+      this.pagination6.style.display = 'none';
+      this.pagination7.style.display = 'none';
+      this.paginationDiv.style.display = 'none';
+      this.paginationDiv2.style.display = 'none';
+    }
+    if (parseInt(this.totalPages.textContent) === 2) {
+      this.pagination1.style.display = 'block';
+      this.pagination2.style.display = 'block';
+      this.pagination3.style.display = 'none';
+      this.pagination4.style.display = 'none';
+      this.pagination5.style.display = 'none';
+      this.pagination6.style.display = 'none';
+      this.pagination7.style.display = 'none';
+      this.paginationDiv.style.display = 'none';
+      this.paginationDiv2.style.display = 'none';
+    }
+    if (parseInt(this.totalPages.textContent) === 3) {
+      this.pagination1.style.display = 'block';
+      this.pagination2.style.display = 'block';
+      this.pagination3.style.display = 'block';
+      this.pagination4.style.display = 'none';
+      this.pagination5.style.display = 'none';
+      this.pagination6.style.display = 'none';
+      this.pagination7.style.display = 'none';
+      this.paginationDiv.style.display = 'none';
+      this.paginationDiv2.style.display = 'none';
+    }
+    if (parseInt(this.totalPages.textContent) === 4) {
+      this.pagination1.style.display = 'block';
+      this.pagination2.style.display = 'block';
+      this.pagination3.style.display = 'block';
+      this.pagination4.style.display = 'block';
+      this.pagination5.style.display = 'none';
+      this.pagination6.style.display = 'none';
+      this.pagination7.style.display = 'none';
+      this.paginationDiv.style.display = 'none';
+      this.paginationDiv2.style.display = 'none';
+    }
+    if (parseInt(this.totalPages.textContent) === 5) {
+      this.pagination1.style.display = 'block';
+      this.pagination2.style.display = 'block';
+      this.pagination3.style.display = 'block';
+      this.pagination4.style.display = 'block';
+      this.pagination5.style.display = 'block';
+      this.pagination6.style.display = 'none';
+      this.pagination7.style.display = 'none';
+      this.paginationDiv.style.display = 'none';
+      this.paginationDiv2.style.display = 'none';
+    }
+    if (parseInt(this.totalPages.textContent) === 6) {
+      this.pagination1.style.display = 'block';
+      this.pagination2.style.display = 'block';
+      this.pagination3.style.display = 'block';
+      this.pagination4.style.display = 'block';
+      this.pagination5.style.display = 'block';
+      this.pagination6.style.display = 'block';
+      this.pagination7.style.display = 'none';
+      this.paginationDiv.style.display = 'none';
+      this.paginationDiv2.style.display = 'none';
+    }
+    if (parseInt(this.totalPages.textContent) === 7) {
+      this.pagination1.style.display = 'block';
+      this.pagination2.style.display = 'block';
+      this.pagination3.style.display = 'block';
+      this.pagination4.style.display = 'block';
+      this.pagination5.style.display = 'block';
+      this.pagination6.style.display = 'block';
+      this.pagination7.style.display = 'block';
+      this.paginationDiv.style.display = 'none';
+      this.paginationDiv2.style.display = 'none';
+    }
+    if (parseInt(this.totalPages.textContent) === 8) {
+      this.pagination1.style.display = 'block';
+      this.pagination2.style.display = 'block';
+      this.pagination3.style.display = 'block';
+      this.pagination4.style.display = 'block';
+      this.pagination5.style.display = 'block';
+      this.pagination6.style.display = 'block';
+      this.pagination7.style.display = 'block';
+      this.paginationDiv.style.display = 'block';
+      this.paginationDiv2.style.display = 'block';
+      this.pagination7.textContent = '8';
+      if (parseInt(this.currentPage.textContent) > 4) {
+        this.pagination2.textContent = '3';
+        this.pagination3.textContent = '4';
+        this.pagination4.textContent = '5';
+        this.pagination5.textContent = '6';
+        this.pagination6.textContent = '7';
+      } else {
+        this.pagination2.textContent = '2';
+        this.pagination3.textContent = '3';
+        this.pagination4.textContent = '4';
+        this.pagination5.textContent = '5';
+        this.pagination6.textContent = '6';
+      }
+    }
+    if (parseInt(this.totalPages.textContent) > 8) {
+      this.pagination1.style.display = 'block';
+      this.pagination2.style.display = 'block';
+      this.pagination3.style.display = 'block';
+      this.pagination4.style.display = 'block';
+      this.pagination5.style.display = 'block';
+      this.pagination6.style.display = 'block';
+      this.pagination7.style.display = 'block';
+      this.paginationDiv.style.display = 'block';
+      this.paginationDiv2.style.display = 'block';
+
+      this.pagination2.textContent = parseInt(this.currentPage.textContent) - 2;
+      this.pagination3.textContent = parseInt(this.currentPage.textContent) - 1;
+      this.pagination4.textContent = parseInt(this.currentPage.textContent);
+      this.pagination5.textContent = parseInt(this.currentPage.textContent) + 1;
+      this.pagination6.textContent = parseInt(this.currentPage.textContent) + 2;
+      this.pagination7.textContent = parseInt(this.totalPages.textContent);
+
+      if (parseInt(this.currentPage.textContent) < 4) {
+        this.pagination2.textContent = '2';
+        this.pagination3.textContent = '3';
+        this.pagination4.textContent = '4';
+        this.pagination5.textContent = '5';
+        this.pagination6.textContent = '6';
+      }
+      if (parseInt(this.currentPage.textContent) >= (parseInt(this.totalPages.textContent) - 3)) {
+        this.pagination2.textContent = parseInt(this.totalPages.textContent) - 5;
+        this.pagination3.textContent = parseInt(this.totalPages.textContent) - 4;
+        this.pagination4.textContent = parseInt(this.totalPages.textContent) - 3;
+        this.pagination5.textContent = parseInt(this.totalPages.textContent) - 2;
+        this.pagination6.textContent = parseInt(this.totalPages.textContent) - 1;
+      }
+      if (parseInt(this.currentPage.textContent) < 5) {
+        this.paginationDiv.style.display = 'none';
+      } else {
+        this.paginationDiv.style.display = 'block';
+      }
+      if (parseInt(this.currentPage.textContent) >= (parseInt(this.totalPages.textContent) - 3)) {
+        this.paginationDiv2.style.display = 'none';
+      } else {
+        this.paginationDiv2.style.display = 'block';
+      }
+    }
+    this.navNums.forEach((el) => {
+      if (parseInt(el.textContent) === parseInt(this.currentPage.textContent)) {
+        el.style.fontWeight = '900';
+        el.style['pointer-events'] = 'none';
+      } else {
+        el.style.fontWeight = '400';
+        el.style['pointer-events'] = 'auto';
+      }
+    });
   }
 }

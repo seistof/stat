@@ -57,14 +57,14 @@ export class Upload extends MainView {
         formData.append('main_file', mainInput.files[0], mainInput.files[0].name);
         formData.append('additional_file', additionalInput.files[0], additionalInput.files[0].name);
         formData.append('clean_upload', 'True');
-        formData.append('year', year);
+        // formData.append('year', year);
         const requestOptions = {
           method: 'POST',
           body: formData,
           redirect: 'follow',
         };
         console.log(formData.get('main_file'));
-        const response = await fetch(this.serverURL + this.uploadURL, requestOptions);
+        const response = await fetch(this.serverURL + this.uploadURL + `?year=${year}`, requestOptions);
         console.log(response.status);
         logger(`uploadData();`, this, COMMENTS);
         if (response.status >= 200 && response.status < 300) {
@@ -76,7 +76,7 @@ export class Upload extends MainView {
         logger(`uploadData(); ` + e, this, COMMENTS);
       }
     } else {
-      super.errorMessage(this.uploadBox, 'все поля должны быть заполены', 1.5);
+      super.errorMessage(this.uploadBox, 'все поля должны быть заполнены', 1.5);
     }
     await super.enableOverlay(false);
   }

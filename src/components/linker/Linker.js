@@ -70,7 +70,7 @@ export class Linker extends Search {
     this.currentUniqueCodeEdit = currentUniqueCodeEdit;
     this.currentAdditionalIdEdit = currentAdditionalIdEdit;
     this.currentUniqueCode = currentUniqueCode;
-    this.linkerState = 'normal'; // normal/update
+    this.linkerState = 'normal'; // normal/update/update-check
     this.selectionState = selectionState;
   }
 
@@ -129,17 +129,20 @@ export class Linker extends Search {
     this.currentUniqueCodeEdit = '';
     this.currentAdditionalIdEdit = [];
     if (this.HIERARCHY.uniqueCodeToEdit !== '') {
+      this.linkerState = 'update';
       super.disableUI(false, this.deleteButton, this.resetButton, this.mainObjectAdd);
       super.disableUI(true, this.mainObjectSelect, this.checkButton);
       this.currentUniqueCodeEdit = this.HIERARCHY.uniqueCodeToEdit;
+      console.log(this.currentUniqueCodeEdit);
+      console.log(this.HIERARCHY.uniqueCodeToEdit);
       this.HIERARCHY.uniqueCodeToEdit = '';
       const response = await super.sendQuery(this.linkerGetEditURL, `?unique_code=${this.currentUniqueCodeEdit}`);
       await response.data.forEach(() => this.mainObjectAdd.click());
       console.log(response.data);
-      this.additionalObjects[this.additionalObjects.length - 1].querySelector('.linker__object-additional-remove').
-          click();
+      this.additionalObjects[this.additionalObjects.length - 1].
+          querySelector('.linker__object-additional-remove').click();
       const mainObject = super.initialize('.linker__object-main');
-      mainObject.querySelector('.linker-main-unique-code').textContent = this.currentUniqueCodeEdit;
+      mainObject.querySelector('.linker-object-unique-code').textContent = this.currentUniqueCodeEdit;
       mainObject.querySelector('.linker-object-id').textContent = response.data[0].ID;
       mainObject.querySelector('.linker-object-code').textContent = response.data[0].buildCode;
       mainObject.querySelector('.linker-object-year').textContent = response.data[0].yearData;
@@ -160,7 +163,8 @@ export class Linker extends Search {
       this.additionalObjects.forEach((obj) => {
         this.currentAdditionalIdEdit.push(parseInt(obj.querySelector('.linker-object-id').textContent));
       });
-      this.linkerState = 'update';
+      console.log(this.additionalObjects);
+      super.disableUI(true, this.saveButton);
     }
     await this.enableOverlay(false);
   }
@@ -336,6 +340,7 @@ export class Linker extends Search {
             <br>
             ${entry.normalizedObject.name}
             `;
+          selectButton.dataset.uniqueCode = entry.normalizedObject.uniqueCode;
           details.appendChild(detailButton);
           details.appendChild(selectButton);
           listItem.appendChild(objectUniqueCode);
@@ -373,6 +378,7 @@ export class Linker extends Search {
     } else {
       this.linkerList.style.marginRight = '17px';
     }
+    this.SEARCH.paginationNumbersHandler();
   }
 
   async saveFn() {
@@ -409,6 +415,7 @@ export class Linker extends Search {
     }
     if (this.linkerState === 'update') {
       logger(`saveFn(update);`, this, COMMENTS);
+      console.log(this.currentUniqueCodeEdit);
       const additionalOld = this.currentAdditionalIdEdit;
       const additionalNew = [];
       // check for delete and add
@@ -426,8 +433,6 @@ export class Linker extends Search {
         if (!additionalOld.some((o) => o === idNew)) toAdd.push(idNew);
       });
       console.log(`Unique: ${this.currentUniqueCodeEdit}`);
-      console.log(`Old: ${additionalOld}`);
-      console.log(`New: ${additionalNew}`);
       console.log(`toDelete: ${toDelete}`);
       console.log(`toAdd: ${toAdd}`);
       console.log(this.checkYearAndDuplicate());
@@ -444,6 +449,52 @@ export class Linker extends Search {
               "toDelete":[${toDelete}]
           }`,
           });
+          console.log(this.serverURL + this.linkerUpdateURL);
+          console.log(`{
+              "uniqueCode":"${this.currentUniqueCodeEdit}",
+              "toAdd":[${toAdd}],
+              "toDelete":[${toDelete}]
+          }`);
+          super.errorMessage(document.querySelector('.linker__control-buttons'), 'обновлено', 2, '#0f7814');
+          this.resetFn();
+          super.disableUI(true, this.saveButton);
+          logger(`saveFn(); status: ${response.status}`, this, COMMENTS);
+        } catch (e) {
+          logger(`saveFn(); ` + e, this, COMMENTS);
+          super.errorMessage(document.querySelector('.linker__control-buttons'), 'ошибка', 2, '#0f7814');
+        }
+      } else {
+        super.errorMessage(document.querySelector('.linker__control-buttons'), 'исключите записи с одинаковыми годами', 2);
+      }
+    }
+    if (this.linkerState === 'update-check') {
+      logger(`saveFn(check-update);`, this, COMMENTS);
+      const uniqueCode = document.querySelector('.linker__object-additional-box .linker-object-unique-code').textContent;
+      const toAdd = [];
+      const toDelete = [];
+      toAdd.push(parseInt(document.querySelector('.linker__object-main .linker-object-id').textContent));
+      console.log(`Unique: ${uniqueCode}`);
+      console.log(`toDelete: ${toDelete}`);
+      console.log(`toAdd: ${toAdd}`);
+      console.log(this.checkYearAndDuplicate());
+      console.log(!this.checkYearAndDuplicate());
+      console.log(this.linkerState);
+      if (this.checkYearAndDuplicate()) {
+        try {
+          const response = await fetch(this.serverURL + this.linkerUpdateURL, {
+            method: 'PUT',
+            body: `{
+              "uniqueCode":"${uniqueCode}",
+              "toAdd":[${toAdd}],
+              "toDelete":[${toDelete}]
+          }`,
+          });
+          console.log(this.serverURL + this.linkerUpdateURL);
+          console.log(`{
+              "uniqueCode":"${uniqueCode}",
+              "toAdd":[${toAdd}],
+              "toDelete":[${toDelete}]
+          }`);
           super.errorMessage(document.querySelector('.linker__control-buttons'), 'обновлено', 2, '#0f7814');
           this.resetFn();
           super.disableUI(true, this.saveButton);
@@ -461,7 +512,7 @@ export class Linker extends Search {
   async checkFn() {
     logger(`checkFn();`, this, COMMENTS);
     this.SEARCH.linkerCurrentState = 'check';
-    this.linkerState = 'update';
+    this.linkerState = 'update-check';
     const options = super.getFilterValue();
     logger(options);
     if (options.length > 0) {
@@ -485,7 +536,6 @@ export class Linker extends Search {
   async similarityFn() {
     logger(`similarityFn();`, this, COMMENTS);
     this.SEARCH.linkerCurrentState = 'similarity';
-    this.linkerState = 'normal';
     let id;
     let y;
     const p = super.initialize('.select-similarity-display').value;
@@ -526,7 +576,7 @@ export class Linker extends Search {
     const removeButtons = this.additionalContainer.querySelectorAll('.linker__object-additional-remove');
     removeButtons.forEach((button) => button.click());
     const mainBox = super.initialize('.linker__object-main');
-    mainBox.querySelector('.linker-main-unique-code').textContent = '';
+    mainBox.querySelector('.linker-object-unique-code').textContent = '';
     mainBox.querySelector('.linker-object-id').textContent = '';
     mainBox.querySelector('.linker-object-code').textContent = '';
     mainBox.querySelector('.linker-object-year').textContent = '';
@@ -611,6 +661,9 @@ export class Linker extends Search {
     const additionalId = document.createElement('div');
     additionalId.classList.add('linker-object-id');
     additionalId.style.display = 'none';
+    const additionalUniqueCode = document.createElement('div');
+    additionalUniqueCode.classList.add('linker-object-unique-code');
+    additionalUniqueCode.style.display = 'none';
     const code = document.createElement('div');
     code.classList.add('linker__object-additional-code', 'linker__object-size-code', 'linker-object-code');
     const year = document.createElement('div');
@@ -620,6 +673,7 @@ export class Linker extends Search {
     const nameTooltip = document.createElement('div');
     nameTooltip.classList.add('tooltip');
     name.appendChild(nameTooltip);
+    objectBox.appendChild(additionalUniqueCode);
     objectBox.appendChild(additionalId);
     objectBox.appendChild(code);
     objectBox.appendChild(year);
@@ -642,7 +696,8 @@ export class Linker extends Search {
       logger(`>>> No selection detected ` + e, this, COMMENTS);
     }
     await this.enableOverlay(true);
-    await this.fill(await super.sendQuery(this.linkerURL));
+    const options = super.getFilterValue();
+    await this.fill(await super.sendQuery(this.linkerURL + options));
     this.SEARCH.currentPage.textContent = 1;
     this.currentlySelectedObject = e.target.parentElement;
     this.currentlySelectedObject.style.background = '#11a0111c';
@@ -673,7 +728,8 @@ export class Linker extends Search {
       logger(`>>> No selection detected`, this, COMMENTS);
     }
     await this.enableOverlay(true);
-    await this.fill(await super.sendQuery(this.linkerURL));
+    const options = super.getFilterValue();
+    await this.fill(await super.sendQuery(this.linkerURL + options));
     this.SEARCH.currentPage.textContent = 1;
     this.currentlySelectedObject = e.target.parentElement;
     this.currentlySelectedObject.style.background = '#11a0111c';
@@ -718,6 +774,9 @@ export class Linker extends Search {
     this.additionalObjects.forEach((obj) => {
       obj.style.background = 'none';
     });
+    if (this.linkerState === 'update') {
+      super.disableUI(false, this.saveButton);
+    }
   }
 
   additionalObjectAddListeners() {
@@ -745,18 +804,14 @@ export class Linker extends Search {
   listItemSelectFn(e) {
     logger(`listItemSelectFn();`, this, COMMENTS);
     this.currentlySelectedObject.style.background = 'none';
-    const uniqueCode = this.currentlySelectedObject.querySelector('.linker-main-unique-code');
+    const uniqueCode = this.currentlySelectedObject.querySelector('.linker-object-unique-code');
     const id = this.currentlySelectedObject.querySelector('.linker-object-id');
     const code = this.currentlySelectedObject.querySelector('.linker-object-code');
     const year = this.currentlySelectedObject.querySelector('.linker-object-year');
     const name = this.currentlySelectedObject.querySelector('.linker-object-name');
     const nameTooltip = this.currentlySelectedObject.querySelector('.linker-object-name .tooltip');
-    try {
-      uniqueCode.textContent = e.target.parentElement.parentElement.querySelector(
-          '.linker__list-item-unique-code').textContent;
-    } catch (e) {
-      logger(`>>> No Unique Code for Additional object. ` + e, this, COMMENTS);
-    }
+
+    uniqueCode.textContent = e.target.dataset.uniqueCode;
     id.textContent = e.target.parentElement.parentElement.querySelector('.linker__list-item-id').textContent;
     code.textContent = e.target.parentElement.parentElement.querySelector('.linker__list-item-code').textContent;
     year.textContent = e.target.parentElement.parentElement.querySelector('.linker__list-item-year').textContent;
