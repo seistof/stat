@@ -51,22 +51,19 @@ export class MainView extends Query {
     logger(`mainInit();`, this, COMMENTS);
     await this.enableOverlay(true);
     this.mainListenersInit(main, hierarchy, linker, search, upload, dictionary);
-    try {
-      logger(`>>> Check localStorage`, this, COMMENTS);
-      if (JSON.parse(localStorage.getItem('filters')).loaded !== new Date().getFullYear()) {
-        logger(`>>> localStorage is empty or outdated`, this, COMMENTS);
-        const filters = {
-          value: await super.sendQuery(this.filterURL),
-          loaded: new Date().getFullYear(),
-        };
-        localStorage.setItem('filters', JSON.stringify(filters));
-      } else {
-        logger(`>>> localStorage is OK, expires in ${JSON.parse(localStorage.getItem('filters')).loaded}`, this, COMMENTS);
-      }
-    } catch (e) {
-      logger(`localStorage error ` + e, this, COMMENTS);
+    if (
+      localStorage.getItem('filters') === 'null' ||
+      JSON.parse(localStorage.getItem('filters')).loaded !== new Date().getFullYear()
+    ) {
+      logger(`>>> localStorage is empty or outdated`, this, COMMENTS);
+      const filters = {
+        data: await super.sendQuery(this.filterURL),
+        loaded: new Date().getFullYear(),
+      };
+      localStorage.setItem('filters', JSON.stringify(filters));
+      logger(`>>> localStorage updated`, this, COMMENTS);
     }
-    this.fillFilters(JSON.parse(localStorage.getItem('filters')).value);
+    this.fillFilters(JSON.parse(localStorage.getItem('filters')).data);
     await this.enableOverlay(false);
     await this.HIERARCHY.hierarchyInit();
   }
@@ -293,6 +290,7 @@ export class MainView extends Query {
       this.LINKER.controlButtonsRemoveListeners();
       this.SEARCH.removeListeners();
       this.UPLOAD.removeUploadListeners();
+      this.DICTIONARY.removeListeners();
     } catch (e) {
       logger(`>>> No other listeners detected. ` + e, false, COMMENTS);
     }
@@ -306,11 +304,14 @@ export class MainView extends Query {
       const response = await fetch(this.serverURL + this.hierarchyExportURL + options);
       const url = window.URL.createObjectURL(await response.blob());
       const a = document.createElement('a');
-      const name = response.headers.get('Content-Disposition')
-          .replace('attachment;', '')
-          .replace('filename=', '')
-          .replace('"', '')
-          .replace('"', '');
+      const d = new Date();
+      const month = d.getMonth().toString().length === 2 ? d.getMonth() : `0${d.getMonth()}`;
+      const day = d.getDay().toString().length === 2 ? d.getDay() : `0${d.getDay()}`;
+      const date = `${d.getFullYear()}.${month}.${day} ${d.getHours()}-${d.getMinutes()}`;
+      const ready = this.filterReadyDisplay.value !== 'Все' ? `${this.filterReadyDisplay.value}%` : 'Все';
+      const name = `Выгрузка; Готовность - ${ready}; Дата - ${date}.xlsx`;
+      console.log(name);
+      // if (this.filterReadyDisplay) {}
       a.href = url;
       a.download = name;
       document.body.appendChild(a);

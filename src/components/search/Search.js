@@ -382,6 +382,17 @@ export class Search extends MainView {
 
   paginationNumbersHandler() {
     logger(`>>> Pagination handler <<<`, this, COMMENTS);
+    if (parseInt(this.totalPages.textContent) === 0) {
+      this.pagination1.style.display = 'none';
+      this.pagination2.style.display = 'none';
+      this.pagination3.style.display = 'none';
+      this.pagination4.style.display = 'none';
+      this.pagination5.style.display = 'none';
+      this.pagination6.style.display = 'none';
+      this.pagination7.style.display = 'none';
+      this.paginationDiv.style.display = 'none';
+      this.paginationDiv2.style.display = 'none';
+    }
     if (parseInt(this.totalPages.textContent) === 1) {
       this.pagination1.style.display = 'block';
       this.pagination2.style.display = 'none';

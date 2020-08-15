@@ -22,7 +22,9 @@ export class Query extends DomMethods {
     this.linkerPredictionNewURL = '/predict_new_linking';
     this.linkerPredictionExistingURL = '/predict_exists_linking';
     this.uploadURL = '/data_load';
-    this.dictionaryURL = 'dictionary';
+    this.dictionaryMinistryURL = '/ministry_list';
+    this.dictionaryTerritoryURL = '/territory_list';
+    this.dictionaryProgramURL = '/program_list';
   }
 
   async sendQuery(url, options = '', method = 'GET') {
