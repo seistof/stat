@@ -25,6 +25,7 @@ export class Query extends DomMethods {
     this.dictionaryMinistryURL = '/ministry_list';
     this.dictionaryTerritoryURL = '/territory_list';
     this.dictionaryProgramURL = '/program_list';
+    this.dictionaryEventURL = '/event_list';
   }
 
   async sendQuery(url, options = '', method = 'GET') {

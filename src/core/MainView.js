@@ -51,19 +51,7 @@ export class MainView extends Query {
     logger(`mainInit();`, this, COMMENTS);
     await this.enableOverlay(true);
     this.mainListenersInit(main, hierarchy, linker, search, upload, dictionary);
-    if (
-      localStorage.getItem('filters') === 'null' ||
-      JSON.parse(localStorage.getItem('filters')).loaded !== new Date().getFullYear()
-    ) {
-      logger(`>>> localStorage is empty or outdated`, this, COMMENTS);
-      const filters = {
-        data: await super.sendQuery(this.filterURL),
-        loaded: new Date().getFullYear(),
-      };
-      localStorage.setItem('filters', JSON.stringify(filters));
-      logger(`>>> localStorage updated`, this, COMMENTS);
-    }
-    this.fillFilters(JSON.parse(localStorage.getItem('filters')).data);
+    this.fillFilters(await super.sendQuery(this.filterURL));
     await this.enableOverlay(false);
     await this.HIERARCHY.hierarchyInit();
   }
@@ -197,19 +185,25 @@ export class MainView extends Query {
       logger(`Exit`, this, COMMENTS);
     });
     super.addListener(this.dicMinistry, 'click', () => {
-      // delete all other listeners
-      this.DICTIONARY.init('ministry');
-      logger(`Ministry`, this, COMMENTS);
+      logger(`Dictionary: Ministry`, this, COMMENTS);
+      this.DICTIONARY.MINISTRY = true;
+      this.DICTIONARY.TERRITORY = false;
+      this.DICTIONARY.PROGRAM = false;
+      this.DICTIONARY.init();
     });
     super.addListener(this.dicTerritory, 'click', () => {
-      // delete all other listeners
-      this.DICTIONARY.init('territory');
-      logger(`Territory`, this, COMMENTS);
+      logger(`Dictionary: Territory`, this, COMMENTS);
+      this.DICTIONARY.MINISTRY = false;
+      this.DICTIONARY.TERRITORY = true;
+      this.DICTIONARY.PROGRAM = false;
+      this.DICTIONARY.init();
     });
     super.addListener(this.dicProgram, 'click', () => {
-      // delete all other listeners
-      this.DICTIONARY.init('program');
-      logger(`Program`, this, COMMENTS);
+      logger(`Dictionary: Program`, this, COMMENTS);
+      this.DICTIONARY.MINISTRY = false;
+      this.DICTIONARY.TERRITORY = false;
+      this.DICTIONARY.PROGRAM = true;
+      this.DICTIONARY.init();
     });
   }
 

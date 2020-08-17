@@ -33,9 +33,9 @@ export class Upload extends MainView {
   removeUploadListeners() {
     try {
       super.removeListener(this.sendButton, 'click', this.uploadFn);
-      logger(`removeUploadListeners();`, this, COMMENTS);
+      logger(`>>> Listeners removed.`, this, COMMENTS);
     } catch (e) {
-      logger(`removeUploadListeners(); ` + e, this, COMMENTS);
+      logger(`>>> No listeners detected. ` + e, this, COMMENTS);
     }
   }
 
