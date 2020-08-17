@@ -98,7 +98,7 @@ export class MainView extends Query {
         overlay.appendChild(overlayIndicator);
         overlayIndicator.appendChild(span);
         this.OVERLAY = overlay;
-        super.insertElement(this.CENTER, this.OVERLAY);
+        super.insertElement(this.ROOT, this.OVERLAY);
         logger(`>>> Overlay enabled`, this, COMMENTS);
       }
       r();
@@ -156,6 +156,20 @@ export class MainView extends Query {
       logger(`Hierarchy`, this, COMMENTS);
     });
     super.addListener(this.navLinker, 'click', async () => {
+      const filter = this.getFilterValue();
+      if (filter !== '' && parseInt(this.SEARCH.currentPage.textContent) !== 1) {
+        this.HIERARCHY.lastState = `${filter}&page=${parseInt(this.SEARCH.currentPage.textContent)}`;
+        this.HIERARCHY.lastPage = parseInt(this.SEARCH.currentPage.textContent);
+      }
+      if (filter === '' && parseInt(this.SEARCH.currentPage.textContent) !== 1) {
+        this.HIERARCHY.lastState = `?page=${parseInt(this.SEARCH.currentPage.textContent)}`;
+        this.HIERARCHY.lastPage = parseInt(this.SEARCH.currentPage.textContent);
+      }
+      if (filter !== '' && parseInt(this.SEARCH.currentPage.textContent) === 1) {
+        this.HIERARCHY.lastState = filter;
+      }
+      console.log(this.HIERARCHY.lastState);
+      console.log(this.HIERARCHY.lastPage);
       await this.LINKER.linkerInit();
       logger(`Linker`, this, COMMENTS);
     });
@@ -164,31 +178,36 @@ export class MainView extends Query {
       this.UPLOAD.init();
       logger(`Upload`, this, COMMENTS);
     });
-    super.addListener(this.navExport, 'click', () => {
-      logger(`Export`, this, COMMENTS);
+    super.addListener(this.navExport, 'click', async () => {
+      await this.exportFn();
     });
     super.addListener(this.navExit, 'click', () => {
       logger(`Exit`, this, COMMENTS);
     });
     super.addListener(this.dicMinistry, 'click', () => {
-      // delete all other listeners
-      this.DICTIONARY.init('ministry');
-      logger(`Ministry`, this, COMMENTS);
+      logger(`Dictionary: Ministry`, this, COMMENTS);
+      this.DICTIONARY.MINISTRY = true;
+      this.DICTIONARY.TERRITORY = false;
+      this.DICTIONARY.PROGRAM = false;
+      this.DICTIONARY.init();
     });
     super.addListener(this.dicTerritory, 'click', () => {
-      // delete all other listeners
-      this.DICTIONARY.init('territory');
-      logger(`Territory`, this, COMMENTS);
+      logger(`Dictionary: Territory`, this, COMMENTS);
+      this.DICTIONARY.MINISTRY = false;
+      this.DICTIONARY.TERRITORY = true;
+      this.DICTIONARY.PROGRAM = false;
+      this.DICTIONARY.init();
     });
     super.addListener(this.dicProgram, 'click', () => {
-      // delete all other listeners
-      this.DICTIONARY.init('program');
-      logger(`Program`, this, COMMENTS);
+      logger(`Dictionary: Program`, this, COMMENTS);
+      this.DICTIONARY.MINISTRY = false;
+      this.DICTIONARY.TERRITORY = false;
+      this.DICTIONARY.PROGRAM = true;
+      this.DICTIONARY.init();
     });
   }
 
   fillFilters(data) {
-    console.log(data);
     try {
       data.yearList.forEach((el) => {
         const option = document.createElement('option');
@@ -264,8 +283,37 @@ export class MainView extends Query {
       this.LINKER.linkerListSelectRemoveListeners();
       this.LINKER.controlButtonsRemoveListeners();
       this.SEARCH.removeListeners();
+      this.UPLOAD.removeUploadListeners();
+      this.DICTIONARY.removeListeners();
     } catch (e) {
       logger(`>>> No other listeners detected. ` + e, false, COMMENTS);
     }
+  }
+
+  async exportFn() {
+    logger(`exportFn();`, this, COMMENTS);
+    await this.enableOverlay(true);
+    try {
+      const options = this.getFilterValue();
+      const response = await fetch(this.serverURL + this.hierarchyExportURL + options);
+      const url = window.URL.createObjectURL(await response.blob());
+      const a = document.createElement('a');
+      const d = new Date();
+      const month = d.getMonth().toString().length === 2 ? d.getMonth() : `0${d.getMonth()}`;
+      const day = d.getDay().toString().length === 2 ? d.getDay() : `0${d.getDay()}`;
+      const date = `${d.getFullYear()}.${month}.${day} ${d.getHours()}-${d.getMinutes()}`;
+      const ready = this.filterReadyDisplay.value !== 'Все' ? `${this.filterReadyDisplay.value}%` : 'Все';
+      const name = `Выгрузка; Готовность - ${ready}; Дата - ${date}.xlsx`;
+      console.log(name);
+      // if (this.filterReadyDisplay) {}
+      a.href = url;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (err) {
+      logger(`exportFn(); ` + err, this, COMMENTS);
+    }
+    await this.enableOverlay(false);
   }
 }

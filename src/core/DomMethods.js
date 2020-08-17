@@ -9,6 +9,7 @@ export class DomMethods {
     this.FILTERS = this.initialize('.filter');
     this.SEARCHBOX = this.initialize('.header__search-box');
     this.BODY = this.initialize('body');
+    this.ROOT = this.initialize('.container');
   }
 
   initialize(selector, single = true) {
