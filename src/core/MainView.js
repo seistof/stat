@@ -53,6 +53,7 @@ export class MainView extends Query {
     this.mainListenersInit(main, hierarchy, linker, search, upload, dictionary);
     this.fillFilters(await super.sendQuery(this.filterURL));
     await this.enableOverlay(false);
+    this.navExit.style.display = 'none';
     await this.HIERARCHY.hierarchyInit();
   }
 

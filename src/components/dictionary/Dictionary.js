@@ -151,6 +151,9 @@ export class Dictionary extends MainView {
     this.removeListeners();
     this.addListeners();
     await super.enableOverlay(false);
+    this.currentData.length === 0 ?
+      super.errorMessage(this.dictionaryContainer, 'не удалось получить данные', 2) :
+      logger(`Ok`, this, COMMENTS);
   }
 
   addListeners() {
