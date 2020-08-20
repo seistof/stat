@@ -151,6 +151,7 @@ export class MainView extends Query {
       this.filterReadyDisplay.value = 'Все';
       this.filterReadyAll.checked = true;
       super.initialize('.header__search-line').value = '';
+      if (this.SEARCH.sourceView === 'hierarchy') await this.HIERARCHY.hierarchyInit();
       logger(`Reset filters.`, this, COMMENTS);
     });
     super.addListener(this.navMain, 'click', async () => {

@@ -37,6 +37,8 @@ export class Search extends MainView {
     this.sourceView = '';
     this.filters = [];
     this.filterApply = this.applyFn.bind(this);
+    this.goOnEnterFn = this.goOnEnter.bind(this);
+    this.toToEnterFn = this.toToEnter.bind(this);
   }
 
   async searchInit() {
@@ -269,6 +271,8 @@ export class Search extends MainView {
   addListeners() {
     try {
       super.addListener(this.searchInput, 'input', this.searchColorTextFn);
+      super.addListener(this.searchInput, 'keydown', this.goOnEnterFn);
+      super.addListener(this.goToInput, 'keydown', this.toToEnterFn);
       logger(`addListeners();`, this, COMMENTS);
       let index = 0;
       this.buttons.forEach((button) => {
@@ -292,6 +296,8 @@ export class Search extends MainView {
 
   removeListeners() {
     try {
+      super.removeListener(this.searchInput, 'keydown', this.goOnEnterFn);
+      super.removeListener(this.goToInput, 'keydown', this.toToEnterFn);
       super.removeListener(this.searchInput, 'input', this.searchColorTextFn);
       let index = 0;
       this.buttons.forEach((button) => {
@@ -376,6 +382,18 @@ export class Search extends MainView {
     if (counterUnique > 5) {
       this.searchInput.style.color = 'black';
       this.searchInput.style.fontWeight = '400';
+    }
+  }
+
+  goOnEnter(e) {
+    if (e.keyCode === 13) {
+      this.searchButton.click();
+    }
+  }
+
+  toToEnter(e) {
+    if (e.keyCode === 13) {
+      this.goToButton.click();
     }
   }
 

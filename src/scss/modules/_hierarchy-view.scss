@@ -356,7 +356,7 @@
 
           & > div {
             margin: 3px;
-            padding: 1px 5px;
+            padding: 3px 5px;
             border-radius: 6px;
             cursor: default;
           }
@@ -395,7 +395,7 @@
         .object-text {
           display: inline-block;
           margin: 3px;
-          padding: 1px 5px;
+          padding: 3px 5px;
           border-radius: 6px;
           overflow: hidden;
           white-space: nowrap;
@@ -447,7 +447,7 @@
           white-space: nowrap;
           text-overflow: ellipsis;
           cursor: default;
-          padding: 1px 5px;
+          padding: 3px 5px;
           margin: 3px;
 
           &:hover .tooltip {

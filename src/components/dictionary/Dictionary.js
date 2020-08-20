@@ -627,10 +627,9 @@ export class Dictionary extends MainView {
         if (response.status < 200 || response.status >= 300) {
           const errorText = JSON.parse(await response.text()).error;
           console.log(errorText);
-          if (errorText === 'territory list code already exist') {
-            super.errorMessage(e.target, 'запись с таким кодом уже существует', 1.5);
-          } else if (errorText === 'territory list name already exist') {
-            super.errorMessage(e.target, 'запись с таким названием уже существует', 1.5);
+          console.log(errorText === 'Unique Violation');
+          if (errorText === 'Unique Violation') {
+            super.errorMessage(e.target, 'запись с таким кодом или названием уже существует', 1.5);
           } else {
             super.errorMessage(e.target, 'ошибка', 2);
           }
