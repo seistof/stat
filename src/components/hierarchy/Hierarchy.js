@@ -71,85 +71,99 @@ export class Hierarchy extends Search {
 
   async fill(data) {
     try {
+      console.log(data);
       logger(`fill();`, this, COMMENTS);
       this.hierarchyContainer = super.initialize('.hierarchy-view__object-container');
       this.hierarchyContainer.innerHTML = '';
       this.currentData = data;
-      let index = 0;
       this.totalObjects.textContent = data.totalLen;
       this.totalPages.textContent = Math.ceil(data.totalLen / 12);
-      data.data.forEach((entry) => {
+      data.data.forEach((entry, i) => {
         const object = document.createElement('div');
-        const objectTitle = document.createElement('div');
-        const objectData = document.createElement('div');
-        const objectControl = document.createElement('div');
-        const mainYear = document.createElement('div');
-        const mainReady = document.createElement('div');
-        const mainCode = document.createElement('div');
-        const mainInfo = document.createElement('div');
-        const infoTooltip = document.createElement('div');
-        const mainName = document.createElement('div');
-        const nameTooltip = document.createElement('div');
-        const objectCounter = document.createElement('div');
-        const objectCounterTitle = document.createElement('span');
-        const objectCounterValue = document.createElement('span');
+        const wrapper = document.createElement('div');
+        const buttonBox = document.createElement('div');
+        const textBox = document.createElement('div');
         const objectDropdown = document.createElement('span');
-        const objectButtons = document.createElement('div');
         const objectDetailsButton = document.createElement('button');
         const objectEditButton = document.createElement('button');
+        const textBoxTop = document.createElement('div');
+        const textBoxBottom = document.createElement('div');
+        const texBoxTopLeft = document.createElement('div');
+        const year = document.createElement('div');
+        const ready = document.createElement('div');
+        const uniqueCode = document.createElement('div');
+        const texBoxTopRight = document.createElement('div');
+        const ministryName = document.createElement('div');
+        const ministryNameTooltip = document.createElement('div');
+        const territoryName = document.createElement('div');
+        const territoryNameTooltip = document.createElement('div');
+        const programName = document.createElement('div');
+        const programNameTooltip = document.createElement('div');
+        const name = document.createElement('div');
+        const nameTooltip = document.createElement('div');
+
         object.classList.add('hierarchy-view__object');
-        objectTitle.classList.add('hierarchy-view__object-title');
-        objectData.classList.add('hierarchy-view__object-data');
-        objectControl.classList.add('hierarchy-view__object-control');
-        mainYear.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-year',
-            'hierarchy-view-size-year');
-        mainReady.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-ready',
-            'hierarchy-view-size-ready');
-        mainCode.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-code',
-            'hierarchy-view-size-code');
-        mainInfo.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-info',
-            'hierarchy-view-size-info');
-        infoTooltip.classList.add('tooltip');
-        mainName.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-name',
-            'hierarchy-view-size-name');
-        nameTooltip.classList.add('tooltip');
-        objectCounter.classList.add('hierarchy-view__object-counter');
+        wrapper.className = 'object-wrapper';
         objectDropdown.classList.add('hierarchy-view__object-dropdown', 'button', 'material-icons');
-        objectButtons.classList.add('hierarchy-view__object-buttons');
         objectDetailsButton.classList.add('hierarchy-view__object-details', 'button');
         objectEditButton.classList.add('hierarchy-view__object-edit', 'button');
-        objectCounterTitle.textContent = 'Записей:';
+        buttonBox.classList.add('hierarchy-view__object-button-box');
+        textBox.classList.add('hierarchy-view__object-text-box');
+        textBoxTop.classList.add('hierarchy-view__object-text-box-top');
+        textBoxBottom.classList.add('hierarchy-view__object-text-box-bottom');
+        texBoxTopLeft.classList.add('hierarchy-view__object-text-box-top-left');
+        year.classList.add('hierarchy-view__object-year');
+        ready.classList.add('hierarchy-view__object-ready');
+        uniqueCode.classList.add('hierarchy-view__object-unique-code');
+        texBoxTopRight.classList.add('hierarchy-view__object-text-box-top-right');
+        ministryName.classList.add('hierarchy-view__object-ministry', 'object-text');
+        ministryNameTooltip.classList.add('tooltip');
+        territoryName.classList.add('hierarchy-view__object-territory', 'object-text');
+        territoryNameTooltip.classList.add('tooltip');
+        programName.classList.add('hierarchy-view__object-program', 'object-text');
+        programNameTooltip.classList.add('tooltip');
+        name.classList.add('hierarchy-view__object-name');
+        nameTooltip.classList.add('tooltip');
+
         objectDropdown.textContent = 'expand_more';
         objectDetailsButton.textContent = 'Подробнее';
         objectEditButton.textContent = 'Изменить';
-        mainYear.textContent = entry[0].yearData;
-        mainReady.textContent = entry[0].maxReadiness;
-        mainCode.textContent = entry[0].buildCode;
-        mainInfo.innerHTML = entry[0].ministryName + ' ' + entry[0].territoryName + ' ' + entry[0].programName;
-        infoTooltip.innerHTML = entry[0].ministryName + `<br>` + entry[0].territoryName + `<br>` + entry[0].programName;
-        mainName.textContent = entry[0].name.replace('***', ' ');
-        nameTooltip.innerHTML = entry[0].name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>');
-        objectCounterValue.textContent = entry.length;
         objectDetailsButton.dataset.id = entry[0].uniqueCode;
-        objectEditButton.dataset.index = index.toString();
-        index++;
-        super.insertElement(object, objectTitle);
-        super.insertElement(objectTitle, objectData);
-        super.insertElement(objectTitle, objectControl);
-        super.insertElement(mainInfo, infoTooltip);
-        super.insertElement(mainName, nameTooltip);
-        super.insertElement(objectData, mainYear);
-        super.insertElement(objectData, mainReady);
-        super.insertElement(objectData, mainCode);
-        super.insertElement(objectData, mainInfo);
-        super.insertElement(objectData, mainName);
-        super.insertElement(objectCounter, objectCounterTitle);
-        super.insertElement(objectCounter, objectCounterValue);
-        super.insertElement(objectButtons, objectDetailsButton);
-        super.insertElement(objectButtons, objectEditButton);
-        super.insertElement(objectControl, objectCounter);
-        super.insertElement(objectControl, objectDropdown);
-        super.insertElement(objectControl, objectButtons);
+        objectEditButton.dataset.index = i.toString();
+        year.textContent = `Год: ${entry[0].yearData}`;
+        ready.textContent = `Готовность: ${entry[0].maxReadiness}`;
+        uniqueCode.textContent = entry[0].uniqueCode;
+        ministryName.textContent = entry[0].ministryName;
+        // ministryNameTooltip.textContent = entry[0].ministryName;
+        territoryName.textContent = entry[0].territoryName;
+        // territoryNameTooltip.textContent = entry[0].territoryName;
+        programName.textContent = entry[0].programName;
+        programNameTooltip.textContent = entry[0].programName;
+        name.textContent = entry[0].name.replace('***', ' ');
+        nameTooltip.innerHTML = entry[0].name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>');
+
+        super.insertElement(buttonBox, objectDetailsButton);
+        super.insertElement(buttonBox, objectEditButton);
+        super.insertElement(buttonBox, objectDropdown);
+        // super.insertElement(ministryName, ministryNameTooltip);
+        // super.insertElement(territoryName, territoryNameTooltip);
+        super.insertElement(programName, programNameTooltip);
+        super.insertElement(name, nameTooltip);
+        super.insertElement(texBoxTopLeft, year);
+        super.insertElement(texBoxTopLeft, ready);
+        super.insertElement(texBoxTopLeft, uniqueCode);
+        super.insertElement(texBoxTopRight, ministryName);
+        super.insertElement(texBoxTopRight, territoryName);
+        super.insertElement(texBoxTopRight, programName);
+        super.insertElement(textBoxBottom, name);
+        super.insertElement(textBoxTop, texBoxTopLeft);
+        super.insertElement(textBoxTop, texBoxTopRight);
+        super.insertElement(textBox, textBoxTop);
+        super.insertElement(textBox, textBoxBottom);
+        super.insertElement(wrapper, buttonBox);
+        super.insertElement(wrapper, textBox);
+        super.insertElement(object, wrapper);
+
         if (entry.length > 1) {
           const objectBody = document.createElement('div');
           objectBody.classList.add('hierarchy-view__object-body');
@@ -158,40 +172,69 @@ export class Hierarchy extends Search {
           entry.forEach((el) => {
             if (el !== entry[0]) {
               const objectBodyItem = document.createElement('div');
-              const objectItemYear = document.createElement('div');
-              const objectItemReady = document.createElement('div');
-              const objectItemCode = document.createElement('div');
-              const objectItemInfo = document.createElement('div');
-              const objectItemName = document.createElement('div');
-              const itemInfoTooltip = document.createElement('div');
-              const itemNameTooltip = document.createElement('div');
-              objectBodyItem.classList.add('hierarchy-view__object-body-item');
-              objectItemYear.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-year',
-                  'hierarchy-view-size-year');
-              objectItemReady.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-ready',
-                  'hierarchy-view-size-ready');
-              objectItemCode.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-code',
-                  'hierarchy-view-size-code');
-              objectItemInfo.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-info',
-                  'hierarchy-view-size-info');
-              objectItemName.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-name',
-                  'hierarchy-view-size-name');
-              itemInfoTooltip.classList.add('tooltip');
-              itemNameTooltip.classList.add('tooltip');
-              objectItemYear.textContent = el.yearData;
-              objectItemReady.textContent = el.maxReadiness;
-              objectItemCode.textContent = el.buildCode;
-              objectItemInfo.textContent = el.ministryName + el.territoryName + el.programName;
-              itemInfoTooltip.innerHTML = el.ministryName + '<br>' + el.territoryName + '<br>' + el.programName;
-              objectItemName.textContent = el.name.replace('***', ' ');
-              itemNameTooltip.innerHTML = el.name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>');
-              super.insertElement(objectBodyItem, objectItemYear);
-              super.insertElement(objectBodyItem, objectItemReady);
-              super.insertElement(objectBodyItem, objectItemCode);
-              super.insertElement(objectBodyItem, objectItemInfo);
-              super.insertElement(objectBodyItem, objectItemName);
-              super.insertElement(objectItemInfo, itemInfoTooltip);
-              super.insertElement(objectItemName, itemNameTooltip);
+              const textBox = document.createElement('div');
+              const textBoxTop = document.createElement('div');
+              const textBoxBottom = document.createElement('div');
+              const texBoxTopLeft = document.createElement('div');
+              const year = document.createElement('div');
+              const ready = document.createElement('div');
+              const uniqueCode = document.createElement('div');
+              const texBoxTopRight = document.createElement('div');
+              const ministryName = document.createElement('div');
+              const ministryNameTooltip = document.createElement('div');
+              const territoryName = document.createElement('div');
+              const territoryNameTooltip = document.createElement('div');
+              const programName = document.createElement('div');
+              const programNameTooltip = document.createElement('div');
+              const name = document.createElement('div');
+              const nameTooltip = document.createElement('div');
+
+              objectBodyItem.className = 'hierarchy-view__object-body-item';
+              textBox.classList.add('hierarchy-view__object-text-box');
+              textBoxTop.classList.add('hierarchy-view__object-text-box-top');
+              textBoxBottom.classList.add('hierarchy-view__object-text-box-bottom');
+              texBoxTopLeft.classList.add('hierarchy-view__object-text-box-top-left');
+              year.classList.add('hierarchy-view__object-year');
+              ready.classList.add('hierarchy-view__object-ready');
+              uniqueCode.classList.add('hierarchy-view__object-unique-code');
+              texBoxTopRight.classList.add('hierarchy-view__object-text-box-top-right');
+              ministryName.classList.add('hierarchy-view__object-ministry', 'object-text');
+              ministryNameTooltip.classList.add('tooltip');
+              territoryName.classList.add('hierarchy-view__object-territory', 'object-text');
+              territoryNameTooltip.classList.add('tooltip');
+              programName.classList.add('hierarchy-view__object-program', 'object-text');
+              programNameTooltip.classList.add('tooltip');
+              name.classList.add('hierarchy-view__object-name');
+              nameTooltip.classList.add('tooltip');
+
+              year.textContent = `Год: ${el.yearData}`;
+              ready.textContent = `Готовность: ${el.maxReadiness}`;
+              uniqueCode.textContent = el.uniqueCode;
+              ministryName.textContent = el.ministryName;
+              // ministryNameTooltip.textContent = el.ministryName;
+              territoryName.textContent = el.territoryName;
+              // territoryNameTooltip.textContent = el.territoryName;
+              programName.textContent = el.programName;
+              programNameTooltip.textContent = el.programName;
+              name.textContent = el.name.replace('***', ' ');
+              nameTooltip.innerHTML = el.name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>');
+
+              // super.insertElement(ministryName, ministryNameTooltip);
+              // super.insertElement(territoryName, territoryNameTooltip);
+              super.insertElement(programName, programNameTooltip);
+              super.insertElement(name, nameTooltip);
+              super.insertElement(texBoxTopLeft, year);
+              super.insertElement(texBoxTopLeft, ready);
+              super.insertElement(texBoxTopLeft, uniqueCode);
+              super.insertElement(texBoxTopRight, ministryName);
+              super.insertElement(texBoxTopRight, territoryName);
+              super.insertElement(texBoxTopRight, programName);
+              super.insertElement(textBoxBottom, name);
+              super.insertElement(textBoxTop, texBoxTopLeft);
+              super.insertElement(textBoxTop, texBoxTopRight);
+              super.insertElement(textBox, textBoxTop);
+              super.insertElement(textBox, textBoxBottom);
+              super.insertElement(objectBodyItem, textBox);
               super.insertElement(objectBody, objectBodyItem);
             }
           });
@@ -408,3 +451,148 @@ export class Hierarchy extends Search {
     }
   }
 }
+
+// async fill(data) {
+//   try {
+//     logger(`fill();`, this, COMMENTS);
+//     this.hierarchyContainer = super.initialize('.hierarchy-view__object-container');
+//     this.hierarchyContainer.innerHTML = '';
+//     this.currentData = data;
+//     let index = 0;
+//     this.totalObjects.textContent = data.totalLen;
+//     this.totalPages.textContent = Math.ceil(data.totalLen / 12);
+//     data.data.forEach((entry) => {
+//       const object = document.createElement('div');
+//       const objectTitle = document.createElement('div');
+//       const objectData = document.createElement('div');
+//       const objectControl = document.createElement('div');
+//       const mainYear = document.createElement('div');
+//       const mainReady = document.createElement('div');
+//       const mainCode = document.createElement('div');
+//       const mainInfo = document.createElement('div');
+//       const infoTooltip = document.createElement('div');
+//       const mainName = document.createElement('div');
+//       const nameTooltip = document.createElement('div');
+//       const objectCounter = document.createElement('div');
+//       const objectCounterTitle = document.createElement('span');
+//       const objectCounterValue = document.createElement('span');
+//       const objectDropdown = document.createElement('span');
+//       const objectButtons = document.createElement('div');
+//       const objectDetailsButton = document.createElement('button');
+//       const objectEditButton = document.createElement('button');
+//       object.classList.add('hierarchy-view__object');
+//       objectTitle.classList.add('hierarchy-view__object-title');
+//       objectData.classList.add('hierarchy-view__object-data');
+//       objectControl.classList.add('hierarchy-view__object-control');
+//       mainYear.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-year',
+//         'hierarchy-view-size-year');
+//       mainReady.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-ready',
+//         'hierarchy-view-size-ready');
+//       mainCode.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-code',
+//         'hierarchy-view-size-code');
+//       mainInfo.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-info',
+//         'hierarchy-view-size-info');
+//       infoTooltip.classList.add('tooltip');
+//       mainName.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-name',
+//         'hierarchy-view-size-name');
+//       nameTooltip.classList.add('tooltip');
+//       objectCounter.classList.add('hierarchy-view__object-counter');
+//       objectDropdown.classList.add('hierarchy-view__object-dropdown', 'button', 'material-icons');
+//       objectButtons.classList.add('hierarchy-view__object-buttons');
+//       objectDetailsButton.classList.add('hierarchy-view__object-details', 'button');
+//       objectEditButton.classList.add('hierarchy-view__object-edit', 'button');
+//       objectCounterTitle.textContent = 'Записей:';
+//       objectDropdown.textContent = 'expand_more';
+//       objectDetailsButton.textContent = 'Подробнее';
+//       objectEditButton.textContent = 'Изменить';
+//       mainYear.textContent = entry[0].yearData;
+//       mainReady.textContent = entry[0].maxReadiness;
+//       mainCode.textContent = entry[0].buildCode;
+//       mainInfo.innerHTML = entry[0].ministryName + ' ' + entry[0].territoryName + ' ' + entry[0].programName;
+//       infoTooltip.innerHTML = entry[0].ministryName + `<br>` + entry[0].territoryName + `<br>` + entry[0].programName;
+//       mainName.textContent = entry[0].name.replace('***', ' ');
+//       nameTooltip.innerHTML = entry[0].name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>');
+//       objectCounterValue.textContent = entry.length;
+//       objectDetailsButton.dataset.id = entry[0].uniqueCode;
+//       objectEditButton.dataset.index = index.toString();
+//       index++;
+//       super.insertElement(object, objectTitle);
+//       super.insertElement(objectTitle, objectData);
+//       super.insertElement(objectTitle, objectControl);
+//       super.insertElement(mainInfo, infoTooltip);
+//       super.insertElement(mainName, nameTooltip);
+//       super.insertElement(objectData, mainYear);
+//       super.insertElement(objectData, mainReady);
+//       super.insertElement(objectData, mainCode);
+//       super.insertElement(objectData, mainInfo);
+//       super.insertElement(objectData, mainName);
+//       super.insertElement(objectCounter, objectCounterTitle);
+//       super.insertElement(objectCounter, objectCounterValue);
+//       super.insertElement(objectButtons, objectDetailsButton);
+//       super.insertElement(objectButtons, objectEditButton);
+//       super.insertElement(objectControl, objectCounter);
+//       super.insertElement(objectControl, objectDropdown);
+//       super.insertElement(objectControl, objectButtons);
+//       if (entry.length > 1) {
+//         const objectBody = document.createElement('div');
+//         objectBody.classList.add('hierarchy-view__object-body');
+//         objectBody.style.display = 'none';
+//         super.insertElement(object, objectBody);
+//         entry.forEach((el) => {
+//           if (el !== entry[0]) {
+//             const objectBodyItem = document.createElement('div');
+//             const objectItemYear = document.createElement('div');
+//             const objectItemReady = document.createElement('div');
+//             const objectItemCode = document.createElement('div');
+//             const objectItemInfo = document.createElement('div');
+//             const objectItemName = document.createElement('div');
+//             const itemInfoTooltip = document.createElement('div');
+//             const itemNameTooltip = document.createElement('div');
+//             objectBodyItem.classList.add('hierarchy-view__object-body-item');
+//             objectItemYear.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-year',
+//               'hierarchy-view-size-year');
+//             objectItemReady.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-ready',
+//               'hierarchy-view-size-ready');
+//             objectItemCode.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-code',
+//               'hierarchy-view-size-code');
+//             objectItemInfo.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-info',
+//               'hierarchy-view-size-info');
+//             objectItemName.classList.add('hierarchy-view__object-item', 'hierarchy-view__object-name',
+//               'hierarchy-view-size-name');
+//             itemInfoTooltip.classList.add('tooltip');
+//             itemNameTooltip.classList.add('tooltip');
+//             objectItemYear.textContent = el.yearData;
+//             objectItemReady.textContent = el.maxReadiness;
+//             objectItemCode.textContent = el.buildCode;
+//             objectItemInfo.textContent = el.ministryName + el.territoryName + el.programName;
+//             itemInfoTooltip.innerHTML = el.ministryName + '<br>' + el.territoryName + '<br>' + el.programName;
+//             objectItemName.textContent = el.name.replace('***', ' ');
+//             itemNameTooltip.innerHTML = el.name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>');
+//             super.insertElement(objectBodyItem, objectItemYear);
+//             super.insertElement(objectBodyItem, objectItemReady);
+//             super.insertElement(objectBodyItem, objectItemCode);
+//             super.insertElement(objectBodyItem, objectItemInfo);
+//             super.insertElement(objectBodyItem, objectItemName);
+//             super.insertElement(objectItemInfo, itemInfoTooltip);
+//             super.insertElement(objectItemName, itemNameTooltip);
+//             super.insertElement(objectBody, objectBodyItem);
+//           }
+//         });
+//       } else {
+//         objectDropdown.style.display = 'none';
+//       }
+//       super.insertElement(this.hierarchyContainer, object);
+//     });
+//     this.removeListeners();
+//     this.initListButtons();
+//     this.addListeners();
+//   } catch (e) {
+//     logger(`fill(); ` + e, this, COMMENTS);
+//     super.errorMessage(this.hierarchyContainer, 'записей, соответствующих запросу, не найдено', 3);
+//     this.totalObjects.textContent = 0;
+//     this.totalPages.textContent = 0;
+//   }
+//   const objectCount = this.hierarchyContainer.querySelectorAll('.hierarchy-view__object');
+//   objectCount.length === 0 ? super.disableUI(true, this.navExport) : super.disableUI(false, this.navExport);
+//   this.SEARCH.paginationNumbersHandler();
+// }

@@ -9,7 +9,6 @@ export class Search extends MainView {
     super();
     this.applyButton = super.initialize('.filter__button-search');
     this.searchButton = super.initialize('.header__search-button');
-    this.searchInput = searchInput;
     this.goToButton = goToButton;
     this.prevButton = prevButton;
     this.nextButton = nextButton;
@@ -177,17 +176,17 @@ export class Search extends MainView {
       let options = super.getFilterValue();
       await this.enableOverlay(true);
       if (this.sourceView === 'hierarchy') {
-        await this.enableOverlay(false);
         if (options.length === 0) {
           await this.HIERARCHY.fill(await super.sendQuery(this.hierarchyURL, `?page=${page}`));
           this.checkPagination();
-          await this.enableOverlay(false);
+          // await this.enableOverlay(false);
         } else {
           options += `&page=${page}`;
           await this.HIERARCHY.fill(await super.sendQuery(this.hierarchyURL, options));
           this.checkPagination();
-          await this.enableOverlay(false);
+          // await this.enableOverlay(false);
         }
+        await this.enableOverlay(false);
       }
       if (this.sourceView === 'linker' && this.linkerCurrentState === 'normal') {
         if (options.length === 0) {
@@ -253,7 +252,7 @@ export class Search extends MainView {
         this.currentPage.textContent = 1;
         this.checkPagination();
       } else {
-        this.filterReset.click();
+        // this.filterReset.click();
         logger(str, this, COMMENTS);
         await this.HIERARCHY.fill(await super.sendQuery(this.hierarchySearchURL,
             `?search_query=${str}`));

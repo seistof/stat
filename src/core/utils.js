@@ -135,6 +135,7 @@ export function linkerNode() {
   const linkerControlMain = document.createElement('button');
   linkerControlMain.classList.add('button', 'linker__control-main-page');
   linkerControlMain.textContent = 'На главную';
+  linkerControlMain.style.display = 'none';
   controlButtons.appendChild(linkerControlSave);
   controlButtons.appendChild(linkerControlCheck);
   controlButtons.appendChild(linkerControlSimilarity);

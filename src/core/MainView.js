@@ -150,6 +150,7 @@ export class MainView extends Query {
       this.filterReadyInput.value = 50;
       this.filterReadyDisplay.value = 'Все';
       this.filterReadyAll.checked = true;
+      super.initialize('.header__search-line').value = '';
       logger(`Reset filters.`, this, COMMENTS);
     });
     super.addListener(this.navMain, 'click', async () => {
@@ -258,18 +259,19 @@ export class MainView extends Query {
     box.textContent = text;
     box.style.background = color;
     element.appendChild(box);
-    this.disableUI(true, element);
+    // this.disableUI(true, element);
     element.style.opacity = '1';
-    this.addListener(box, 'click', () => {
-      box.remove();
-      this.disableUI(false, element);
-    }, true);
+    // this.addListener(box, 'click', () => {
+    //   box.remove();
+    //   this.disableUI(false, element);
+    // }, true);
     setTimeout(() => {
-      try {
-        box.dispatchEvent(new Event('click'));
-      } catch (e) {
-        logger(`Error message already removed. ` + e, this, COMMENTS);
-      }
+      // try {
+      //   box.dispatchEvent(new Event('click'));
+      box.remove();
+      // } catch (e) {
+      //   logger(`Error message already removed. ` + e, this, COMMENTS);
+      // }
     }, delay * 1000);
   }
 

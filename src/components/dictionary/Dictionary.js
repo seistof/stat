@@ -53,6 +53,7 @@ export class Dictionary extends MainView {
     this.addEventItemFn = this.addEventItem.bind(this);
     this.addEventItemRemoveButtons = [];
     this.addEventItemList = [];
+    this.removeWarningBoxFn = this.removeWarningBox.bind(this);
   }
 
   async init() {
@@ -301,19 +302,15 @@ export class Dictionary extends MainView {
     const cancelButton = super.initialize('.delete-warning-box__cancel');
     this.currentDictionaryId = this.currentData[parseInt(e.target.dataset.index)].id;
     console.log(this.currentDictionaryId);
-    console.log(deleteButton);
-    console.log(cancelButton);
+    const overlay = super.initialize('.overlay');
+    super.addListener(overlay, 'click', this.removeWarningBoxFn);
     super.addListener(deleteButton, 'click', this.ministryDeleteQueryFn);
     super.addListener(cancelButton, 'click', () => {
+      super.removeListener(overlay, 'click', this.removeWarningBoxFn);
       super.removeListener(deleteButton, 'click', this.ministryDeleteQueryFn);
       warningBox.remove();
       super.enableOverlay(false);
     }, true);
-    cancelButton.addEventListener('click', () => {
-      super.removeListener(deleteButton, 'click', this.ministryDeleteQueryFn);
-      warningBox.remove();
-      super.enableOverlay(false);
-    });
   }
 
   async ministryEdit(e) {
@@ -503,8 +500,11 @@ export class Dictionary extends MainView {
     const cancelButton = super.initialize('.delete-warning-box__cancel');
     this.currentDictionaryId = this.currentData[parseInt(e.target.dataset.index)].id;
     console.log(this.currentDictionaryId);
+    const overlay = super.initialize('.overlay');
+    super.addListener(overlay, 'click', this.removeWarningBoxFn);
     super.addListener(deleteButton, 'click', this.territoryDeleteQueryFn);
     super.addListener(cancelButton, 'click', () => {
+      super.removeListener(overlay, 'click', this.removeWarningBoxFn);
       super.removeListener(deleteButton, 'click', this.territoryDeleteQueryFn);
       warningBox.remove();
       super.enableOverlay(false);
@@ -625,18 +625,26 @@ export class Dictionary extends MainView {
           body: body,
         });
         if (response.status < 200 || response.status >= 300) {
-          super.errorMessage(e.target, 'ошибка', 2);
+          const errorText = JSON.parse(await response.text()).error;
+          console.log(errorText);
+          if (errorText === 'territory list code already exist') {
+            super.errorMessage(e.target, 'запись с таким кодом уже существует', 1.5);
+          } else if (errorText === 'territory list name already exist') {
+            super.errorMessage(e.target, 'запись с таким названием уже существует', 1.5);
+          } else {
+            super.errorMessage(e.target, 'ошибка', 2);
+          }
         } else {
           this.currentDictionaryObject = ``;
           document.querySelector('.buttons-cancel').click();
           this.MAIN.dicTerritory.click();
         }
         logger(`territoryCreateQuery(); status: ${response.status}`, this, COMMENTS);
-      } catch (e) {
-        logger(`territoryCreateQuery(); ` + e, this, COMMENTS);
+      } catch (err) {
+        logger(`territoryCreateQuery(); ` + err, this, COMMENTS);
       }
     } else {
-      super.errorMessage(name, 'некоторые поля пусты либо заполнены неверно', 1.5);
+      super.errorMessage(e.target, 'некоторые поля пусты либо заполнены неверно', 1.5);
     }
   }
 
@@ -688,8 +696,11 @@ export class Dictionary extends MainView {
     const cancelButton = super.initialize('.delete-warning-box__cancel');
     this.currentDictionaryId = this.currentData[parseInt(e.target.dataset.index)].id;
     console.log(this.currentDictionaryId);
+    const overlay = super.initialize('.overlay');
+    super.addListener(overlay, 'click', this.removeWarningBoxFn);
     super.addListener(deleteButton, 'click', this.programDeleteQueryFn);
     super.addListener(cancelButton, 'click', () => {
+      super.removeListener(overlay, 'click', this.removeWarningBoxFn);
       super.removeListener(deleteButton, 'click', this.programDeleteQueryFn);
       warningBox.remove();
       super.enableOverlay(false);
@@ -977,8 +988,11 @@ export class Dictionary extends MainView {
     const deleteButton = super.initialize('.delete-warning-box__ok');
     const cancelButton = super.initialize('.delete-warning-box__cancel');
     this.currentEventId = this.currentData[parseInt(e.target.dataset.mainIndex)].events[e.target.dataset.index].id;
+    const overlay = super.initialize('.overlay');
+    super.addListener(overlay, 'click', this.removeWarningBoxFn);
     super.addListener(deleteButton, 'click', this.eventDeleteQueryFn);
     super.addListener(cancelButton, 'click', () => {
+      super.removeListener(overlay, 'click', this.removeWarningBoxFn);
       super.removeListener(deleteButton, 'click', this.eventDeleteQueryFn);
       warningBox.remove();
       super.enableOverlay(false);
@@ -1298,5 +1312,9 @@ export class Dictionary extends MainView {
     super.addListener(buttonsCancel, 'click', () => {
       data.remove();
     }, true);
+  }
+
+  removeWarningBox() {
+    super.initialize('.delete-warning-box__cancel').click();
   }
 }
