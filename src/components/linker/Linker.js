@@ -777,6 +777,9 @@ export class Linker extends Search {
     if (this.linkerState === 'update') {
       super.disableUI(false, this.saveButton);
     }
+    if (this.linkerState === 'update-check') {
+      this.additionalObjects.length === 0 ? this.linkerState = 'normal' : this.linkerState;
+    }
   }
 
   additionalObjectAddListeners() {

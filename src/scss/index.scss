@@ -39,10 +39,6 @@ body {
   top: 0;
 }
 
-.button {
-  user-select: none;
-}
-
 @import "modules/header";
 @import "modules/center";
 @import "modules/menu";
@@ -56,3 +52,8 @@ body {
 @import "modules/detail-window";
 @import "modules/dictionary.ministry";
 @import "modules/dictionary.add-new-window";
+
+.button {
+  user-select: none;
+  cursor: pointer;
+}

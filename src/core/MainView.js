@@ -151,6 +151,7 @@ export class MainView extends Query {
       this.filterReadyDisplay.value = 'Все';
       this.filterReadyAll.checked = true;
       super.initialize('.header__search-line').value = '';
+      super.initialize('.header__search-line').style.color = '#000000';
       if (this.SEARCH.sourceView === 'hierarchy') await this.HIERARCHY.hierarchyInit();
       logger(`Reset filters.`, this, COMMENTS);
     });

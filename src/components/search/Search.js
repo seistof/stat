@@ -372,11 +372,11 @@ export class Search extends MainView {
       }
     }
     if (counterCode === str.length) {
-      this.searchInput.style.color = '#1ade29';
+      this.searchInput.style.color = '#19c832';
       this.searchInput.style.fontWeight = '600';
     }
     if (counterCode === str.length && counterUnique > 0 && counterUnique < 6) {
-      this.searchInput.style.color = 'red';
+      this.searchInput.style.color = '#c81932';
       this.searchInput.style.fontWeight = '600';
     }
     if (counterUnique > 5) {

@@ -313,10 +313,6 @@
       align-items: center;
       justify-content: center;
 
-      .hierarchy-view__object-dropdown {
-        font-size: 24px;
-      }
-
       & > .button {
         background: #efefef;
         border: 1px solid black;
@@ -329,6 +325,7 @@
         justify-content: center;
         align-items: center;
         user-select: none;
+        cursor: pointer;
 
         &:hover {
           background: darken(#efefef, 5);
@@ -336,6 +333,21 @@
 
         &:active {
           background: lighten(#efefef, 1);
+        }
+      }
+
+      .hierarchy-view__object-dropdown {
+        //background: #005cc890;
+        background: rgba(0, 90, 200, 0.60);
+        font-size: 24px;
+        color: #ffffff;
+
+        &:hover {
+          background: rgba(0, 90, 200, 0.75);
+        }
+
+        &:active {
+          background: rgba(0, 90, 200, 0.50);
         }
       }
     }
@@ -362,15 +374,15 @@
           }
 
           .hierarchy-view__object-year {
-            background: #dcdcdc;
+            background: rgba(100, 100, 100, .1);
           }
 
           .hierarchy-view__object-ready {
-            background: #ebebeb;
+            background: rgba(100, 100, 100, .05);
           }
 
           .hierarchy-view__object-unique-code {
-            background: #f5f5f5;
+            background: rgba(100, 100, 100, .03);
           }
         }
 
@@ -381,15 +393,15 @@
         }
 
         .hierarchy-view__object-ministry {
-          background: #dcdcdc;
+            background: rgba(100, 100, 100, .1);
         }
 
         .hierarchy-view__object-territory {
-          background: #ebebeb;
+            background: rgba(100, 100, 100, .05);
         }
 
         .hierarchy-view__object-program {
-          background: #f5f5f5;
+            background: rgba(100, 100, 100, .03);
         }
 
         .object-text {
@@ -440,7 +452,7 @@
 
         .hierarchy-view__object-name {
           width: 100%;
-          background: #ebebeb;
+          background: rgba(100, 100, 100, .05);
           display: inline-block;
           border-radius: 6px;
           overflow: hidden;
