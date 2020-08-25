@@ -828,7 +828,6 @@ export class Dictionary extends MainView {
     const yearTo = super.initialize('.add-new-window .year-to');
     const code = super.initialize('.add-new-window .code-value');
     // get all event objects
-
     // check
     this.addEventItemList = super.initialize('.add-new-event-item', false);
     let errors = 0;

@@ -133,7 +133,7 @@ export class Hierarchy extends Search {
         year.innerHTML = `<b>Год: </b> ${entry[0].yearData}`;
         ready.innerHTML = `<b>Готовность: </b> ${entry[0].maxReadiness}`;
         uniqueCode.textContent = entry[0].uniqueCode;
-        uniqueCode.style.color = '#c81932';
+        uniqueCode.style.color = '#005ac8';
         ministryName.innerHTML = `<b>Минисерство: </b>${entry[0].ministryName}`;
         ministryNameTooltip.textContent = entry[0].ministryName;
         territoryName.innerHTML = `<b>Территория: </b>${entry[0].territoryName}`;
@@ -211,7 +211,7 @@ export class Hierarchy extends Search {
               year.innerHTML = `<b>Год:</b> ${el.yearData}`;
               ready.innerHTML = `<b>Готовность:</b> ${el.maxReadiness}`;
               uniqueCode.textContent = el.uniqueCode;
-              uniqueCode.style.color = '#c80011';
+              uniqueCode.style.color = '#005ac8';
               ministryName.innerHTML = `<b>Минисерство: </b>${el.ministryName}`;
               ministryNameTooltip.textContent = el.ministryName;
               territoryName.innerHTML = `<b>Территория: </b>${el.territoryName}`;

@@ -376,7 +376,7 @@ export class Search extends MainView {
       this.searchInput.style.fontWeight = '600';
     }
     if (counterCode === str.length && counterUnique > 0 && counterUnique < 6) {
-      this.searchInput.style.color = '#c81932';
+      this.searchInput.style.color = '#005ac8';
       this.searchInput.style.fontWeight = '600';
     }
     if (counterUnique > 5) {

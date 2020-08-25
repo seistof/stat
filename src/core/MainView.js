@@ -222,7 +222,7 @@ export class MainView extends Query {
       data.ministryList.forEach((el) => {
         const option = document.createElement('option');
         option.value = el.ID;
-        option.textContent = el.shortName !== null ? el.shortName : el.name;
+        option.textContent = (el.shortName === null || el.shortName === '') ? el.name : el.shortName;
         const years = el.fromYear === el.toYear ?
           ` (${el.fromYear})` :
           ` (${el.fromYear} - ${el.toYear})`;
