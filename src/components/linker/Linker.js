@@ -147,7 +147,8 @@ export class Linker extends Search {
       mainObject.querySelector('.linker-object-code').textContent = response.data[0].buildCode;
       mainObject.querySelector('.linker-object-year').textContent = response.data[0].yearData;
       mainObject.querySelector('.linker-object-name').innerHTML = `${response.data[0].name}<div class="tooltip"></div>`;
-      mainObject.querySelector('.tooltip').innerHTML = response.data[0].name.replace('***', `<br>`).replace('***', `<br>`);
+      mainObject.querySelector('.tooltip').innerHTML = response.data[0].name.replace('***', `<br>`).
+          replace('***', `<br>`);
       let index = 1;
       console.log(this.additionalObjects);
       this.additionalObjects.forEach((obj) => {
@@ -155,8 +156,10 @@ export class Linker extends Search {
           obj.querySelector('.linker-object-id').textContent = response.data[index].ID;
           obj.querySelector('.linker-object-code').textContent = response.data[index].buildCode;
           obj.querySelector('.linker-object-year').textContent = response.data[index].yearData;
-          obj.querySelector('.linker-object-name').innerHTML = `${response.data[index].name}<div class="tooltip"></div>`;
-          obj.querySelector('.tooltip').innerHTML = response.data[index].name.replace('***', `<br>`).replace('***', `<br>`);
+          obj.querySelector(
+              '.linker-object-name').innerHTML = `${response.data[index].name}<div class="tooltip"></div>`;
+          obj.querySelector('.tooltip').innerHTML = response.data[index].name.replace('***', `<br>`).
+              replace('***', `<br>`);
           index++;
         }
       });
@@ -170,6 +173,15 @@ export class Linker extends Search {
   }
 
   async fill(data, prediction = false) {
+    const additionalIds = [];
+    const linkerObjectId = super.initialize('.linker__object-additional-container .linker-object-id', false);
+    linkerObjectId.forEach((el)=> {
+      if (el.textContent !== '') {
+        additionalIds.push(parseInt(el.textContent));
+      }
+    });
+    console.log('IDs');
+    console.log(additionalIds);
     try {
       logger(`fill();`, this, COMMENTS);
       console.log(data);
@@ -180,66 +192,68 @@ export class Linker extends Search {
       this.totalPages.textContent = Math.ceil(data.totalLen / 50);
       if (!prediction) {
         data.data.forEach((entry) => {
-          const listItem = document.createElement('div');
-          listItem.classList.add('linker__list-item');
-          const objectUniqueCode = document.createElement('div');
-          objectUniqueCode.classList.add('linker__list-item-unique-code');
-          objectUniqueCode.textContent = entry.uniqueCode ? entry.uniqueCode : '';
-          objectUniqueCode.style.display = 'none';
-          const objectId = document.createElement('div');
-          objectId.classList.add('linker__list-item-id');
-          objectId.textContent = entry.id;
-          objectId.style.display = 'none';
-          const code = document.createElement('div');
-          code.classList.add('linker__list-item-code', 'linker__list-size-code');
-          code.textContent = entry.buildCode;
-          const year = document.createElement('div');
-          year.classList.add('linker__list-item-year', 'linker__list-size-year');
-          year.textContent = entry.yearData;
-          const ready = document.createElement('div');
-          ready.classList.add('linker__list-item-ready', 'linker__list-size-ready');
-          ready.textContent = entry.maxPercentage;
-          const ministry = document.createElement('div');
-          ministry.classList.add('linker__list-item-ministry', 'linker__list-size-ministry');
-          ministry.textContent = entry.ministryName.replace('Министерство', 'Мин.');
-          const ministryTooltip = document.createElement('div');
-          ministryTooltip.classList.add('tooltip');
-          ministryTooltip.textContent = entry.ministryName;
-          const territory = document.createElement('div');
-          territory.classList.add('linker__list-item-territory', 'linker__list-size-territory');
-          territory.textContent = entry.territoryName;
-          const territoryTooltip = document.createElement('div');
-          territoryTooltip.classList.add('tooltip');
-          territoryTooltip.textContent = entry.territoryName;
-          const program = document.createElement('div');
-          program.classList.add('linker__list-item-program', 'linker__list-size-program');
-          program.textContent = entry.programName;
-          const programTooltip = document.createElement('div');
-          programTooltip.classList.add('tooltip');
-          programTooltip.textContent = entry.programName;
-          const name = document.createElement('div');
-          name.classList.add('linker__list-item-name', 'linker__list-size-name');
-          name.textContent = entry.name.replace('***', ' ');
-          const nameTooltip = document.createElement('div');
-          nameTooltip.classList.add('tooltip');
-          nameTooltip.innerHTML = entry.name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>');
-          const details = document.createElement('div');
-          details.classList.add('linker__list-item-details', 'linker__list-size-details');
-          const detailsTooltip = document.createElement('div');
-          detailsTooltip.classList.add('tooltip');
-          ministry.appendChild(ministryTooltip);
-          territory.appendChild(territoryTooltip);
-          program.appendChild(programTooltip);
-          name.appendChild(nameTooltip);
-          const detailButton = document.createElement('button');
-          detailButton.classList.add('linker__list-item-details-button', 'button');
-          detailButton.dataset.id = entry.id;
-          detailButton.textContent = 'Подробнее';
-          detailButton.style.display = 'none';
-          const selectButton = document.createElement('button');
-          selectButton.classList.add('linker__list-item-pick-button', 'button');
-          selectButton.textContent = 'Выбрать';
-          selectButton.dataset.title = `
+          console.log(additionalIds.includes(entry.id));
+          if (!additionalIds.includes(entry.id)) {
+            const listItem = document.createElement('div');
+            listItem.classList.add('linker__list-item');
+            const objectUniqueCode = document.createElement('div');
+            objectUniqueCode.classList.add('linker__list-item-unique-code');
+            objectUniqueCode.textContent = entry.uniqueCode ? entry.uniqueCode : '';
+            objectUniqueCode.style.display = 'none';
+            const objectId = document.createElement('div');
+            objectId.classList.add('linker__list-item-id');
+            objectId.textContent = entry.id;
+            objectId.style.display = 'none';
+            const code = document.createElement('div');
+            code.classList.add('linker__list-item-code', 'linker__list-size-code');
+            code.textContent = entry.buildCode;
+            const year = document.createElement('div');
+            year.classList.add('linker__list-item-year', 'linker__list-size-year');
+            year.textContent = entry.yearData;
+            const ready = document.createElement('div');
+            ready.classList.add('linker__list-item-ready', 'linker__list-size-ready');
+            ready.textContent = entry.maxPercentage;
+            const ministry = document.createElement('div');
+            ministry.classList.add('linker__list-item-ministry', 'linker__list-size-ministry');
+            ministry.textContent = entry.ministryName.replace('Министерство', 'Мин.');
+            const ministryTooltip = document.createElement('div');
+            ministryTooltip.classList.add('tooltip');
+            ministryTooltip.textContent = entry.ministryName;
+            const territory = document.createElement('div');
+            territory.classList.add('linker__list-item-territory', 'linker__list-size-territory');
+            territory.textContent = entry.territoryName;
+            const territoryTooltip = document.createElement('div');
+            territoryTooltip.classList.add('tooltip');
+            territoryTooltip.textContent = entry.territoryName;
+            const program = document.createElement('div');
+            program.classList.add('linker__list-item-program', 'linker__list-size-program');
+            program.textContent = entry.programName;
+            const programTooltip = document.createElement('div');
+            programTooltip.classList.add('tooltip');
+            programTooltip.textContent = entry.programName;
+            const name = document.createElement('div');
+            name.classList.add('linker__list-item-name', 'linker__list-size-name');
+            name.textContent = entry.name.replace('***', ' ');
+            const nameTooltip = document.createElement('div');
+            nameTooltip.classList.add('tooltip');
+            nameTooltip.innerHTML = entry.name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>');
+            const details = document.createElement('div');
+            details.classList.add('linker__list-item-details', 'linker__list-size-details');
+            const detailsTooltip = document.createElement('div');
+            detailsTooltip.classList.add('tooltip');
+            ministry.appendChild(ministryTooltip);
+            territory.appendChild(territoryTooltip);
+            program.appendChild(programTooltip);
+            name.appendChild(nameTooltip);
+            const detailButton = document.createElement('button');
+            detailButton.classList.add('linker__list-item-details-button', 'button');
+            detailButton.dataset.id = entry.id;
+            detailButton.textContent = 'Подробнее';
+            detailButton.style.display = 'none';
+            const selectButton = document.createElement('button');
+            selectButton.classList.add('linker__list-item-pick-button', 'button');
+            selectButton.textContent = 'Выбрать';
+            selectButton.dataset.title = `
             ${entry.ministryName}
             <br>
             ${entry.territoryName}
@@ -249,19 +263,20 @@ export class Linker extends Search {
             <br>
             ${entry.name}
             `;
-          details.appendChild(detailButton);
-          details.appendChild(selectButton);
-          listItem.appendChild(objectUniqueCode);
-          listItem.appendChild(objectId);
-          listItem.appendChild(code);
-          listItem.appendChild(year);
-          listItem.appendChild(ready);
-          listItem.appendChild(ministry);
-          listItem.appendChild(territory);
-          listItem.appendChild(program);
-          listItem.appendChild(name);
-          listItem.appendChild(details);
-          this.linkerList.appendChild(listItem);
+            details.appendChild(detailButton);
+            details.appendChild(selectButton);
+            listItem.appendChild(objectUniqueCode);
+            listItem.appendChild(objectId);
+            listItem.appendChild(code);
+            listItem.appendChild(year);
+            listItem.appendChild(ready);
+            listItem.appendChild(ministry);
+            listItem.appendChild(territory);
+            listItem.appendChild(program);
+            listItem.appendChild(name);
+            listItem.appendChild(details);
+            this.linkerList.appendChild(listItem);
+          }
         });
       } else {
         this.totalObjects.textContent = data.length;
@@ -382,6 +397,13 @@ export class Linker extends Search {
   }
 
   async saveFn() {
+    this.additionalObjects.forEach((obj) => {
+      if (obj.querySelector('.linker-object-id').textContent === '') {
+        obj.querySelector('.linker__object-additional-remove').click();
+        logger(`>>> Empty object removed`, this, COMMENTS);
+      }
+    });
+    console.log(this.linkerState);
     if (this.linkerState === 'normal') {
       if (this.checkYearAndDuplicate()) {
         logger(`saveFn(normal);`, this, COMMENTS);
@@ -392,6 +414,7 @@ export class Linker extends Search {
           this.additionalObjects.forEach((el) => {
             arr.push(parseInt(el.querySelector('.linker-object-id').textContent));
           });
+          console.log(arr);
           const response = await fetch(this.serverURL + this.linkerCreateURL, {
             method: 'POST',
             body: JSON.stringify(arr),
@@ -410,7 +433,8 @@ export class Linker extends Search {
           super.errorMessage(document.querySelector('.linker__control-buttons'), 'ошибка', 2);
         }
       } else {
-        super.errorMessage(document.querySelector('.linker__control-buttons'), 'исключите записи с одинаковыми годами', 2);
+        super.errorMessage(document.querySelector('.linker__control-buttons'), 'исключите записи с одинаковыми годами',
+            2);
       }
     }
     if (this.linkerState === 'update') {
@@ -432,14 +456,7 @@ export class Linker extends Search {
       additionalNew.forEach((idNew) => {
         if (!additionalOld.some((o) => o === idNew)) toAdd.push(idNew);
       });
-      console.log(`Unique: ${this.currentUniqueCodeEdit}`);
-      console.log(`toDelete: ${toDelete}`);
-      console.log(`toAdd: ${toAdd}`);
-      console.log(this.checkYearAndDuplicate());
-      console.log(!this.checkYearAndDuplicate());
-      console.log(this.linkerState);
       if (this.checkYearAndDuplicate()) {
-        console.log(`OK`);
         try {
           const response = await fetch(this.serverURL + this.linkerUpdateURL, {
             method: 'PUT',
@@ -449,7 +466,6 @@ export class Linker extends Search {
               "toDelete":[${toDelete}]
           }`,
           });
-          console.log(this.serverURL + this.linkerUpdateURL);
           console.log(`{
               "uniqueCode":"${this.currentUniqueCodeEdit}",
               "toAdd":[${toAdd}],
@@ -464,21 +480,17 @@ export class Linker extends Search {
           super.errorMessage(document.querySelector('.linker__control-buttons'), 'ошибка', 2, '#0f7814');
         }
       } else {
-        super.errorMessage(document.querySelector('.linker__control-buttons'), 'исключите записи с одинаковыми годами', 2);
+        super.errorMessage(document.querySelector('.linker__control-buttons'), 'исключите записи с одинаковыми годами',
+            2);
       }
     }
     if (this.linkerState === 'update-check') {
       logger(`saveFn(check-update);`, this, COMMENTS);
-      const uniqueCode = document.querySelector('.linker__object-additional-box .linker-object-unique-code').textContent;
+      const uniqueCode = document.querySelector(
+          '.linker__object-additional-box .linker-object-unique-code').textContent;
       const toAdd = [];
       const toDelete = [];
       toAdd.push(parseInt(document.querySelector('.linker__object-main .linker-object-id').textContent));
-      console.log(`Unique: ${uniqueCode}`);
-      console.log(`toDelete: ${toDelete}`);
-      console.log(`toAdd: ${toAdd}`);
-      console.log(this.checkYearAndDuplicate());
-      console.log(!this.checkYearAndDuplicate());
-      console.log(this.linkerState);
       if (this.checkYearAndDuplicate()) {
         try {
           const response = await fetch(this.serverURL + this.linkerUpdateURL, {
@@ -489,7 +501,6 @@ export class Linker extends Search {
               "toDelete":[${toDelete}]
           }`,
           });
-          console.log(this.serverURL + this.linkerUpdateURL);
           console.log(`{
               "uniqueCode":"${uniqueCode}",
               "toAdd":[${toAdd}],
@@ -504,7 +515,8 @@ export class Linker extends Search {
           super.errorMessage(document.querySelector('.linker__control-buttons'), 'ошибка', 2, '#0f7814');
         }
       } else {
-        super.errorMessage(document.querySelector('.linker__control-buttons'), 'исключите записи с одинаковыми годами', 2);
+        super.errorMessage(document.querySelector('.linker__control-buttons'), 'исключите записи с одинаковыми годами',
+            2);
       }
     }
   }
@@ -777,6 +789,9 @@ export class Linker extends Search {
     if (this.linkerState === 'update') {
       super.disableUI(false, this.saveButton);
     }
+    if (this.linkerState === 'update-check') {
+      this.additionalObjects.length === 0 ? this.linkerState = 'normal' : this.linkerState;
+    }
   }
 
   additionalObjectAddListeners() {
@@ -837,7 +852,7 @@ export class Linker extends Search {
         this.similarButton,
         this.checkButton,
     );
-    if ( this.SEARCH.linkerCurrentState === 'check') {
+    if (this.SEARCH.linkerCurrentState === 'check') {
       super.disableUI(true, this.mainObjectAdd, this.mainObjectSelect);
     }
   }
@@ -862,12 +877,12 @@ export class Linker extends Search {
 
   checkYearAndDuplicate() {
     // check for empty lines
-    this.additionalObjects.forEach((obj) => {
-      if (obj.querySelector('.linker-object-id').textContent === '') {
-        obj.querySelector('.linker__object-additional-remove').click();
-        logger(`>>> Empty object removed`, this, COMMENTS);
-      }
-    });
+    // this.additionalObjects.forEach((obj) => {
+    //   if (obj.querySelector('.linker-object-id').textContent === '') {
+    //     obj.querySelector('.linker__object-additional-remove').click();
+    //     logger(`>>> Empty object removed`, this, COMMENTS);
+    //   }
+    // });
     // check for duplicated years
     const addObj = [];
     this.additionalObjects.forEach(

@@ -9,7 +9,6 @@ export class Search extends MainView {
     super();
     this.applyButton = super.initialize('.filter__button-search');
     this.searchButton = super.initialize('.header__search-button');
-    this.searchInput = searchInput;
     this.goToButton = goToButton;
     this.prevButton = prevButton;
     this.nextButton = nextButton;
@@ -38,6 +37,8 @@ export class Search extends MainView {
     this.sourceView = '';
     this.filters = [];
     this.filterApply = this.applyFn.bind(this);
+    this.goOnEnterFn = this.goOnEnter.bind(this);
+    this.toToEnterFn = this.toToEnter.bind(this);
   }
 
   async searchInit() {
@@ -177,17 +178,17 @@ export class Search extends MainView {
       let options = super.getFilterValue();
       await this.enableOverlay(true);
       if (this.sourceView === 'hierarchy') {
-        await this.enableOverlay(false);
         if (options.length === 0) {
           await this.HIERARCHY.fill(await super.sendQuery(this.hierarchyURL, `?page=${page}`));
           this.checkPagination();
-          await this.enableOverlay(false);
+          // await this.enableOverlay(false);
         } else {
           options += `&page=${page}`;
           await this.HIERARCHY.fill(await super.sendQuery(this.hierarchyURL, options));
           this.checkPagination();
-          await this.enableOverlay(false);
+          // await this.enableOverlay(false);
         }
+        await this.enableOverlay(false);
       }
       if (this.sourceView === 'linker' && this.linkerCurrentState === 'normal') {
         if (options.length === 0) {
@@ -253,7 +254,7 @@ export class Search extends MainView {
         this.currentPage.textContent = 1;
         this.checkPagination();
       } else {
-        this.filterReset.click();
+        // this.filterReset.click();
         logger(str, this, COMMENTS);
         await this.HIERARCHY.fill(await super.sendQuery(this.hierarchySearchURL,
             `?search_query=${str}`));
@@ -270,6 +271,8 @@ export class Search extends MainView {
   addListeners() {
     try {
       super.addListener(this.searchInput, 'input', this.searchColorTextFn);
+      super.addListener(this.searchInput, 'keydown', this.goOnEnterFn);
+      super.addListener(this.goToInput, 'keydown', this.toToEnterFn);
       logger(`addListeners();`, this, COMMENTS);
       let index = 0;
       this.buttons.forEach((button) => {
@@ -293,6 +296,8 @@ export class Search extends MainView {
 
   removeListeners() {
     try {
+      super.removeListener(this.searchInput, 'keydown', this.goOnEnterFn);
+      super.removeListener(this.goToInput, 'keydown', this.toToEnterFn);
       super.removeListener(this.searchInput, 'input', this.searchColorTextFn);
       let index = 0;
       this.buttons.forEach((button) => {
@@ -367,16 +372,28 @@ export class Search extends MainView {
       }
     }
     if (counterCode === str.length) {
-      this.searchInput.style.color = '#1ade29';
+      this.searchInput.style.color = '#19c832';
       this.searchInput.style.fontWeight = '600';
     }
     if (counterCode === str.length && counterUnique > 0 && counterUnique < 6) {
-      this.searchInput.style.color = 'red';
+      this.searchInput.style.color = '#005ac8';
       this.searchInput.style.fontWeight = '600';
     }
     if (counterUnique > 5) {
       this.searchInput.style.color = 'black';
       this.searchInput.style.fontWeight = '400';
+    }
+  }
+
+  goOnEnter(e) {
+    if (e.keyCode === 13) {
+      this.searchButton.click();
+    }
+  }
+
+  toToEnter(e) {
+    if (e.keyCode === 13) {
+      this.goToButton.click();
     }
   }
 
