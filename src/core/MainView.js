@@ -15,6 +15,7 @@ export class MainView extends Query {
     this.filterReadyDisplay = super.initialize('.select-ready-display');
     this.filterReadyInput = super.initialize('#select-ready');
     this.filterReadyAll = super.initialize('#select-ready-all');
+    this.filterNotFinished = super.initialize('#select-not-finished');
     this.filterReset = super.initialize('.filter__button-reset');
     // Navigation
     this.navMain = super.initialize('.navigation__button-main');
@@ -122,7 +123,9 @@ export class MainView extends Query {
       : `&program_id=${this.filterProgram.options[this.filterProgram.selectedIndex].value}`;
     options += this.filterReadyAll.checked
       ? ''
-      : `&technical_readiness=${this.filterReadyInput.value}`;
+      : this.filterNotFinished.checked
+        ? `&not_finished=true`
+        : `&technical_readiness=${this.filterReadyInput.value}`;
     if (options.length > 0) {
       return options.replace('&', '?');
     } else {
@@ -133,11 +136,21 @@ export class MainView extends Query {
   mainListenersInit() {
     super.addListener(this.filterReadyInput, 'input', () => {
       this.filterReadyAll.checked = false;
+      this.filterNotFinished.checked = false;
       this.filterReadyDisplay.value = this.filterReadyInput.value;
     });
     super.addListener(this.filterReadyAll, 'click', () => {
       if (this.filterReadyAll.checked) {
         this.filterReadyDisplay.value = `Все`;
+        this.filterNotFinished.checked = false;
+      } else {
+        this.filterReadyDisplay.value = this.filterReadyInput.value;
+      }
+    });
+    super.addListener(this.filterNotFinished, 'click', () => {
+      if (this.filterNotFinished.checked) {
+        this.filterReadyAll.checked = false;
+        this.filterReadyDisplay.value = `НЗ`;
       } else {
         this.filterReadyDisplay.value = this.filterReadyInput.value;
       }
