@@ -123,9 +123,10 @@ export class MainView extends Query {
       : `&program_id=${this.filterProgram.options[this.filterProgram.selectedIndex].value}`;
     options += this.filterReadyAll.checked
       ? ''
-      : this.filterNotFinished.checked
+      : `&technical_readiness=${this.filterReadyInput.value}`;
+    options += this.filterNotFinished.checked
         ? `&not_finished=true`
-        : `&technical_readiness=${this.filterReadyInput.value}`;
+        : ``;
     if (options.length > 0) {
       return options.replace('&', '?');
     } else {
@@ -136,25 +137,26 @@ export class MainView extends Query {
   mainListenersInit() {
     super.addListener(this.filterReadyInput, 'input', () => {
       this.filterReadyAll.checked = false;
-      this.filterNotFinished.checked = false;
       this.filterReadyDisplay.value = this.filterReadyInput.value;
+      parseInt(this.filterReadyDisplay.value) === 100
+        ? this.filterNotFinished.checked = false
+        : null;
     });
     super.addListener(this.filterReadyAll, 'click', () => {
       if (this.filterReadyAll.checked) {
-        this.filterReadyDisplay.value = `Все`;
-        this.filterNotFinished.checked = false;
+        this.filterReadyDisplay.value = `все`;
+        // this.filterNotFinished.checked = false;
       } else {
         this.filterReadyDisplay.value = this.filterReadyInput.value;
       }
     });
-    super.addListener(this.filterNotFinished, 'click', () => {
-      if (this.filterNotFinished.checked) {
-        this.filterReadyAll.checked = false;
-        this.filterReadyDisplay.value = `НЗ`;
-      } else {
-        this.filterReadyDisplay.value = this.filterReadyInput.value;
-      }
-    });
+    // super.addListener(this.filterNotFinished, 'click', () => {
+    //   if (this.filterNotFinished.checked) {
+    //     this.filterReadyAll.checked = false;
+    //   } else {
+    //     this.filterReadyDisplay.value = this.filterReadyInput.value;
+    //   }
+    // });
     super.addListener(this.filterReset, 'click', async () => {
       this.filterYear.selectedIndex = 0;
       this.filterMinistry.selectedIndex = 0;
