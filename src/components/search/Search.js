@@ -290,8 +290,8 @@ export class Search extends MainView {
         this.filterMinistry.selectedIndex = 0;
         this.filterTerritory.selectedIndex = 0;
         this.filterProgram.selectedIndex = 0;
-        this.filterReadyInput.value = 50;
-        this.filterReadyDisplay.value = 'Все';
+        // this.filterReadyInput.value = 50;
+        // this.filterReadyDisplay.value = 'Все';
         this.filterReadyAll.checked = true;
         this.searchInput.value = str;
         logger(str, this, COMMENTS);
