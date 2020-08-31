@@ -12,10 +12,16 @@ export class MainView extends Query {
     this.filterMinistry = super.initialize('#select-ministry');
     this.filterTerritory = super.initialize('#select-territory');
     this.filterProgram = super.initialize('#select-program');
-    this.filterReadyDisplay = super.initialize('.select-ready-display');
-    this.filterReadyInput = super.initialize('#select-ready');
-    this.filterReadyAll = super.initialize('#select-ready-all');
+    // this.filterReadyDisplay = super.initialize('.select-ready-display');
+    // this.filterReadyInput = super.initialize('#select-ready');
+    // this.filterReadyAll = super.initialize('#select-ready-all');
+    // this.filterNotFinished = super.initialize('#select-not-finished');
     this.filterReset = super.initialize('.filter__button-reset');
+    this.filterRangeDisplay = super.initialize('#select-ready-display');
+    this.filterRangeFrom = super.initialize('#select-ready-from');
+    this.filterRangeTo = super.initialize('#select-ready-to');
+    this.filterDisplayFrom = super.initialize('.select-ready-display-from');
+    this.filterDisplayTo = super.initialize('.select-ready-display-to');
     // Navigation
     this.navMain = super.initialize('.navigation__button-main');
     this.navLinker = super.initialize('.navigation__button-constructor');
@@ -120,9 +126,14 @@ export class MainView extends Query {
     options += parseInt(this.filterProgram.options[this.filterProgram.selectedIndex].value) === 0
       ? ''
       : `&program_id=${this.filterProgram.options[this.filterProgram.selectedIndex].value}`;
-    options += this.filterReadyAll.checked
-      ? ''
-      : `&technical_readiness=${this.filterReadyInput.value}`;
+    options += `&percentage_from=${parseInt(this.filterDisplayFrom.value)}`;
+    options += `&percentage_to=${parseInt(this.filterDisplayTo.value)}`;
+    // options += this.filterReadyAll.checked
+    //   ? ''
+    //   : `&technical_readiness=${this.filterReadyInput.value}`;
+    // options += this.filterNotFinished.checked
+    //     ? `&not_finished=true`
+    //     : ``;
     if (options.length > 0) {
       return options.replace('&', '?');
     } else {
@@ -131,15 +142,40 @@ export class MainView extends Query {
   }
 
   mainListenersInit() {
-    super.addListener(this.filterReadyInput, 'input', () => {
-      this.filterReadyAll.checked = false;
-      this.filterReadyDisplay.value = this.filterReadyInput.value;
+    // super.addListener(this.filterReadyInput, 'input', () => {
+    //   this.filterReadyAll.checked = false;
+    //   this.filterReadyDisplay.value = this.filterReadyInput.value;
+    //   parseInt(this.filterReadyDisplay.value) === 100
+    //     ? this.filterNotFinished.checked = false
+    //     : null;
+    // });
+    // super.addListener(this.filterReadyAll, 'click', () => {
+    //   if (this.filterReadyAll.checked) {
+    //     this.filterReadyDisplay.value = `все`;
+    //     // this.filterNotFinished.checked = false;
+    //   } else {
+    //     this.filterReadyDisplay.value = this.filterReadyInput.value;
+    //   }
+    // });
+    // super.addListener(this.filterNotFinished, 'click', () => {
+    //   if (this.filterNotFinished.checked) {
+    //     this.filterReadyAll.checked = false;
+    //   } else {
+    //     this.filterReadyDisplay.value = this.filterReadyInput.value;
+    //   }
+    // });
+    super.addListener(this.filterRangeFrom, 'input', () => {
+      this.filterDisplayFrom.value = this.filterRangeFrom.value;
+      if (parseInt(this.filterRangeFrom.value) >= parseInt(this.filterRangeTo.value)) {
+        this.filterRangeTo.value = parseInt(this.filterRangeFrom.value) + 1;
+        this.filterDisplayTo.value = this.filterRangeTo.value;
+      }
     });
-    super.addListener(this.filterReadyAll, 'click', () => {
-      if (this.filterReadyAll.checked) {
-        this.filterReadyDisplay.value = `Все`;
-      } else {
-        this.filterReadyDisplay.value = this.filterReadyInput.value;
+    super.addListener(this.filterRangeTo, 'input', () => {
+      this.filterDisplayTo.value = this.filterRangeTo.value;
+      if (parseInt(this.filterRangeTo.value) <= parseInt(this.filterRangeFrom.value)) {
+        this.filterRangeFrom.value = parseInt(this.filterRangeTo.value) - 1;
+        this.filterDisplayFrom.value = this.filterRangeFrom.value;
       }
     });
     super.addListener(this.filterReset, 'click', async () => {
@@ -147,9 +183,13 @@ export class MainView extends Query {
       this.filterMinistry.selectedIndex = 0;
       this.filterTerritory.selectedIndex = 0;
       this.filterProgram.selectedIndex = 0;
-      this.filterReadyInput.value = 50;
-      this.filterReadyDisplay.value = 'Все';
-      this.filterReadyAll.checked = true;
+      this.filterDisplayFrom.value = 0;
+      this.filterDisplayTo.value = 100;
+      this.filterRangeFrom.value = 0;
+      this.filterRangeTo.value = 100;
+      // this.filterReadyInput.value = 50;
+      // this.filterReadyDisplay.value = 'Все';
+      // this.filterReadyAll.checked = true;
       super.initialize('.header__search-line').value = '';
       super.initialize('.header__search-line').style.color = '#000000';
       if (this.SEARCH.sourceView === 'hierarchy') await this.HIERARCHY.hierarchyInit();
@@ -307,10 +347,9 @@ export class MainView extends Query {
       const month = d.getMonth().toString().length === 2 ? d.getMonth() : `0${d.getMonth()}`;
       const day = d.getDay().toString().length === 2 ? d.getDay() : `0${d.getDay()}`;
       const date = `${d.getFullYear()}.${month}.${day} ${d.getHours()}-${d.getMinutes()}`;
-      const ready = this.filterReadyDisplay.value !== 'Все' ? `${this.filterReadyDisplay.value}%` : 'Все';
+      const ready = `${this.filterDisplayFrom.value}-${this.filterDisplayTo.value}`;
       const name = `Выгрузка; Готовность - ${ready}; Дата - ${date}.xlsx`;
       console.log(name);
-      // if (this.filterReadyDisplay) {}
       a.href = url;
       a.download = name;
       document.body.appendChild(a);

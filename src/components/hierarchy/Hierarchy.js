@@ -53,6 +53,7 @@ export class Hierarchy extends Search {
       this.lastState = '';
     } else {
       this.lastPage = 1;
+      options = this.MAIN.getFilterValue();
     }
     await this.fill(await super.sendQuery(this.hierarchyURL + options));
     this.SEARCH.currentPage.textContent = this.lastPage;

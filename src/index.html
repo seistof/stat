@@ -61,17 +61,26 @@
                 </div>
                 <div class="filter__item ">
                     <div class="ready-select-box">
-                        <label for="select-ready">Готовность:</label>
+                        <label for="select-ready-from">Готовность:</label>
                         <label>
-                            <input class="select-ready-display" type="text" value="Все">
+                            <input class="select-ready-display-from" type="text" value="0">
+                            -
+                            <input class="select-ready-display-to" type="text" value="100">
                         </label>
                     </div>
-                    <input type="range" id="select-ready" class="select-ready" max="100" min="0">
+                    <input type="range" id="select-ready-display" class="select-ready" max="100" min="0" value="0">
+                    <input type="range" id="select-ready-from" class="select-ready" max="99" min="0" value="0">
+                    <input type="range" id="select-ready-to" class="select-ready" max="100" min="1" value="100">
                 </div>
-                <div class="filter__item ready-select-all-box">
-                    <label for="select-ready-all">Показать все: </label>
-                    <input type="checkbox" id="select-ready-all" class="select-ready-all" checked>
-                </div>
+<!--                <div class="filter__item ready-select-all-box">-->
+<!--                    <label for="select-ready-all">Показать все: </label>-->
+<!--                    <input type="checkbox" id="select-ready-all" class="select-ready-all" checked>-->
+<!--                </div>-->
+<!--                <div class="filter__item ready-select-all-box">-->
+<!--                    <label for="select-not-finished">Незавершенные: </label>-->
+<!--                    <input type="checkbox" id="select-not-finished" class="select-ready-all">-->
+<!--                </div>-->
+
                 <div class="filter__buttons">
                     <button class="filter__button-search button">Поиск</button>
                     <button class="filter__button-reset button">Сбросить</button>
