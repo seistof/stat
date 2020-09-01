@@ -164,6 +164,12 @@ export class MainView extends Query {
     //     this.filterReadyDisplay.value = this.filterReadyInput.value;
     //   }
     // });
+    super.addListener(this.filterRangeFrom, 'mouseup', () => {
+      this.SEARCH.applyButton.click();
+    });
+    super.addListener(this.filterRangeTo, 'mouseup', () => {
+      this.SEARCH.applyButton.click();
+    });
     super.addListener(this.filterRangeFrom, 'input', () => {
       this.filterDisplayFrom.value = this.filterRangeFrom.value;
       if (parseInt(this.filterRangeFrom.value) >= parseInt(this.filterRangeTo.value)) {

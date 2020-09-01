@@ -56,6 +56,7 @@
 
       select {
         text-align-last: center;
+        cursor: pointer;
       }
     }
 
@@ -76,17 +77,17 @@
 
     #select-ready-from {
       visibility: hidden;
-      margin-left: 1px;
+      margin-right: 1px;
     }
 
     #select-ready-to {
       visibility: hidden;
-      margin-right: 1px;
+      margin-left: 1px;
     }
 
     #select-ready-display {
       visibility: hidden;
-      //padding: 0 5px;
+      padding: 3px;
     }
 
     #select-ready-display::-webkit-slider-runnable-track {
@@ -96,7 +97,6 @@
       background: #ffffff;
       border: 1px solid black;
       border-radius: 5px;
-      padding: 0 5px;
     }
 
 
