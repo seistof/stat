@@ -292,7 +292,11 @@ export class Search extends MainView {
         this.filterProgram.selectedIndex = 0;
         // this.filterReadyInput.value = 50;
         // this.filterReadyDisplay.value = 'Все';
-        this.filterReadyAll.checked = true;
+        // this.filterReadyAll.checked = true;
+        this.filterDisplayFrom.value = 0;
+        this.filterDisplayTo.value = 100;
+        this.filterRangeFrom.value = 0;
+        this.filterRangeTo.value = 100;
         this.searchInput.value = str;
         logger(str, this, COMMENTS);
         await this.HIERARCHY.fill(await super.sendQuery(this.hierarchySearchURL,
