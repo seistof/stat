@@ -54,11 +54,13 @@ export class Query extends DomMethods {
         // headers: h,
         redirect: 'follow',
       };
-      const response = await fetch(this.serverURL + this.linkerDeleteURL + `?unique_code=${uniqueCode}`, requestOptions);
+      const response = await fetch(this.serverURL + this.linkerDeleteURL + `?unique_code=${uniqueCode}`,
+          requestOptions);
       logger(`deleteQuery(${this.serverURL + this.linkerDeleteURL} + ?unique_code=${uniqueCode}});`, this, COMMENTS);
       return response.status;
     } catch (e) {
-      logger(`deleteQuery(${this.serverURL + this.linkerDeleteURL} + ?unique_code=${uniqueCode}}); ` + e, this, COMMENTS);
+      logger(`deleteQuery(${this.serverURL + this.linkerDeleteURL} + ?unique_code=${uniqueCode}}); ` + e, this,
+          COMMENTS);
     }
   }
 

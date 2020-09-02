@@ -72,7 +72,6 @@ export class Hierarchy extends Search {
 
   async fill(data) {
     try {
-      console.log(data);
       logger(`fill();`, this, COMMENTS);
       this.hierarchyContainer = super.initialize('.hierarchy-view__object-container');
       this.hierarchyContainer.innerHTML = '';
@@ -251,7 +250,8 @@ export class Hierarchy extends Search {
       this.addListeners();
     } catch (e) {
       logger(`fill(); ` + e, this, COMMENTS);
-      super.errorMessage(this.hierarchyContainer, 'записей, соответствующих запросу, не найдено', 3);
+      console.log(e);
+      super.errorMessage(this.DISPLAY, 'нет данных', 5);
       this.totalObjects.textContent = 0;
       this.totalPages.textContent = 0;
     }

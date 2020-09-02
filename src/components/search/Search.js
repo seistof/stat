@@ -445,7 +445,6 @@ export class Search extends MainView {
 
   paginationNumbersHandler() {
     logger(`>>> Pagination handler <<<`, this, COMMENTS);
-    console.log(parseInt(this.totalPages.textContent));
     this.pagination1.textContent = '1';
     this.pagination2.textContent = '2';
     this.pagination3.textContent = '3';

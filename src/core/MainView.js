@@ -346,8 +346,10 @@ export class MainView extends Query {
     await this.enableOverlay(true);
     try {
       const options = this.getFilterValue();
+      console.log(this.serverURL + this.hierarchyExportURL + options);
       const response = await fetch(this.serverURL + this.hierarchyExportURL + options);
       const url = window.URL.createObjectURL(await response.blob());
+      console.log(response);
       const a = document.createElement('a');
       const d = new Date();
       const month = d.getMonth().toString().length === 2 ? d.getMonth() : `0${d.getMonth()}`;
