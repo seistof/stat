@@ -30,11 +30,11 @@ export class Query extends DomMethods {
 
   async sendQuery(url, options = '', method = 'GET') {
     try {
-      // const h = new Headers();
-      // h.append('Authorization', localStorage.getItem('auth'));
+      const h = new Headers();
+      h.append('Authorization', localStorage.getItem('auth'));
       const requestOptions = {
         method: method,
-        // headers: h,
+        headers: h,
         redirect: 'follow',
       };
       const response = await fetch(this.serverURL + url + options, requestOptions);
@@ -42,16 +42,17 @@ export class Query extends DomMethods {
       return await response.json();
     } catch (e) {
       logger(`sendQuery(${this.serverURL + url + options}); ` + e, this, COMMENTS);
+      return 'error';
     }
   }
 
   async deleteQuery(uniqueCode) {
     try {
-      // const h = new Headers();
-      // h.append('Authorization', localStorage.getItem('auth'));
+      const h = new Headers();
+      h.append('Authorization', localStorage.getItem('auth'));
       const requestOptions = {
         method: 'DELETE',
-        // headers: h,
+        headers: h,
         redirect: 'follow',
       };
       const response = await fetch(this.serverURL + this.linkerDeleteURL + `?unique_code=${uniqueCode}`,
@@ -77,8 +78,10 @@ export class Query extends DomMethods {
       const r = JSON.parse(await response.text());
       localStorage.setItem('auth', r.token);
       logger(`authQuery();`, this, COMMENTS);
+      return true;
     } catch (e) {
       logger(`authQuery(); ` + e, this, COMMENTS);
+      return false;
     }
   }
 }

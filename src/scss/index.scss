@@ -52,8 +52,13 @@ body {
 @import "modules/detail-window";
 @import "modules/dictionary.ministry";
 @import "modules/dictionary.add-new-window";
+@import "modules/login";
 
 .button {
   user-select: none;
   cursor: pointer;
+}
+
+#app {
+  transition: 10s;
 }

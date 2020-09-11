@@ -415,8 +415,11 @@ export class Linker extends Search {
             arr.push(parseInt(el.querySelector('.linker-object-id').textContent));
           });
           console.log(arr);
+          const h = new Headers();
+          h.append('Authorization', localStorage.getItem('auth'));
           const response = await fetch(this.serverURL + this.linkerCreateURL, {
             method: 'POST',
+            headers: h,
             body: JSON.stringify(arr),
           });
           if (response.status === 201) {
@@ -458,8 +461,11 @@ export class Linker extends Search {
       });
       if (this.checkYearAndDuplicate()) {
         try {
+          const h = new Headers();
+          h.append('Authorization', localStorage.getItem('auth'));
           const response = await fetch(this.serverURL + this.linkerUpdateURL, {
             method: 'PUT',
+            headers: h,
             body: `{
               "uniqueCode":"${this.currentUniqueCodeEdit}",
               "toAdd":[${toAdd}],
@@ -493,8 +499,11 @@ export class Linker extends Search {
       toAdd.push(parseInt(document.querySelector('.linker__object-main .linker-object-id').textContent));
       if (this.checkYearAndDuplicate()) {
         try {
+          const h = new Headers();
+          h.append('Authorization', localStorage.getItem('auth'));
           const response = await fetch(this.serverURL + this.linkerUpdateURL, {
             method: 'PUT',
+            headers: h,
             body: `{
               "uniqueCode":"${uniqueCode}",
               "toAdd":[${toAdd}],

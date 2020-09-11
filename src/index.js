@@ -10,11 +10,13 @@ import {Linker} from '@/components/linker/Linker';
 import {Search} from '@/components/search/Search';
 import {Upload} from '@/components/upload/Upload';
 import {Dictionary} from '@/components/dictionary/Dictionary';
+import {Login} from '@/components/login/Login';
 
 export const COMMENTS = true;
 
 logger('Begin', false, COMMENTS);
 
+const login = new Login();
 const q = new Query();
 const m = new MainView();
 const h = new Hierarchy();
@@ -28,6 +30,7 @@ overlay.remove();
 
 (async () => {
   logger('', false, COMMENTS);
+  console.log(`[${login.constructor.name}]`);
   console.log(`[${q.constructor.name}]`);
   console.log(`[${m.constructor.name}]`);
   console.log(`[${h.constructor.name}]`);
@@ -36,6 +39,18 @@ overlay.remove();
   console.log(`[${u.constructor.name}]`);
   console.log(`[${d.constructor.name}]`);
   logger('', false, COMMENTS);
+  const classes = [m, h, l, s, u, d];
+  classes.forEach((c) => {
+    c.MAIN = m;
+    c.HIERARCHY = h;
+    c.LINKER = l;
+    c.SEARCH = s;
+    c.UPLOAD = u;
+    c.DICTIONARY = d;
+  });
+
   // await q.authQuery();
-  await m.mainInit(m, h, l, s, u, d);
+  login.init(m, h, l, s, u, d);
+
+  // await m.mainInit(m, h, l, s, u, d);
 })();

@@ -442,21 +442,21 @@ export function uploadNode() {
     const title = document.createElement('div');
     title.className = 'upload-form__item-title';
     const input = document.createElement('input');
-    if (i===0) {
+    if (i === 0) {
       title.textContent = 'Каталог:';
       input.type = 'file';
       input.id = 'main-input';
       input.name = 'main';
       input.accept = 'text/plain';
     }
-    if (i===1) {
+    if (i === 1) {
       title.textContent = 'Данные:';
       input.type = 'file';
       input.id = 'additional-input';
       input.name = 'additional';
       input.accept = 'text/plain';
     }
-    if (i===2) {
+    if (i === 2) {
       title.textContent = 'Год:';
       input.type = 'number';
       input.id = 'year-input';
@@ -1078,4 +1078,64 @@ export function addNewWindowMinistryOrTerritory(ministry, territory, program) {
     buttonsBox.appendChild(buttonsCancel);
     return addNew;
   }
+}
+
+export function loginNode() {
+  const login = document.createElement('div');
+  login.className = 'login';
+
+  const loginBox = document.createElement('div');
+  loginBox.className = 'login-box';
+
+  const top = document.createElement('div');
+  top.className = 'login-top';
+
+  const logo = document.createElement('img');
+  logo.className = 'login-logo';
+  logo.src = './logo.png';
+
+  const title = document.createElement('div');
+  title.className = 'login-title';
+  title.innerHTML = 'Федеральная служба <br/> государственной <br/> статистики';
+
+  const bottom = document.createElement('div');
+  bottom.className = 'login-bottom';
+
+  const form = document.createElement('form');
+  form.className = 'login-form';
+
+  const labelName = document.createElement('label');
+  labelName.className = 'login-name-label';
+  labelName.textContent = 'Логин';
+
+  const name = document.createElement('input');
+  name.className = 'login-name';
+  name.required = true;
+
+  const labelPassword = document.createElement('label');
+  labelPassword.className = 'login-password-label';
+  labelPassword.textContent = 'Пароль';
+
+  const password = document.createElement('input');
+  password.className = 'login-password';
+  password.type = 'password';
+  password.required = true;
+
+  const submit = document.createElement('button');
+  submit.className = 'login-submit';
+  submit.textContent = 'Войти';
+
+  login.appendChild(loginBox);
+  top.appendChild(logo);
+  top.appendChild(title);
+  loginBox.appendChild(top);
+  form.appendChild(labelName);
+  form.appendChild(name);
+  form.appendChild(labelPassword);
+  form.appendChild(password);
+  form.appendChild(submit);
+  bottom.appendChild(form);
+  loginBox.appendChild(bottom);
+  login.append(loginBox);
+  return login;
 }

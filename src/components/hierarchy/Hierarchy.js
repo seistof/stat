@@ -140,7 +140,7 @@ export class Hierarchy extends Search {
         // territoryNameTooltip.textContent = entry[0].territoryName;
         programName.innerHTML = `<b>Программа: </b>${entry[0].programName}`;
         programNameTooltip.textContent = entry[0].programName;
-        name.innerHTML = `<b>Название: </b>${entry[0].name.replace('***', ' ')}`;
+        name.innerHTML = `<b>Название: </b>${entry[0].name.replace('***', ' ').replace('***', ' ')}`;
         nameTooltip.innerHTML = entry[0].name.replace('***', '<br>').replace('***', '<br>').replace('***', '<br>');
 
         super.insertElement(buttonBox, objectDetailsButton);
@@ -382,18 +382,45 @@ export class Hierarchy extends Search {
 
   detailDownload() {
     super.addListener(this.hierarchyDetailExportButton, 'click', async () => {
-      const options = `?unique_code=${this.currentUniqueCode}`;
-      this.currentUniqueCode = '';
-      const a = document.createElement('a');
-      a.href = this.serverURL + this.hierarchyDetailExportURL + options;
-      super.insertElement(this.BODY, a);
-      // document.body.appendChild(a);
-      a.click();
-      a.remove();
-      this.hierarchyDetailWindow.remove();
-      // this.body.removeChild(this.hDetailWindow);
-      await super.enableOverlay(false);
+      // const options = `?unique_code=${this.currentUniqueCode}`;
+      // this.currentUniqueCode = '';
+      // const a = document.createElement('a');
+      // a.href = this.serverURL + this.hierarchyDetailExportURL + options;
+      // super.insertElement(this.BODY, a);
+      // // document.body.appendChild(a);
+      // a.click();
+      // a.remove();
+      // this.hierarchyDetailWindow.remove();
+      // // this.body.removeChild(this.hDetailWindow);
+      // await super.enableOverlay(false);
       logger(`detailDownload();`, this, COMMENTS);
+
+      try {
+        const options = `?unique_code=${this.currentUniqueCode}`;
+        console.log(this.serverURL + this.hierarchyDetailExportURL + options);
+        const h = new Headers();
+        h.append('Authorization', localStorage.getItem('auth'));
+        const response = await fetch(this.serverURL + this.hierarchyDetailExportURL + options, {
+          method: 'GET',
+          headers: h,
+        });
+        const url = window.URL.createObjectURL(await response.blob());
+        console.log(response);
+        const a = document.createElement('a');
+        const d = new Date();
+        const month = d.getMonth().toString().length === 2 ? d.getMonth() : `0${d.getMonth()}`;
+        const day = d.getDay().toString().length === 2 ? d.getDay() : `0${d.getDay()}`;
+        const date = `${d.getFullYear()}.${month}.${day} ${d.getHours()}-${d.getMinutes()}`;
+        const name = `Выгрузка; Код - ${this.currentUniqueCode}; Дата - ${date}.xlsx`;
+        console.log(name);
+        a.href = url;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } catch (err) {
+        logger(`detailDownload(); ` + err, this, COMMENTS);
+      }
     }, true);
   }
 

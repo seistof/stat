@@ -1,0 +1,112 @@
+.login {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .error-message-box {
+    top: 41px;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    font-size: 14px;
+    width: 173px;
+    height: 30px;
+    text-align: center;
+    line-height: 20px;
+  }
+
+  &-box {
+    height: 400px;
+    width: 350px;
+    background: #f5f5f5;
+    border: 1px solid black;
+    border-radius: 4px;
+  }
+
+  &-top {
+    display: flex;
+    align-items: center;
+    word-break: break-word;
+    padding: 20px;
+  }
+
+  &-logo {
+    height: 100px;
+  }
+
+  &-title {
+    padding-left: 20px;
+    font-size: 16px;
+  }
+
+  &-bottom {
+    height: 210px
+  }
+
+  &-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  &-name {
+    padding: 5px;
+    font-size: 14px;
+    border-radius: 3px;
+    outline-color: rgb(0, 90, 200);
+    background-image: none;
+
+    &-label {
+      position: relative;
+      padding: 5px;
+      font-size: 14px;
+    }
+
+    margin-bottom: 5px;
+  }
+
+  &-password {
+    padding: 5px;
+    font-size: 14px;
+    border-radius: 3px;
+    outline-color: rgb(0, 90, 200);
+
+    &-label {
+      position: relative;
+      padding: 5px;
+      font-size: 14px;
+
+    }
+  }
+
+  &-submit {
+    position: relative;
+    padding: 5px;
+    width: 100px;
+    margin-top: 20px;
+    outline: none;
+    border-radius: 3px;
+    border: 1px solid black;
+    background: rgba(0, 90, 200, 0.60);
+    font-size: 14px;
+    color: #ffffff;
+
+    .error-message-box {
+      top: 15px;
+      width: 275px;
+      height: 50px;
+    }
+
+      &:hover {
+      background: rgba(0, 90, 200, 0.75);
+    }
+
+    &:active {
+      background: rgba(0, 90, 200, 0.50);
+    }
+  }
+
+}

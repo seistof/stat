@@ -352,8 +352,11 @@ export class Dictionary extends MainView {
         "toDelete": [${this.currentDictionaryId}]
       }
       `;
+      const h = new Headers();
+      h.append('Authorization', localStorage.getItem('auth'));
       const response = await fetch(this.serverURL + this.dictionaryMinistryURL, {
         method: 'PUT',
+        headers: h,
         body: body,
       });
       if (response.status < 200 || response.status >= 300) {
@@ -395,8 +398,11 @@ export class Dictionary extends MainView {
         "toDelete": []
       }
       `;
+        const h = new Headers();
+        h.append('Authorization', localStorage.getItem('auth'));
         const response = await fetch(this.serverURL + this.dictionaryMinistryURL, {
           method: 'PUT',
+          headers: h,
           body: body,
         });
         if (response.status < 200 || response.status >= 300) {
@@ -440,8 +446,11 @@ export class Dictionary extends MainView {
         "toDelete": []
       }
       `;
+        const h = new Headers();
+        h.append('Authorization', localStorage.getItem('auth'));
         const response = await fetch(this.serverURL + this.dictionaryMinistryURL, {
           method: 'PUT',
+          headers: h,
           body: body,
         });
         if (response.status < 200 || response.status >= 300) {
@@ -544,8 +553,11 @@ export class Dictionary extends MainView {
         "toDelete": [${this.currentDictionaryId}]
       }
       `;
+      const h = new Headers();
+      h.append('Authorization', localStorage.getItem('auth'));
       const response = await fetch(this.serverURL + this.dictionaryTerritoryURL, {
         method: 'PUT',
+        headers: h,
         body: body,
       });
       if (response.status < 200 || response.status >= 300) {
@@ -580,9 +592,11 @@ export class Dictionary extends MainView {
         "toUpdate": [${this.currentDictionaryObject}],
         "toDelete": []
       }
-      `;
+      `;const h = new Headers();
+        h.append('Authorization', localStorage.getItem('auth'));
         const response = await fetch(this.serverURL + this.dictionaryTerritoryURL, {
           method: 'PUT',
+          headers: h,
           body: body,
         });
         if (response.status < 200 || response.status >= 300) {
@@ -620,8 +634,11 @@ export class Dictionary extends MainView {
         "toDelete": []
       }
       `;
+        const h = new Headers();
+        h.append('Authorization', localStorage.getItem('auth'));
         const response = await fetch(this.serverURL + this.dictionaryTerritoryURL, {
           method: 'PUT',
+          headers: h,
           body: body,
         });
         if (response.status < 200 || response.status >= 300) {
@@ -746,8 +763,11 @@ export class Dictionary extends MainView {
         "toDelete": [${this.currentDictionaryId}]
       }
       `;
+      const h = new Headers();
+      h.append('Authorization', localStorage.getItem('auth'));
       const response = await fetch(this.serverURL + this.dictionaryProgramURL, {
         method: 'PUT',
+        headers: h,
         body: body,
       });
       if (response.status < 200 || response.status >= 300) {
@@ -802,8 +822,11 @@ export class Dictionary extends MainView {
             }
             `;
         console.log(body);
+        const h = new Headers();
+        h.append('Authorization', localStorage.getItem('auth'));
         const response = await fetch(this.serverURL + this.dictionaryProgramURL, {
           method: 'PUT',
+          headers: h,
           body: body,
         });
         if (response.status < 200 || response.status >= 300) {
@@ -915,8 +938,11 @@ export class Dictionary extends MainView {
         console.log(this.serverURL);
         console.log(this.dictionaryProgramURL);
         console.log(body);
+        const h = new Headers();
+        h.append('Authorization', localStorage.getItem('auth'));
         const response = await fetch(this.serverURL + this.dictionaryProgramURL, {
           method: 'PUT',
+          headers: h,
           body: body,
         });
         if (response.status < 200 || response.status >= 300) {
@@ -1046,8 +1072,11 @@ export class Dictionary extends MainView {
         "toDelete": [${this.currentEventId}]
       }
       `;
+      const h = new Headers();
+      h.append('Authorization', localStorage.getItem('auth'));
       const response = await fetch(this.serverURL + this.dictionaryEventURL, {
         method: 'PUT',
+        headers: h,
         body: body,
       });
       if (response.status < 200 || response.status >= 300) {
@@ -1110,8 +1139,11 @@ export class Dictionary extends MainView {
               "toDelete": []
             }
             `;
+        const h = new Headers();
+        h.append('Authorization', localStorage.getItem('auth'));
         const response = await fetch(this.serverURL + this.dictionaryEventURL, {
           method: 'PUT',
+          headers: h,
           body: body,
         });
         if (response.status < 200 || response.status >= 300) {
@@ -1175,8 +1207,11 @@ export class Dictionary extends MainView {
               "toDelete": []
             }
             `;
+        const h = new Headers();
+        h.append('Authorization', localStorage.getItem('auth'));
         const response = await fetch(this.serverURL + this.dictionaryEventURL, {
           method: 'PUT',
+          headers: h,
           body: body,
         });
         if (response.status < 200 || response.status >= 300) {

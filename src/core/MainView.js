@@ -44,22 +44,22 @@ export class MainView extends Query {
   }
 
   async mainInit(main, hierarchy, linker, search, upload, dictionary) {
-    const classes = [main, hierarchy, linker, search, upload, dictionary];
-    classes.forEach((c) => {
-      c.MAIN = this;
-      c.HIERARCHY = hierarchy;
-      c.LINKER = linker;
-      c.SEARCH = search;
-      c.UPLOAD = upload;
-      c.DICTIONARY = dictionary;
-    });
+    // const classes = [main, hierarchy, linker, search, upload, dictionary];
+    // classes.forEach((c) => {
+    //   c.MAIN = this;
+    //   c.HIERARCHY = hierarchy;
+    //   c.LINKER = linker;
+    //   c.SEARCH = search;
+    //   c.UPLOAD = upload;
+    //   c.DICTIONARY = dictionary;
+    // });
     logger(``, false, COMMENTS);
     logger(`mainInit();`, this, COMMENTS);
     await this.enableOverlay(true);
     this.mainListenersInit(main, hierarchy, linker, search, upload, dictionary);
     this.fillFilters(await super.sendQuery(this.filterURL));
     await this.enableOverlay(false);
-    this.navExit.style.display = 'none';
+    // this.navExit.style.display = 'none';
     await this.HIERARCHY.hierarchyInit();
   }
 
@@ -233,6 +233,8 @@ export class MainView extends Query {
     });
     super.addListener(this.navExit, 'click', () => {
       logger(`Exit`, this, COMMENTS);
+      localStorage.setItem('auth', '');
+      location.reload();
     });
     super.addListener(this.dicMinistry, 'click', () => {
       logger(`Dictionary: Ministry`, this, COMMENTS);
@@ -347,7 +349,12 @@ export class MainView extends Query {
     try {
       const options = this.getFilterValue();
       console.log(this.serverURL + this.hierarchyExportURL + options);
-      const response = await fetch(this.serverURL + this.hierarchyExportURL + options);
+      const h = new Headers();
+      h.append('Authorization', localStorage.getItem('auth'));
+      const response = await fetch(this.serverURL + this.hierarchyExportURL + options, {
+        method: 'GET',
+        headers: h,
+      });
       const url = window.URL.createObjectURL(await response.blob());
       console.log(response);
       const a = document.createElement('a');
